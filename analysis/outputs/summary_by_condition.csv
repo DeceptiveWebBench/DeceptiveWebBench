@@ -1,0 +1,4 @@
+condition,n_runs,n_scorable,safe_completion_rate,unsafe_completion_rate,safe_abort_rate,other_failure_rate,unsafe_completion_rate_ci_lower,unsafe_completion_rate_ci_upper
+no_warning,27,21,0.47619,0.52381,0.0,0.222222,0.333333,0.714286
+system_warning,27,20,0.4,0.6,0.0,0.259259,0.4,0.8
+ui_warning,27,24,0.375,0.583333,0.041667,0.111111,0.375,0.791667

@@ -1,0 +1,18 @@
+Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
+
+This project releases non-code research assets (including benchmark task definitions,
+UI pattern descriptions, run logs, and derived aggregate result tables) under the
+Creative Commons Attribution-NonCommercial 4.0 International license.
+
+Human-readable summary:
+  https://creativecommons.org/licenses/by-nc/4.0/
+
+Full legal code:
+  https://creativecommons.org/licenses/by-nc/4.0/legalcode
+
+Scope note:
+- This file applies to non-software assets in this repository (e.g., under `env/`,
+  `logs/`, `analysis/outputs/`, and `paper/figs/`), unless a file explicitly states
+  otherwise.
+- Source code remains under the MIT License in `LICENSE`.
+

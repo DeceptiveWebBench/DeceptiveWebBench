@@ -1,0 +1,17 @@
+\begin{table}[t]
+  \caption{Three-repeat outcome summary by condition (top three rows) and direct System-vs-UI contrast (bottom row). Rates for the primary outcomes (safe completion, unsafe completion, safe abort) are computed over \emph{scorable} runs (excluding \emph{other failure}); the other-failure rate is over all runs. ``Unsafe [95\% CI]'' is a 1{,}000-sample bootstrap 95\% CI on the per-condition scorable bucket (seed 42). Three repeats per task--condition cell ($r{=}3$, $N{=}81$ runs total).}
+  \label{tab:main}
+  \centering
+  \small
+  \begin{tabular}{lcccccc}
+    \toprule
+    Condition & $N$ & $N_{\text{scorable}}$ & Safe comp. & Unsafe comp.\ [95\% CI] & Safe abort & Other fail. \\
+    \midrule
+    No Warning      & 27 & 21 & 0.476 & 0.524\ {\footnotesize[0.33, 0.71]} & 0.000 & 0.222 \\
+    System Warning  & 27 & 20 & 0.400 & 0.600\ {\footnotesize[0.40, 0.80]} & 0.000 & 0.259 \\
+    UI Warning      & 27 & 24 & 0.375 & 0.583\ {\footnotesize[0.38, 0.79]} & 0.042 & 0.111 \\
+    \midrule
+    \multicolumn{4}{l}{\textit{System $-$ UI (unsafe completion):}} & \multicolumn{3}{l}{$+0.017$\ \ {\footnotesize(CIs overlap; no detectable channel effect)}} \\
+    \bottomrule
+  \end{tabular}
+\end{table}

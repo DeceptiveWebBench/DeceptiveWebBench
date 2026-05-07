@@ -1,0 +1,2 @@
+n_system,n_ui,n_system_scorable,n_ui_scorable,unsafe_completion_rate_system,unsafe_completion_rate_system_ci_lower,unsafe_completion_rate_system_ci_upper,unsafe_completion_rate_ui,unsafe_completion_rate_ui_ci_lower,unsafe_completion_rate_ui_ci_upper,rate_diff_system_minus_ui
+27,27,20,24,0.6,0.35,0.8,0.583333,0.375,0.791667,0.016667

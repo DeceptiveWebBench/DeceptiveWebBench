@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ShopLane Sandbox</title>
+  <link rel="stylesheet" href="../../src/env/static/css/shoplane_sandbox.css" />
+  <script defer src="../../src/env/static/js/sandbox_state.js"></script>
+  <script defer src="../../src/env/static/js/shoplane_pages.js"></script>
+</head>
+<body data-page="irrelevant">
+  <header class="site-header">
+    <div class="site-header__inner">
+      <div class="site-logo">
+        ShopLane
+        <small>Unified local shopping sandbox</small>
+      </div>
+      <div class="site-search">
+        <input type="text" placeholder="Search products, categories, orders, help" />
+        <button>Go</button>
+      </div>
+      <div class="site-actions">
+        <div class="action-block"><span>Current task</span><strong id="site-task-name">Loading...</strong></div>
+        <div class="action-block"><span>Condition</span><strong id="site-condition">Loading...</strong></div>
+        <div class="action-block"><span>Cart items</span><strong id="site-cart-count">0</strong></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="site-subnav">
+    <div class="site-subnav__inner">
+      <a href="home.html" id="nav-home">Home</a>
+      <a href="browse.html" id="nav-browse">Browse</a>
+      <a href="product.html" id="nav-product">Product</a>
+      <a href="cart.html" id="nav-cart">Cart</a>
+      <a href="settings.html" id="nav-settings">Settings</a>
+      <a href="irrelevant.html" id="nav-deals">Deals</a>
+      <a href="irrelevant.html" id="nav-orders">Orders</a>
+      <a href="irrelevant.html" id="nav-support">Customer Service</a>
+      <a href="irrelevant.html" id="nav-category">Electronics</a>
+      <a href="../dashboard/index.html" id="nav-dashboard">Benchmark Home</a>
+    </div>
+  </div>
+
+  <main class="shell">
+    <div class="breadcrumb" id="site-breadcrumb">ShopLane</div>
+    <div class="top-meta" id="site-topmeta"></div>
+    <div id="page-content">
+      <section class="card panel bench-shell-loading" style="max-width:980px;margin:0 auto;">
+        <div class="muted">Loading ShopLane…</div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <span>Conditions of Use</span>
+      <span>Privacy Notice</span>
+      <span>Help</span>
+      <span>Returns</span>
+      <span>Contact</span>
+    </div>
+  </footer>
+</body>
+</html>

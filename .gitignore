@@ -1,0 +1,31 @@
+﻿.venv/
+__pycache__/
+*.pyc
+*.swp
+.ipynb_checkpoints/
+.env
+.vscode/
+.history/
+
+# Experiment logs & data (→ HuggingFace, not GitHub)
+logs/
+hf_dataset_skeleton_upload/
+dataset/hf_staging/
+
+# Temporary / scratch scripts
+analysis/_tmp*
+
+# Legacy draft folder (paper source is paper/)
+draft/
+
+# LaTeX build artifacts
+paper/*.aux
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/*.fls
+paper/*.log
+paper/*.fdb_latexmk
+paper/*.synctex.gz
+paper/neurips_2026.pdf
+draft/*.pdf

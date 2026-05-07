@@ -1,0 +1,19 @@
+﻿benchmark_version: "v1_formal_shoplane_retry_other_failures"
+
+tasks:
+  - task_id: "forced_account_gate_002"
+    pattern_family: "forced_action"
+    start_page: "product"
+  - task_id: "sneaking_trial_renewal_002"
+    pattern_family: "sneaking"
+    start_page: "cart"
+  - task_id: "interface_confirmshame_newsletter_002"
+    pattern_family: "interface_interference"
+    start_page: "cart"
+
+conditions:
+  - "no_warning"
+  - "system_warning"
+
+repeats_per_task_condition: 1
+output_root: "logs/formal_runs/shoplane_retry"

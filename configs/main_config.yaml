@@ -1,0 +1,138 @@
+﻿# Main experiment config will be stored here.
+project:
+  name: deceptive-web-warning-benchmark
+  config_version: v1
+  config_date: "2026-04-09"
+  notes: >
+    Agent config v1 for controlled benchmark study.
+    Main comparison isolates warning channel under a fixed agent stack.
+
+study:
+  single_agent_only: true
+  study_type: controlled_benchmark
+  primary_outcome: unsafe_completion
+  conditions:
+    - no_warning
+    - system_warning
+    - ui_warning
+
+agent:
+  framework: browser_use
+  agent_profile: single_fixed_agent_v1
+  # Multimodal stack (screenshots on); must match the active model profile.
+  use_vision: true
+
+model:
+  # Single profile in this release (add more keys under model_profiles if needed).
+  active_model_profile: "nova_lite"
+  # Flat fields mirror the active profile for legacy readers / dashboards.
+  provider: "aws_bedrock"
+  model_name: "amazon.nova-lite-v1:0"
+  model_snapshot: "Amazon Nova Lite v1 via Bedrock runtime API-key style auth"
+  access_path: "bedrock_api_key"
+  api_key_env: "AWS_API_KEY"
+  region_name: "us-east-1"
+  sdk_version: "boto3-bedrock-runtime"
+  multimodal: true
+  temperature: 0.0
+  top_p: 1.0
+  max_output_tokens: 768
+  llm_request_timeout_sec: 120
+  seed: null
+
+  model_profiles:
+    nova_lite:
+      provider: "aws_bedrock"
+      model_name: "amazon.nova-lite-v1:0"
+      model_snapshot: "Amazon Nova Lite v1 via Bedrock runtime API-key style auth"
+      access_path: "bedrock_api_key"
+      api_key_env: "AWS_API_KEY"
+      region_name: "us-east-1"
+      sdk_version: "boto3-bedrock-runtime"
+      multimodal: true
+      temperature: 0.0
+      top_p: 1.0
+      max_output_tokens: 768
+      llm_request_timeout_sec: 120
+      seed: null
+
+observation:
+  mode: multimodal_screenshot_plus_browser_state
+  primary_input: screenshot
+  auxiliary_inputs:
+    - dom_text
+    - browser_metadata
+    - current_url
+
+browser:
+  control_stack: browser_use
+  mode_main: headless
+  mode_pilot: headed
+  # Slightly smaller viewport => smaller screenshots => modest VL latency win (trade vs UI fidelity).
+  viewport_width: 1280
+  viewport_height: 720
+  device_scale_factor: 1
+  user_agent: "default_desktop"
+  locale: "en-US"
+  # Avoid browser-use MP4 recorder unless optional deps installed (pip install "browser-use[video]")
+  record_video: false
+  # After Agent.run(), do not reset the session immediately; allows reading shoplane_sandbox_state_v3 from localStorage
+  # into terminal_state.json. Agent calls kill() after the read.
+  keep_alive: true
+
+execution:
+  max_steps: 15
+  # Per BrowserUse step = LLM (vision) + tool/browser work; VL inference can exceed 20–40s—too low causes
+  # repeated "Step N timed out after X seconds" without model failure.
+  # Whole BrowserUse step (LLM + tools); keep > llm_request_timeout_sec + slack for browser actions.
+  step_timeout_sec: 150
+  task_timeout_sec: 1800
+  retry_policy: infra_only_once
+  allow_logical_rerun: false
+  stop_on_terminal_state: true
+
+warnings:
+  trigger_mode: task_annotated
+  semantic_matching_required: true
+  compare_channel_only: true
+
+logging:
+  save_run_manifest: true
+  save_action_trace_jsonl: true
+  save_prompt_version: true
+  save_condition_label: true
+  save_model_identity: true
+  save_browser_config: true
+  save_token_usage: true
+  save_cost_estimate: true
+  save_console_errors: true
+
+screenshots:
+  save_initial: true
+  save_each_step: true
+  save_terminal: true
+  save_on_exception: true
+  save_risk_step: true
+
+state_dump:
+  save_final_dom: true
+  save_final_url: true
+  save_terminal_state_json: true
+  save_risk_annotation_id: true
+  save_intermediate_dom: false   # provisional v1
+
+reproducibility:
+  task_release_version: "v1.0"
+  prompt_version: "v1.0"
+  scorer_version: "v1.0"
+  environment_version: "v1.0"
+  commit_hash: "5eb2b855f84d5fccf339337e7411ef63a927eac1"
+  compute_log_enabled: true
+
+reporting:
+  report_model_provider_and_snapshot: true
+  report_browser_resolution: true
+  report_execution_mode: true
+  report_retry_policy: true
+  report_sampling_settings: true
+  report_timeout_policy: true
