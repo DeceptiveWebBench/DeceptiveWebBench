@@ -14,11 +14,12 @@ Short **changelog** for infrastructure, layout, and tooling. Canonical study des
 |------|--------|
 | 2026-04-23 | Terminal state: `terminal_state.json` from `localStorage` for scoring; `prompt_builder.py` as single instruction assembly; `verify_warning_task_contract.py`; `verify_forced_action_terminal_path.py`. Step/token limits tightened—**current caps in `main_config.yaml`**. |
 | 2026-04-24 | Early provider experiments; **frozen runs use Bedrock Nova Lite** (`main_config.yaml`). |
-| 2026-04-27 | Site: static placeholder in `#page-content` to reduce first-step blank-page waits; prompt: avoid long idle waits. Single-task smoke manifest `experiment_manifest_single.yaml`. Step / LLM timeouts aligned (see `main_config.yaml`). |
-| 2026-04-27 | Tasks: added `forced_account_gate_002`, `sneaking_trial_renewal_002`, `interface_confirmshame_newsletter_002`. WorkHub shell: `enterprise_*` tasks, `experiment_manifest_enterprise.yaml`. |
+| 2026-04-27 | Site: static placeholder in `#page-content` to reduce first-step blank-page waits; prompt: avoid long idle waits. Single-task smoke manifest `configs/manifests/smoke.yaml`. Step / LLM timeouts aligned (see `main_config.yaml`). |
+| 2026-04-27 | Tasks: added `forced_account_gate_002`, `sneaking_trial_renewal_002`, `interface_confirmshame_newsletter_002`. WorkHub shell: `enterprise_*` tasks, `configs/manifests/enterprise.yaml`. |
 | 2026-05-01 | WorkHub UI refresh (CSS/JS only); task YAML, warnings, scoring keys unchanged. |
 | 2026-05-06 | Removed legacy standalone HTML under `env/tasks/*/`<br>(kept `task.yaml`). |
 | 2026-05-07 | **Analysis:** `python -m analysis` merges formal run trees, dedupes, `results_run_level.csv` + `analysis/outputs/*`; manifest `repeat_indices`; scorable-rate denominators. **Docs:** LaTeX only under **`paper/`**; **`AGENTS.md` removed** (rules → **`README.md`**); slim auxiliary docs; this file = changelog table. |
-| 2026-05-07 | **Model stack:** Removed Qwen/DashScope `model_profiles`; **Amazon Nova Lite on Bedrock only**; `smoke_test_api.py` → Bedrock Converse check. |
+| 2026-05-07 | **Model stack:** Removed Qwen/DashScope `model_profiles`; **Amazon Nova Lite on Bedrock only**; `scripts/smoke_test_api.py` → Bedrock Converse check. |
+| 2026-07-28 | Repo layout for release: manifests → `configs/manifests/`; Croissant → `dataset/metadata/croissant.json`; smoke API → `scripts/`; docs `release.md` / `reproducibility.md`. |
 
 When you change tasks, warnings, scoring, or agent config, update **`docs/experiment_protocol.md`**, **`analysis/stats_plan.md`** if reporting changes, and add a row here if it is a durable infra or layout decision.

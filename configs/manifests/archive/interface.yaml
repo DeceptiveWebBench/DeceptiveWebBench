@@ -1,0 +1,17 @@
+benchmark_version: "v1_minimal_runner"
+
+tasks:
+  - task_id: "interface_perm_001"
+    pattern_family: "interface_interference"
+    start_page: "browse"
+  - task_id: "interface_confirmshame_newsletter_002"
+    pattern_family: "interface_interference"
+    start_page: "cart"
+
+conditions:
+  - "no_warning"
+  - "system_warning"
+  - "ui_warning"
+
+repeats_per_task_condition: 1
+output_root: "logs/experiment_runs"

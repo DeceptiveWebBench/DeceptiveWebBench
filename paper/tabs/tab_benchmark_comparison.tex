@@ -1,16 +1,19 @@
-\begin{table}[t]
-  \caption{Differentiation from prior agent-evaluation benchmarks along axes that matter for execution-time warning studies. \emph{Exec-time intervention}: whether the benchmark exposes an execution-time warning as a first-class experimental variable. \emph{Matched-channel}: whether the same warning semantics are delivered through different channels under controlled conditions. ``---'' indicates the axis is not in scope.}
+\begin{table}[H]
+  \caption{Differentiation from prior agent-evaluation benchmarks along axes that matter for execution-time warning studies. The 4-way outcome schema decomposes into safe completion, unsafe completion, safe abort, and other failure. ``---'' indicates the axis is not in scope.}
   \label{tab:bench-compare}
   \centering
-  \small
-  \begin{tabular}{@{}llllcc@{}}
+  \scriptsize
+  \begin{tabular}{@{}lllccc@{}}
     \toprule
-    Benchmark & Environment & Deceptive coverage & Outcome schema & Exec-time int. & Matched-channel \\
+    \rowcolor{hdrblue}
+    Benchmark & Primary focus & Coverage & Outcome schema & Exec-time warning & Matched-channel \\
     \midrule
-    WebArena~/~VWA~\cite{zhou2023webarena,koh2024visualwebarena} & Local sandbox & General web & Binary success & --- & --- \\
-    ST-WebAgentBench~\cite{levy2024stwebagentbench} & WebArena-extended & Policy violations & Binary safety & --- & --- \\
-    DeceptiCon~\cite{cuvin2025decepticon} & Real / synthetic mix & Dark-pattern taxonomy & Task success & --- & --- \\
-    \textbf{Ours} & \textbf{Local sandbox} & \textbf{Pattern ontology} & \textbf{4-way schema} & \textbf{Yes (Sys + UI)} & \textbf{Yes} \\
+    WebArena~/~VWA~\cite{zhou2023webarena,koh2024visualwebarena} & Task capability & General & Binary success & --- & --- \\
+    \rowcolor{rowgray}
+    ST-WebAgentBench~\cite{levy2024stwebagentbench} & Policy violation & Policy & Success $+$ violation & --- & --- \\
+    DeceptiCon~\cite{cuvin2025decepticon} & Susceptibility & Dark-pattern set & Per-pattern hit rate & --- & --- \\
+    \rowcolor{oursgreen}
+    \textbf{Ours} & \textbf{Warning efficacy} & \textbf{9 tasks, 3 families} & \textbf{4-way schema} & \textbf{Yes (No/Sys/UI)} & \textbf{Yes} \\
     \bottomrule
   \end{tabular}
 \end{table}

@@ -2,7 +2,7 @@
 
 A controlled local benchmark for evaluating whether **execution-time warnings** reduce **unsafe completion** when a multimodal web agent navigates deceptive UIs, and whether the **delivery channel** (system-prompt vs in-page) matters.
 
-> **Paper:** NeurIPS 2026 Evaluations & Datasets track submission.  Build the PDF with `cd paper && pdflatex neurips_2026 && bibtex neurips_2026 && pdflatex neurips_2026 && pdflatex neurips_2026`.
+> **Paper:** NeurIPS 2026 Evaluations & Datasets track. Build the PDF with `cd paper && pdflatex neurips_2026 && bibtex neurips_2026 && pdflatex neurips_2026 && pdflatex neurips_2026`.
 
 ## Key ideas
 
@@ -18,59 +18,65 @@ A controlled local benchmark for evaluating whether **execution-time warnings** 
 
 | Path | Role |
 |------|------|
-| `paper/` | NeurIPS LaTeX bundle (`neurips_2026.tex`, `checklist.tex`, `figs/`, `tabs/`, `references.bib`) |
-| `configs/` | `main_config.yaml` (frozen agent/model config), `warnings.yaml` (risk-slot table), manifests |
-| `env/site/` | ShopLane & WorkHub Admin HTML sandbox shells |
-| `env/tasks/<task_id>/task.yaml` | Per-task goals, risk annotations, scoring rules |
-| `src/` | Agent wrapper, experiment runner, deterministic scorer, prompt builder, sandbox JS |
-| `analysis/` | Aggregation pipeline, bootstrap CIs, summary outputs |
-| `dataset/` | HuggingFace staging export & upload helpers |
-| `docs/` | `experiment_protocol.md`, `decision_log.md` |
-| `scripts/` | Smoke tests and verification scripts |
+| `configs/` | Frozen agent config, warnings, task index, run manifests (`configs/manifests/`) |
+| `env/site/`, `env/tasks/` | ShopLane & WorkHub HTML shells + per-task `task.yaml` |
+| `src/env/static/` | CSS/JS served by the sandbox pages |
+| `src/` | Runner, scorer, prompt builder, agent wrapper |
+| `scripts/` | Smoke tests and contract checks |
+| `analysis/` | Aggregation + frozen `outputs/` summaries |
+| `dataset/` | Hugging Face export/upload + Croissant metadata |
+| `docs/` | Protocol, release split (GitHub vs HF), decision log |
+| `paper/` | NeurIPS LaTeX source |
+
+See [`docs/release.md`](docs/release.md) for what belongs on GitHub vs Hugging Face.
 
 ## Quickstart
 
 ```bash
-# 1. Install dependencies
+# 0. Python 3.12 recommended (see .venv setup on macOS/Linux)
+python3.12 -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+playwright install chromium
 
-# 2. Set credentials (env vars only — no keys in the repo)
+# 1. Credentials (env vars only — no keys in the repo)
 export AWS_ACCESS_KEY_ID="..."
 export AWS_API_KEY="..."        # Bedrock secret key
-export AWS_REGION="us-east-1"   # optional, defaults to us-east-1
+export AWS_REGION="us-east-1"   # optional
 
-# 3. Verify API access
-python smoke_test_api.py
+# 2. Verify API access
+python scripts/smoke_test_api.py
 
-# 4. Preview the sandbox (static file server)
+# 3. Preview the sandbox
 python -m http.server
-# then open http://localhost:8000/env/dashboard/index.html
+# open http://localhost:8000/env/dashboard/index.html
 
-# 5. Smoke test (single task)
+# 4. Smoke test (single task)
 python -m scripts.smoke_browseruse.run
 
-# 6. Formal batch run
-python -m src.runner.run_experiment --manifest configs/experiment_manifest.yaml
+# 5. Formal batch run
+python -m src.runner.run_experiment --manifest configs/manifests/formal.yaml
 
-# 7. Aggregate results & generate summaries
+# 6. Aggregate results
 python -m analysis
 ```
 
 ## Analysis
 
 ```bash
-# Full merge + summaries
 python -m analysis
-
-# Summaries only (from existing merged CSV)
 python -m analysis.aggregate_results --input-csv logs/experiment_runs/results_run_level.csv
 ```
 
-Bootstrap 95% CIs (1,000 resamples, seed 42) are computed over scorable runs.  See `analysis/stats_plan.md` for metric definitions.
+Bootstrap 95% CIs (1,000 resamples, seed 42) over scorable runs. See `analysis/stats_plan.md`. Frozen paper-facing tables live in `analysis/outputs/`.
 
-## Data release
+## Data release (Hugging Face)
 
-Run-level results (JSONL / CSV / Parquet) are published on **HuggingFace** via `dataset/export_staging.py`.  Raw experiment logs (`logs/`) are excluded from this repository.
+```bash
+python dataset/export_staging.py
+python dataset/upload_to_hf.py
+```
+
+Staging files land in `dataset/hf_staging/` (gitignored). Dataset card: `dataset/README.md`. Croissant: `dataset/metadata/croissant.json`. Raw `logs/` stay local / optional Hub revision.
 
 ## Licenses
 

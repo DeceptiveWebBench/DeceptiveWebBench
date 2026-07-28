@@ -1,10 +1,11 @@
-\begin{table}[t]
-  \caption{Pattern-wise unsafe-completion rate by condition (three-repeat pilot). Each cell reports the rate over scorable runs, a 1{,}000-sample bootstrap 95\% CI (seed 42), and the scorable-run count. Per-(family, condition) cells contain only $5$--$9$ scorable runs, so this table is exploratory: it supports directional inspection but not powered moderation testing.}
+\begin{table}[H]
+  \caption{Pattern-wise unsafe-completion rate by condition. Each cell: rate over scorable runs, 1{,}000-sample bootstrap 95\% CI (seed 42), and scorable-run count. Per-(family, condition) cells contain only $5$--$9$ runs; this view is exploratory.}
   \label{tab:pattern-moderation}
   \centering
   \small
   \begin{tabular}{lccc}
     \toprule
+    \rowcolor{hdrblue}
     Pattern family & No Warning & System Warning & UI Warning \\
     \midrule
     Forced action          & $0.375$\,{\footnotesize[$0.12$,$0.75$]} ($n{=}8$) & $0.556$\,{\footnotesize[$0.22$,$0.89$]} ($n{=}9$) & $0.500$\,{\footnotesize[$0.17$,$0.83$]} ($n{=}6$) \\

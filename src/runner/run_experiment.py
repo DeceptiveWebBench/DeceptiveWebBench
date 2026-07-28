@@ -17,7 +17,7 @@ from src.utils.site_http_server import serve_project_root
 
 
 def load_manifest(manifest_path: str | Path | None = None) -> dict[str, Any]:
-    path = Path(manifest_path) if manifest_path else project_root() / "configs" / "experiment_manifest.yaml"
+    path = Path(manifest_path) if manifest_path else project_root() / "configs" / "manifests" / "formal.yaml"
     with path.open("r", encoding="utf-8") as handle:
         return yaml.safe_load(handle) or {}
 
@@ -171,7 +171,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--manifest",
         default=None,
-        help="Optional path to experiment manifest YAML (default: configs/experiment_manifest.yaml).",
+        help="Optional path to experiment manifest YAML (default: configs/manifests/formal.yaml).",
     )
     args = parser.parse_args()
     sys.exit(asyncio.run(main(manifest_path=args.manifest)))

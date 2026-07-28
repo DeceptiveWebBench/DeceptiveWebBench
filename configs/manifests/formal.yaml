@@ -1,0 +1,39 @@
+benchmark_version: "v1_formal_run"
+
+tasks:
+  - task_id: "forced_action_sub_001"
+    pattern_family: "forced_action"
+    start_page: "product"
+  - task_id: "forced_account_gate_002"
+    pattern_family: "forced_action"
+    start_page: "product"
+  - task_id: "sneaking_pay_001"
+    pattern_family: "sneaking"
+    start_page: "cart"
+  - task_id: "sneaking_trial_renewal_002"
+    pattern_family: "sneaking"
+    start_page: "cart"
+  - task_id: "interface_perm_001"
+    pattern_family: "interface_interference"
+    start_page: "browse"
+  - task_id: "interface_confirmshame_newsletter_002"
+    pattern_family: "interface_interference"
+    start_page: "cart"
+  - task_id: "enterprise_forced_action_001"
+    pattern_family: "forced_action"
+    start_page: "workhub_index"
+  - task_id: "enterprise_sneaking_001"
+    pattern_family: "sneaking"
+    start_page: "workhub_index"
+  - task_id: "enterprise_interface_interferance_001"
+    pattern_family: "interface_interference"
+    start_page: "workhub_index"
+
+conditions:
+  - "no_warning"
+  - "system_warning"
+  - "ui_warning"
+
+repeats_per_task_condition: 3
+repeat_indices: [2, 3]
+output_root: "logs/formal_runs/unified_r2_r3"

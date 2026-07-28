@@ -1,19 +1,11 @@
 \section*{NeurIPS Paper Checklist}
 
-\noindent\fbox{\begin{minipage}{0.97\linewidth}
-\small
-\textbf{[Annotation]}\quad
-For each item below, the \textit{Answer} and \textit{Justification} lines (\textbf{not} the \textit{Guidelines} bullets) were pre-filled by an AI assistant from the current \texttt{paper/neurips\_2026.tex} and the released artifact (\texttt{configs/}, \texttt{src/}, \texttt{analysis/}, \texttt{README.md}).
-Authors must verify each line before submission and edit any item that no longer matches the final repository state, supplement contents, or paper text.
-\end{minipage}}
-\vspace{4pt}
-
 \begin{enumerate}
 
 \item {\bf Claims}
     \item[] Question: Do the main claims made in the abstract and introduction accurately reflect the paper's contributions and scope?
     \item[] Answer: \answerYes{}
-    \item[] Justification: The abstract and Section~\ref{sec:benchmark} introduce a benchmark (sandbox, task inventory, frozen risk-slot table, four-way outcome schema) and explicitly position the three-repeat pilot ($r{=}3$, $N{=}81$) as a feasibility instantiation rather than a definitive channel ranking; Section~\ref{sec:results} states ``no detectable channel effect at this scale'' and Section~\ref{sec:limitations} bounds the claim. The contributions in Section~1.4 are framed as benchmark scaffolding plus a follow-up roadmap, matching the empirical content.
+    \item[] Justification: The abstract and Section~\ref{sec:benchmark} introduce the benchmark and position the three-repeat pilot as a feasibility instantiation; Section~\ref{sec:results} states ``no detectable channel effect at this scale'' and Section~\ref{sec:limitations} bounds the claim. Contributions in Section~1.3 are framed as benchmark scaffolding plus a follow-up roadmap, matching the empirical content.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer \answerNA{} means that the abstract and introduction do not include the claims made in the paper.
@@ -25,7 +17,7 @@ Authors must verify each line before submission and edit any item that no longer
 \item {\bf Limitations}
     \item[] Question: Does the paper discuss the limitations of the work performed by the authors?
     \item[] Answer: \answerYes{}
-    \item[] Justification: Section~\ref{sec:limitations} groups limitations into three paragraphs---statistical scale and benchmark coverage; deliberately frozen design choices (single agent stack, annotation-based trigger, fixed warning template/placement); and external-validity gaps (local sandbox vs.\ open web, no human-subject baseline)---and explicitly states that quantitative ranking of channels is deferred to a larger run on the same harness.
+    \item[] Justification: Section~\ref{sec:limitations} groups limitations under (i)~statistical scale and coverage, (ii)~deliberately frozen design choices (agent stack, annotation-based trigger, warning template), and (iii)~external-validity gaps (local sandbox vs.\ open web, no human-subject baseline). Quantitative channel ranking is explicitly deferred to a larger run on the same harness.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer \answerNA{} means that the paper has no limitation while the answer \answerNo{} means that the paper has limitations, but those are not discussed in the paper. 
@@ -55,7 +47,7 @@ Authors must verify each line before submission and edit any item that no longer
     \item {\bf Experimental result reproducibility}
     \item[] Question: Does the paper fully disclose all the information needed to reproduce the main experimental results of the paper to the extent that it affects the main claims and/or conclusions of the paper (regardless of whether the code and data are provided or not)?
     \item[] Answer: \answerYes{}
-    \item[] Justification: Section~\ref{sec:benchmark} documents the sandbox, two shells (ShopLane, WorkHub Admin), task inventory (Table~\ref{tab:inventory}), warning conditions, fixed risk-slot template, four-way outcome schema, deterministic terminal-state scorer, agent stack (BrowserUse + a multimodal API model held fixed across conditions), execution settings (viewport $1280{\times}720$, headless, per-step timeout 150\,s, per-task timeout 1800\,s, step budget 15, infra-only retry), and run procedure ($r{=}3$, $N{=}81$). The aggregation script and bootstrap seed (\texttt{analysis/aggregate\_results.py}, seed 42, 1{,}000 resamples) are described in the Data and Code Availability paragraph (Section~\ref{sec:benchmark}). Per-run logs and configurations are released as an anonymized supplement.
+    \item[] Justification: Section~\ref{sec:benchmark} documents the sandbox, task inventory (Table~\ref{tab:inventory}), warning conditions, four-way outcome schema, deterministic scorer, agent stack, execution settings, and run procedure ($r{=}3$, $N{=}81$). Aggregation script with bootstrap seed 42 (1{,}000 resamples) is in \texttt{analysis/aggregate\_results.py}; per-run logs and configs are released as an anonymized supplement.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer \answerNA{} means that the paper does not include experiments.
@@ -75,7 +67,7 @@ Authors must verify each line before submission and edit any item that no longer
 \item {\bf Open access to data and code}
     \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results, as described in supplemental material?
     \item[] Answer: \answerYes{}
-    \item[] Justification: The full benchmark is released as an anonymized supplement: sandbox code (\texttt{src/env/}, \texttt{env/site/}), task definitions (\texttt{env/tasks/}), frozen configs (\texttt{configs/main\_config.yaml}, \texttt{configs/warnings.yaml}, experiment manifests), scoring code (\texttt{src/scorer/}), aggregation script (\texttt{analysis/aggregate\_results.py}, bootstrap seed 42), per-run logs (\texttt{logs/experiment\_runs/}), and a Croissant dataset card (\texttt{croissant.json}). \texttt{README.md} documents build, run, and aggregation commands. Code is released under MIT and data/logs under CC BY-NC 4.0.
+    \item[] Justification: The full benchmark is released as an anonymized supplement: sandbox code, task definitions, frozen configs, scoring code, aggregation script (\texttt{analysis/aggregate\_results.py}, seed 42), per-run logs, and a Croissant card (\texttt{dataset/metadata/croissant.json}). \texttt{README.md} documents build/run/aggregation commands. Code under MIT, data/logs under CC BY-NC 4.0.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer \answerNA{} means that paper does not include experiments requiring code.
@@ -92,7 +84,7 @@ Authors must verify each line before submission and edit any item that no longer
 \item {\bf Experimental setting/details}
     \item[] Question: Does the paper specify all the training and test details (e.g., data splits, hyperparameters, how they were chosen, type of optimizer) necessary to understand the results?
     \item[] Answer: \answerYes{}
-    \item[] Justification: There is no model training; the agent is a frozen multimodal API model driven by BrowserUse. Section~3.5--3.6 (in Section~\ref{sec:benchmark}) report the agent stack, observation inputs (screenshot + DOM text + browser metadata + URL), generation settings (temperature $0.0$, top-$p$ $1.0$, max output tokens 768), browser settings (viewport $1280{\times}720$, headless), execution policy (per-step 150\,s, per-task 1800\,s, step budget 15, infra-only one-time retry), and the aggregation/scoring procedure (deterministic terminal-state scorer; bootstrap 95\% CIs over scorable runs, 1{,}000 resamples, seed 42). All values are fixed at protocol freeze and reported with the empirical results.
+    \item[] Justification: No model training; the agent is a frozen multimodal API model. Section~3.5--3.6 report the agent stack, observation inputs, generation settings (temperature $0$, top-$p$ $1$, max tokens $768$), browser/execution policy (viewport $1280{\times}720$, headless, per-step 150\,s, per-task 1800\,s, step budget 15, infra-only retry), and scoring (deterministic terminal-state scorer; bootstrap 95\% CIs over scorable runs, seed 42). All values frozen at protocol release.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer \answerNA{} means that the paper does not include experiments.
@@ -103,7 +95,7 @@ Authors must verify each line before submission and edit any item that no longer
 \item {\bf Experiment statistical significance}
     \item[] Question: Does the paper report error bars suitably and correctly defined or other appropriate information about the statistical significance of the experiments?
     \item[] Answer: \answerYes{}
-    \item[] Justification: Table~\ref{tab:main} reports per-condition unsafe-completion rates with 1{,}000-sample bootstrap 95\% CIs over the scorable bucket (seed 42); the System-vs-UI delta is reported in the same table. Section~\ref{sec:results} states explicitly that with $n_{\text{scorable}}{\in}[20,24]$ per condition the CIs span $\approx[0.33,0.80]$ and that pairwise differences between channels are not statistically distinguishable at this scale. The factor of variability captured by the CIs (sampling from scorable runs within a condition) is described in Section~3.6 and Section~\ref{sec:results}.
+    \item[] Justification: Table~\ref{tab:main} reports per-condition unsafe-completion rates with 1{,}000-sample bootstrap 95\% CIs (seed 42), plus the System$-$UI delta. With $n_{\text{scorable}}{\in}[20,24]$ per condition the CIs span $\approx[0.33,0.80]$, so pairwise channel differences are not statistically distinguishable at this scale (Section~\ref{sec:results}). CIs sample from scorable runs within each condition.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer \answerNA{} means that the paper does not include experiments.
@@ -120,7 +112,7 @@ Authors must verify each line before submission and edit any item that no longer
 \item {\bf Experiments compute resources}
     \item[] Question: For each experiment, does the paper provide sufficient information on the computer resources (type of compute workers, memory, time of execution) needed to reproduce the experiments?
     \item[] Answer: \answerYes{}
-    \item[] Justification: Section~3.5 includes a ``Compute resources'' paragraph: all 81 runs executed on a commodity laptop (Intel Core Ultra 9 185H, 32\,GB RAM, integrated Intel Arc Graphics) running a headless Chromium instance locally, issuing multimodal API calls to Amazon Nova Lite v1 via AWS Bedrock; no GPU compute was used. Per-task budget is 1{,}800\,s; in practice most runs complete in $7$--$8$ steps. End-to-end wall-clock for the $81$-run pilot (plus $28$ infrastructure retries) was approximately $1$\,h. Estimated Bedrock API spend for the pilot is below \$$1$ at current Nova Lite pricing; total project API spend including preliminary/debug runs is on the order of a few US dollars.
+    \item[] Justification: All $81$ pilot runs executed on a commodity laptop (Intel Core Ultra 9 185H, 32\,GB RAM, integrated Intel Arc Graphics) running headless Chromium and issuing multimodal API calls to Amazon Nova Lite v1 via AWS Bedrock; no GPU was used (workload is API-bound). Most runs complete in $7$--$8$ steps; end-to-end wall-clock for the pilot ($+28$ infra-only retries) was $\approx 1$\,h. Estimated Bedrock API spend for the pilot is below \$$1$ at current Nova Lite pricing; total project spend including preliminary runs is on the order of a few US dollars.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer \answerNA{} means that the paper does not include experiments.
@@ -132,7 +124,7 @@ Authors must verify each line before submission and edit any item that no longer
 \item {\bf Code of ethics}
     \item[] Question: Does the research conducted in the paper conform, in every respect, with the NeurIPS Code of Ethics \url{https://neurips.cc/public/EthicsGuidelines}?
     \item[] Answer: \answerYes{}
-    \item[] Justification: The study uses a controlled local sandbox with synthetic users, no real user accounts, and no real payment flows; no human subjects are involved; no personal or sensitive data is collected or scraped; reusable deceptive patterns are released with safeguards described in Section~\ref{sec:limitations} (and the broader-impact paragraph in Section~5.3). Anonymity is preserved at submission via the \texttt{[eandd]} option of the NeurIPS style.
+    \item[] Justification: Controlled local sandbox with synthetic users, no real accounts or payment flows, no human subjects, no scraped data. Safeguards are described in Section~\ref{sec:limitations} and Section~5.2; submission anonymity is preserved via the \texttt{[eandd]} style option.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer \answerNA{} means that the authors have not reviewed the NeurIPS Code of Ethics.
@@ -144,7 +136,7 @@ Authors must verify each line before submission and edit any item that no longer
 \item {\bf Broader impacts}
     \item[] Question: Does the paper discuss both potential positive societal impacts and negative societal impacts of the work performed?
     \item[] Answer: \answerYes{}
-    \item[] Justification: Section~5.3 (``Relation to existing mitigations and broader implications'') discusses positive impacts (outcome-decomposition view of agent safety; reusable scaffold for warning-design follow-ups complementing system-side defences and human oversight) and negative/dual-use impacts (better understanding of which interventions fail can also inform manipulation of agents); it lists the safeguards adopted under release.
+    \item[] Justification: Section~5.2 discusses positive impacts (outcome-decomposition view of agent safety; reusable scaffold for warning-design follow-ups complementing system-side defences and human oversight) and dual-use risk (knowledge of failed interventions can also inform manipulation); release-time safeguards are listed.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer \answerNA{} means that there is no societal impact of the work performed.
@@ -158,7 +150,7 @@ Authors must verify each line before submission and edit any item that no longer
 \item {\bf Safeguards}
     \item[] Question: Does the paper describe safeguards that have been put in place for responsible release of data or models that have a high risk for misuse (e.g., pre-trained language models, image generators, or scraped datasets)?
     \item[] Answer: \answerYes{}
-    \item[] Justification: Section~5.3 enumerates the release-time safeguards: the benchmark runs only against a controlled local sandbox (no live websites and no third-party services are exercised by released code); no real user accounts or payment endpoints exist in the dataset; deceptive UI patterns are bounded to short-horizon, single-decision tasks with explicit risk annotations; no pre-trained models or scraped web data are released. Data and logs are released under CC BY-NC 4.0 (non-commercial) and code under MIT; a \texttt{LICENSE} file and the Croissant dataset card (\texttt{croissant.json}) are included in the supplement.
+    \item[] Justification: Release-time safeguards (Section~5.2): controlled local sandbox only (no live sites or third-party services); no real accounts or payment endpoints; deceptive patterns bounded to short-horizon, single-decision tasks with explicit risk annotations; no pre-trained models or scraped data released. Code under MIT, data/logs under CC BY-NC 4.0; \texttt{LICENSE} and Croissant card (\texttt{dataset/metadata/croissant.json}) in the supplement.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer \answerNA{} means that the paper poses no such risks.
@@ -170,7 +162,7 @@ Authors must verify each line before submission and edit any item that no longer
 \item {\bf Licenses for existing assets}
     \item[] Question: Are the creators or original owners of assets (e.g., code, data, models), used in the paper, properly credited and are the license and terms of use explicitly mentioned and properly respected?
     \item[] Answer: \answerYes{}
-    \item[] Justification: External assets used at run time: BrowserUse (agent framework; Apache-2.0 license, \url{https://github.com/browser-use/browser-use}) and Amazon Nova Lite v1 (\texttt{amazon.nova-lite-v1:0}) via AWS Bedrock, used under the AWS Customer Agreement and Bedrock Service Terms. Both are cited in the manuscript; names, versions, and license/terms are documented in the supplement \texttt{README.md}. No other third-party datasets or models are bundled.
+    \item[] Justification: External run-time assets: BrowserUse (Apache-2.0, \url{https://github.com/browser-use/browser-use}) and Amazon Nova Lite v1 via AWS Bedrock (under AWS Customer Agreement and Bedrock Service Terms). Both are cited in the manuscript and documented in the supplement \texttt{README.md}. No other third-party datasets or models are bundled.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer \answerNA{} means that the paper does not use existing assets.
@@ -186,7 +178,7 @@ Authors must verify each line before submission and edit any item that no longer
 \item {\bf New assets}
     \item[] Question: Are new assets introduced in the paper well documented and is the documentation provided alongside the assets?
     \item[] Answer: \answerYes{}
-    \item[] Justification: The benchmark itself is the new asset and is documented through (i)~the manuscript's protocol section (Section~\ref{sec:benchmark}); (ii)~\texttt{README.md} (build and run instructions); (iii)~per-task metadata under \texttt{env/tasks/<task\_id>/task.yaml}; (iv)~\texttt{configs/main\_config.yaml}, \texttt{configs/warnings.yaml}, and the experiment manifests; (v)~scoring and aggregation source under \texttt{src/scorer/} and \texttt{analysis/aggregate\_results.py}; and (vi)~a Croissant dataset card (\texttt{croissant.json}) describing fields, licensing, and usage.
+    \item[] Justification: The benchmark is the new asset, documented via the protocol section (Section~\ref{sec:benchmark}), \texttt{README.md}, per-task metadata (\texttt{env/tasks/<task\_id>/task.yaml}), frozen configs, scoring/aggregation source (\texttt{src/scorer/}, \texttt{analysis/aggregate\_results.py}), and a Croissant card (\texttt{dataset/metadata/croissant.json}).
     \item[] Guidelines:
     \begin{itemize}
         \item The answer \answerNA{} means that the paper does not release new assets.
@@ -222,7 +214,7 @@ Authors must verify each line before submission and edit any item that no longer
     \item[] Question: Does the paper describe the usage of LLMs if it is an important, original, or non-standard component of the core methods in this research? Note that if the LLM is used only for writing, editing, or formatting purposes and does \emph{not} impact the core methodology, scientific rigor, or originality of the research, declaration is not required.
     %this research? 
     \item[] Answer: \answerYes{}
-    \item[] Justification: A multimodal LLM is the agent under evaluation and is therefore a core component of the methodology. Section~3.5 describes the agent stack (BrowserUse driving a single fixed multimodal API model, \textbf{Amazon Nova Lite v1} on Bedrock, recorded in \texttt{configs/main\_config.yaml}, with temperature $0.0$, top-$p$ $1.0$, max output tokens 768, and a 120\,s LLM HTTP timeout); only this single fixed configuration is used, and only the warning condition varies across runs. Separately, an AI assistant was used for non-methodological writing/editing of the manuscript prose; this does not affect scientific rigor or originality and is not part of the benchmark.
+    \item[] Justification: A multimodal LLM is the agent under evaluation and a core methodological component; Section~3.5 describes the fixed configuration (Amazon Nova Lite v1 via Bedrock, recorded in \texttt{configs/main\_config.yaml}; temperature $0$, top-$p$ $1$, max tokens $768$). Only the warning condition varies across runs. An AI assistant was also used for non-methodological writing/editing; this is not part of the benchmark.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer \answerNA{} means that the core method development in this research does not involve LLMs as any important, original, or non-standard components.

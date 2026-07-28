@@ -105,7 +105,7 @@ Canonical IDs and **`risk_slot`** strings match `TASK_DEFS` in `sandbox_state.js
 
 **Note.** Task id `enterprise_interface_interferance_001` is the spelling used in code and configs.
 
-**Manifests.** Full grids can use default runner config or manifests such as `configs/experiment_manifest_enterprise.yaml` for WorkHub-only batches.
+**Manifests.** Full grids use `configs/manifests/` (e.g. `enterprise.yaml` for WorkHub-only batches; default `formal.yaml`). See `configs/README.md`.
 
 ---
 
@@ -187,7 +187,7 @@ Fill when runs are executed.
 
 | Step | Command | Outputs |
 |------|---------|---------|
-| Run experiment | `python -m src.runner.run_experiment --manifest <manifest.yaml>` | Under manifest `output_root`: per-run `run_metadata.json`, `final_result.json`, `terminal_state.json` when readable. Full formal split: `experiment_manifest_shoplane.yaml` → `logs/formal_runs/shoplane/`, `experiment_manifest_enterprise.yaml` → `logs/formal_runs/enterprise/`. Optional one-shot all tasks: `experiment_manifest.yaml` → `logs/formal_runs/unified_r2_r3/`. Manifest may set `repeat_indices` (e.g. `[2, 3]`) to run only selected repeats within `repeats_per_task_condition`. |
+| Run experiment | `python -m src.runner.run_experiment --manifest <manifest.yaml>` | Under manifest `output_root`: per-run `run_metadata.json`, `final_result.json`, `terminal_state.json` when readable. Full formal split: `configs/manifests/shoplane.yaml` → `logs/formal_runs/shoplane/`, `configs/manifests/enterprise.yaml` → `logs/formal_runs/enterprise/`. Optional one-shot all tasks: `configs/manifests/formal.yaml`. Manifest may set `repeat_indices` (e.g. `[2, 3]`) to run only selected repeats within `repeats_per_task_condition`. |
 | Merge + summarize | `python -m analysis` | Merged run-level table `logs/experiment_runs/results_run_level.csv`; summaries `analysis/outputs/summary_*.csv`, `analysis/outputs/summary.md`; optional `diagnostics_by_condition.csv` |
 | Score one tree only | `python -m src.scorer.score_runs --runs-root <dir>` | `results_run_level.csv` under that dir (use merge step above for paper tables) |
 | Contract check | `python scripts/verify_warning_task_contract.py` | Validates `warnings.yaml` ↔ `task.yaml` alignment |

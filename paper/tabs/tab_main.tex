@@ -1,10 +1,11 @@
-\begin{table}[t]
-  \caption{Three-repeat outcome summary by condition (top three rows) and direct System-vs-UI contrast (bottom row). Rates for the primary outcomes (safe completion, unsafe completion, safe abort) are computed over \emph{scorable} runs (excluding \emph{other failure}); the other-failure rate is over all runs. ``Unsafe [95\% CI]'' is a 1{,}000-sample bootstrap 95\% CI on the per-condition scorable bucket (seed 42). Three repeats per task--condition cell ($r{=}3$, $N{=}81$ runs total).}
+\begin{table}[H]
+  \caption{Three-repeat outcome summary by condition ($r{=}3$, $N{=}81$). Safe / unsafe completion and safe abort are rates over \emph{scorable} runs; other-failure is over all runs. ``Unsafe [95\% CI]'' is a 1{,}000-sample bootstrap 95\% CI (seed 42). Bottom row reports the System$-$UI unsafe-completion delta.}
   \label{tab:main}
   \centering
   \small
   \begin{tabular}{lcccccc}
     \toprule
+    \rowcolor{hdrblue}
     Condition & $N$ & $N_{\text{scorable}}$ & Safe comp. & Unsafe comp.\ [95\% CI] & Safe abort & Other fail. \\
     \midrule
     No Warning      & 27 & 21 & 0.476 & 0.524\ {\footnotesize[0.33, 0.71]} & 0.000 & 0.222 \\

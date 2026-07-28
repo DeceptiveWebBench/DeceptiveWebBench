@@ -32,7 +32,7 @@ The analysis should support the paper's main claims about unsafe completion and 
 - Repeats per task-condition: follow the active manifest (`repeats_per_task_condition`; full formal set uses 3).
 - Optional `repeat_indices` in the manifest (e.g. `[2, 3]`) runs only those indices without re-running repeat 1.
 - Current formal task count: 9 (6 ShopLane + 3 WorkHub); conditions: 3 (`no_warning`, `system_warning`, `ui_warning`).
-- Total expected runs when all repeats are executed: 9 x 3 x 3 = 81 (split manifests: `experiment_manifest_shoplane.yaml` 6x3x3 + `experiment_manifest_enterprise.yaml` 3x3x3).
+- Total expected runs when all repeats are executed: 9 x 3 x 3 = 81 (split manifests: `configs/manifests/shoplane.yaml` 6x3x3 + `configs/manifests/enterprise.yaml` 3x3x3).
 - How failed or interrupted runs are handled: kept in run-level table and mapped by scorer to outcome schema (default fallback: `other_failure`)
 
 ## 7. Uncertainty reporting

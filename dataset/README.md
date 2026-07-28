@@ -37,17 +37,19 @@ From repo root, after `python -m analysis`:
 python dataset/export_staging.py
 ```
 
-Outputs go to `dataset/hf_staging/` (gitignored). Review then:
+Outputs go to `dataset/hf_staging/` (gitignored). Croissant metadata lives at `dataset/metadata/croissant.json` (copy onto the Hub with the tabular files if desired). Review then:
 
 ```bash
-pip install huggingface_hub datasets  # if using scripts/upload_example.py
+pip install huggingface_hub datasets pyarrow  # as needed
+python dataset/upload_to_hf.py
 ```
 
 ## Upload to the Hub (outline)
 
-1. Create a dataset repo on Hugging Face (`datasets` library or web UI).
-2. Copy `dataset/README.md` as the dataset card; fill license, citation, and author fields.
-3. Upload `run_level.parquet` (or shards) + optional `dataset_infos.json` if using legacy scripts.
+1. Create a dataset repo on Hugging Face (default id in `upload_to_hf.py`: `deceptive-web/deception-warning-study-runs`).
+2. Use this file as the dataset card; fill license, citation, and author fields before public release.
+3. Upload staging folder (`run_level.*`) via `python dataset/upload_to_hf.py`; optionally add `metadata/croissant.json`.
+4. Companion code lives on GitHub; see the code repo `docs/release.md`.
 
 ## Citation
 
