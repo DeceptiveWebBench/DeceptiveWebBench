@@ -1,4 +1,4 @@
-condition,n_runs,n_scorable,safe_completion_rate,unsafe_completion_rate,safe_abort_rate,other_failure_rate,unsafe_completion_rate_ci_lower,unsafe_completion_rate_ci_upper
-no_warning,27,21,0.47619,0.52381,0.0,0.222222,0.333333,0.714286
-system_warning,27,20,0.4,0.6,0.0,0.259259,0.4,0.8
-ui_warning,27,24,0.375,0.583333,0.041667,0.111111,0.375,0.791667
+condition,n_all_runs,n_scorable,n_other_failure,other_failure_rate_all_runs,unsafe_completion_rate_task_stratified_ci_lower,unsafe_completion_rate_task_stratified_ci_upper,n_safe_completion,safe_completion_rate_scorable,n_unsafe_completion,unsafe_completion_rate_scorable,n_safe_abort,safe_abort_rate_scorable
+no_warning,27,21,6,0.222222,0.190476,0.863636,10,0.47619,11,0.52381,0,0.0
+system_warning,27,20,7,0.259259,0.25,0.909091,8,0.4,12,0.6,0,0.0
+ui_warning,27,24,3,0.111111,0.26087,0.869565,9,0.375,14,0.583333,1,0.041667

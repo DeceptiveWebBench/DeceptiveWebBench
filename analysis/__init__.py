@@ -1,1 +1,1 @@
-"""Analysis package: `python -m analysis` merges formal runs and writes summaries."""
+"""Analysis package: `python -m analysis` validates and reports the frozen canonical pilot CSV."""

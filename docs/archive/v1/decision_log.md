@@ -1,6 +1,6 @@
 # Decision log
 
-Short **changelog** for infrastructure, layout, and tooling. Canonical study design, conditions, warnings, and scoring invariants live in **`docs/experiment_protocol.md`**; runtime numbers in **`configs/main_config.yaml`**.
+Historical **changelog** for Version 1 infrastructure, layout, and tooling. The corresponding design, conditions, warnings, and scoring invariants live in **`docs/archive/v1/experiment_protocol.md`**; runtime numbers in **`configs/main_config.yaml`**.
 
 ## Frozen summary
 
@@ -22,4 +22,4 @@ Short **changelog** for infrastructure, layout, and tooling. Canonical study des
 | 2026-05-07 | **Model stack:** Removed Qwen/DashScope `model_profiles`; **Amazon Nova Lite on Bedrock only**; `scripts/smoke_test_api.py` → Bedrock Converse check. |
 | 2026-07-28 | Repo layout for release: manifests → `configs/manifests/`; Croissant → `dataset/metadata/croissant.json`; smoke API → `scripts/`; docs `release.md` / `reproducibility.md`. |
 
-When you change tasks, warnings, scoring, or agent config, update **`docs/experiment_protocol.md`**, **`analysis/stats_plan.md`** if reporting changes, and add a row here if it is a durable infra or layout decision.
+For historical Version 1 changes, update **`docs/archive/v1/experiment_protocol.md`**, **`analysis/stats_plan.md`** if reporting changes, and preserve the decision here. New-study decisions belong in the Protocol v2 documentation.

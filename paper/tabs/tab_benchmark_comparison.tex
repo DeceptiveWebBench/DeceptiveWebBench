@@ -1,19 +1,19 @@
-\begin{table}[H]
-  \caption{Differentiation from prior agent-evaluation benchmarks along axes that matter for execution-time warning studies. The 4-way outcome schema decomposes into safe completion, unsafe completion, safe abort, and other failure. ``---'' indicates the axis is not in scope.}
+\begin{table}[t]
+  \caption{Threat-model distinctions. ``Deterministic'' refers to task-specific terminal-state checks.}
   \label{tab:bench-compare}
   \centering
   \scriptsize
-  \begin{tabular}{@{}lllccc@{}}
+  \resizebox{\linewidth}{!}{%
+  \begin{tabular}{lllll}
     \toprule
-    \rowcolor{hdrblue}
-    Benchmark & Primary focus & Coverage & Outcome schema & Exec-time warning & Matched-channel \\
+    Work & Threat source & User intent & Failure definition & Intervention / scorer \\
     \midrule
-    WebArena~/~VWA~\cite{zhou2023webarena,koh2024visualwebarena} & Task capability & General & Binary success & --- & --- \\
-    \rowcolor{rowgray}
-    ST-WebAgentBench~\cite{levy2024stwebagentbench} & Policy violation & Policy & Success $+$ violation & --- & --- \\
-    DeceptiCon~\cite{cuvin2025decepticon} & Susceptibility & Dark-pattern set & Per-pattern hit rate & --- & --- \\
-    \rowcolor{oursgreen}
-    \textbf{Ours} & \textbf{Warning efficacy} & \textbf{9 tasks, 3 families} & \textbf{4-way schema} & \textbf{Yes (No/Sys/UI)} & \textbf{Yes} \\
+    WebArena / VWA~\cite{zhou2023webarena,koh2024visualwebarena} & General task complexity & Benign & Task failure & None / functional \\
+    AgentDojo / WASP~\cite{debenedetti2024agentdojo,evtimov2025wasp} & Injected instruction & Benign & Attack success & Defenses / benchmark \\
+    OS-Harm / RiOSWorld~\cite{kuntz2025osharm,yang2025riosworld} & Misuse and environmental risk & Mixed & Safety violation & None / policy checks \\
+    ST-WebAgentBench~\cite{levy2024stwebagentbench} & Policy and web risk & Benign & Unsafe policy completion & None / policy checks \\
+    DeceptiCon~\cite{cuvin2025decepticon} & Deceptive UI & Benign & Pattern susceptibility & None / per-pattern \\
+    \textbf{Ours} & \textbf{Deceptive choice architecture} & \textbf{Benign} & \textbf{Unsafe completion} & \textbf{Warning / deterministic} \\
     \bottomrule
-  \end{tabular}
+  \end{tabular}}
 \end{table}

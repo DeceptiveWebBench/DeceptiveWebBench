@@ -1,331 +1,167 @@
-% NeurIPS 2026 (Evaluations \& Datasets track) --- paper bundle (repo: \texttt{paper/}).
-% Root files: \texttt{neurips\_2026.tex}, \texttt{neurips\_2026.sty}, \texttt{checklist.tex}, \texttt{references.bib}.
-% Assets: \texttt{figs/} (figures), \texttt{tabs/} (table fragments).
-% Build: \texttt{pdflatex neurips\_2026; bibtex neurips\_2026; pdflatex; pdflatex}.
-%
-% Track options: default below is E&D with anonymized title page (author block is ignored in PDF).
-% For E&D single-blind (shows \author in PDF), use: \usepackage[eandd,nonanonymous]{neurips_2026}
-% Camera-ready: \usepackage[eandd,final]{neurips_2026}
+%%% Target: Trustworthy AI for Good Workshop at NeurIPS 2026 (General Track)
+%% Private author record -- do not render in double-blind PDF:
+%% GitHub organization URL: [AUTHOR TO CONFIRM]
+%% Hugging Face organization URL: [AUTHOR TO CONFIRM]
+%% Anonymous artifact URL: https://anonymous.4open.science/r/DeceptiveWebBench-960E/
 
 \documentclass{article}
 
 \PassOptionsToPackage{numbers,sort,compress}{natbib}
-\usepackage[eandd]{neurips_2026}
+\usepackage[dblblindworkshop]{neurips_2026}
+\workshoptitle{Trustworthy AI for Good}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{hyperref}
+\usepackage{iftex}
+\ifXeTeX
+  \usepackage{fontspec}
+  \setmainfont{texgyretermes}[
+    Extension=.otf,
+    UprightFont=*-regular,
+    BoldFont=*-bold,
+    ItalicFont=*-italic,
+    BoldItalicFont=*-bolditalic]
+\fi
+\usepackage[hypertexnames=false]{hyperref}
+\hypersetup{hidelinks}
 \usepackage{url}
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{amsmath}
 \usepackage{amsfonts}
-\usepackage{nicefrac}
 \usepackage{microtype}
 \usepackage{xcolor}
-\usepackage{colortbl}
 \usepackage{graphicx}
 \usepackage{float}
 
 \definecolor{hdrblue}{HTML}{DAE3F3}
 \definecolor{rowgray}{HTML}{F2F2F2}
 \definecolor{oursgreen}{HTML}{E2EFDA}
-
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \setlength{\aboverulesep}{0pt}
 \setlength{\belowrulesep}{0pt}
-
 \graphicspath{{figs/}}
-
-% With many \begin{figure}[H] / \begin{table}[H] forced-in-place floats, the
-% NeurIPS default \flushbottom would stretch elastic vskip glue (between/around
-% subsection headings, paragraphs) to balance page bottoms, producing large
-% visual gaps before subsection headings. \raggedbottom keeps natural spacing.
 \raggedbottom
 
-\title{Execution-Time Warnings for Web Agents Under Deceptive Interfaces}
+\title{Trustworthy Completion for Web Agents: A Benchmark and Research Agenda for Execution-Time Safeguards}
 
-% With [eandd] the PDF shows the anonymized NeurIPS author block; keep real metadata here for camera-ready / nonanonymous builds.
 \author{%
-  [Anonymous] \\
-  [Anonymous Affiliation] \\
+  Anonymous Author(s) \\
+  Anonymous Affiliation \\
 }
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Web agents that act on visual interfaces face a safety risk that conventional success-rate evaluation tends to miss: the agent reaches the user goal but does so through a misleading or policy-inconsistent action path---a failure mode we call \emph{unsafe completion}.
-We introduce a reproducible benchmark for evaluating this failure mode in deceptive interfaces.
-It pairs a local sandbox (shopping and enterprise-privacy tasks) with three high-level deceptive pattern families and per-task risk annotations, three matched warning conditions (No, System, UI) that hold semantics fixed and vary only the delivery channel, and a four-way outcome schema---safe completion, unsafe completion, safe abort, other failure---scored by deterministic terminal-state checks.
-A three-repeat pilot reveals a substantial unsafe-completion floor that a single success metric would have hidden, with no detectable channel effect on the safe-vs-unsafe split.
-Two between-channel signals do appear and point the same way: UI Warning is the only condition producing safe abort, and roughly halves the other-failure rate relative to System Warning---suggesting in-page placement makes agent decisions more decisive without yet shifting the safe/unsafe split.
-The benchmark itself is the primary contribution, providing a stable basis for follow-up studies on placement, wording, agent backbones, and pattern coverage.
+Web agents may reach a user’s nominal goal while doing so through a misleading, policy-inconsistent, or otherwise unsafe action path. We call this failure mode unsafe completion. It is especially important in applications involving financial interests, privacy, informed consent, autonomy, and organizational policy, where conventional binary success metrics may count harmful behavior as successful task completion. We introduce a reproducible benchmark for evaluating trustworthy completion under deceptive web interfaces. The benchmark combines two local sandbox environments, nine short-horizon tasks spanning forced action, sneaking, and interface interference, task-level risk annotations, matched execution-time warning conditions, and a four-way outcome schema distinguishing safe completion, unsafe completion, safe abort, and other failure. Outcomes are scored through deterministic terminal-state checks rather than an LLM judge. An initial pilot with a fixed web-agent configuration reveals a substantial unsafe-completion rate that conventional task-success evaluation would obscure, while detecting no reliable difference between system-level and in-interface warning channels at the current scale. We therefore position the benchmark not as a definitive comparison of warning channels, but as a foundation for systematically studying execution-time safeguards. We further present a research agenda covering cross-agent validation, warning wording and placement, imperfect risk detection, broader task coverage, human calibration, and population-scale implications. The work aims to support more accountable deployment of web agents by making protection of stakeholder interests an explicit component of evaluation.
 \end{abstract}
 
 \section{Introduction}
 
-Web agents increasingly act directly on visual interfaces rather than only reasoning over text.
-Unlike text-only models, they must parse buttons, forms, disclosures, and page structure while executing multi-step tasks, so the interface itself becomes part of the agent's decision process~\cite{zhou2023webarena,koh2024visualwebarena}.
-Realistic but reproducible self-hosted environments have therefore become standard for controlled web-agent evaluation, because they preserve interaction structure while limiting uncontrolled variance in live websites~\cite{zhou2023webarena,koh2024visualwebarena}.
-More broadly, recent work has shown that evaluation design choices can substantially change conclusions about web-agent capability, motivating careful outcome definitions rather than treating scoring as a bookkeeping detail~\cite{xue2025illusion}.
-In deceptive or misleading interfaces in particular, the key risk is often not task failure but unsafe completion: an agent may still reach the nominal user goal, yet do so through a misleading, policy-inconsistent, or otherwise unsafe action path.
-This means endpoint success alone is insufficient: deployment-relevant evaluation should distinguish whether completion was achieved safely, rather than collapsing all completed runs into a single success label~\cite{levy2024stwebagentbench}.
+Web agents increasingly act on behalf of people and organizations: they purchase products, configure services, grant permissions, and navigate consent interfaces. Capability benchmarks ask whether an agent reaches a requested endpoint~\cite{zhou2023webarena,koh2024visualwebarena}. That endpoint, however, can conceal an unwanted charge, overbroad permission, privacy loss, or policy-inconsistent choice. A nominally successful trajectory may therefore be harmful to the stakeholder whose interests the agent was delegated to protect.
 
-Prior work already shows that web and computer-use agents can be redirected by deceptive interface signals: dark-pattern--like structure~\cite{cuvin2025decepticon}, visual prompt injection~\cite{cao2025vpi}, persuasion-style redirects~\cite{korgul2025trap}, and contextually plausible fine-print content~\cite{chen2025fineprint} all suffice to push an agent off the safe path even when the nominal task remains solvable, so we do not revisit agent vulnerability as the main contribution here.
-Existing mitigations have largely focused on system-side or upstream control: detection-based prompt-injection defenses~\cite{shi2025promptarmor}, instruction-priority training that teaches models to prefer privileged instructions over lower-priority inputs~\cite{wallace2024instruction}, and human oversight, which is informative but costly and not uniformly robust to subtle in-interface manipulation~\cite{humanoversight2025}.
-These are important baselines, but they do not isolate whether an execution-time warning delivered at the risky decision point changes agent behavior, nor whether its effect depends on the delivery channel through which the warning enters the agent's decision process.
-We therefore ask how this kind of risk should be \emph{benchmarked} so that channel and warning design become first-class, ablate-able knobs, and close the gap with a reproducible deceptive-web benchmark whose detailed design is the subject of Section~\ref{sec:benchmark}.
-At the framing layer, deceptive scenarios are organized through three high-level pattern families---interface interference, sneaking, and forced action---each instantiated through task-specific low-level UI patterns; following ontology-oriented dark-pattern work, this separation keeps reporting stable while preserving concrete, reproducible task implementations~\cite{mathur2021makes}.
-On this benchmark we compare three matched conditions (No Warning, System Warning, UI Warning) under a fixed warning template, treating channel as the primary comparison and pattern-wise behavior as a secondary moderation question.
+We call this distinction \emph{trustworthy completion}. Nominal completion records that the goal endpoint was reached; trustworthy completion additionally requires that the agent avoided the task's annotated unsafe path. This framing is complementary to security benchmarks for injected instructions~\cite{debenedetti2024agentdojo,evtimov2025wasp}, broad computer-use risk~\cite{kuntz2025osharm,yang2025riosworld}, and policy-constrained completion~\cite{levy2024stwebagentbench}. Our threat source is deceptive choice architecture presented to an agent with benign user intent, and our intervention is an execution-time warning at a task-annotated risk point.
 
-Concretely, our contributions are:
-\textit{(1)~Benchmark and runtime.} We release a unified local sandbox (ShopLane and WorkHub Admin), $9$ short-horizon deceptive tasks, task-level risk annotations, a fixed risk-slot table, and matched warning conditions, all packaged as a single artifact.
-\textit{(2)~Outcome-centered protocol.} We define a four-way schema (safe completion, unsafe completion, safe abort, other failure) with deterministic terminal-state scoring and bootstrap CIs, reported through a single aggregation script.
-\textit{(3)~First instantiation and follow-up roadmap.} We exercise the full pipeline with a three-repeat pilot ($r{=}3$, $N{=}81$) and outline the warning-design ablations the benchmark is built to support next: UI placement, risk-slot wording, agent backbone, and pattern coverage.
+\paragraph{Research question.}
+How should web agents be evaluated when nominal task completion may compromise the user’s financial interests, privacy, informed consent, autonomy, or policy constraints - and how can execution-time safeguards be tested without conflating warning design, risk detection, and agent capability?
 
-\paragraph{What this paper claims, and what it does not.}
-We defend the \emph{benchmark} itself---the matched-channel design, the four-way outcome schema, and the deterministic scoring protocol---not a verdict on whether System or UI warnings work in general.
-The pilot does not detect a channel effect on the safe-vs-unsafe split (Section~\ref{sec:results}); we treat that, together with the unsafe-completion floor and the UI-only between-channel signals, as a useful negative anchor that can be \emph{attributed} to specific design choices (template, slot, channel, agent) rather than to evaluation noise---the property that follow-up warning-design studies need.
+We contribute three elements. First, a \emph{safe-completion framework} distinguishes nominal completion from completion that protects stakeholder interests. Second, a \emph{reproducible benchmark scaffold} combines two local sandboxes, nine task-level harm annotations, matched warning channels, four-way deterministic outcomes, and an auditable run manifest. Third, a \emph{research agenda} makes agent backbone, warning wording, channel, trigger quality, deceptive pattern, and harm category separately testable. The current evidence is deliberately scoped: it is a three-repeat, single-agent pilot that demonstrates the need for outcome decomposition and does not establish a generally superior warning channel.
 
-\section{Related work}
+\section{Related Work}
 
-\subsection{Deceptive interfaces and dark pattern framing}
+\paragraph{Capability and safe completion.}
+WebArena and VisualWebArena established self-hosted web environments for reproducible capability evaluation~\cite{zhou2023webarena,koh2024visualwebarena}. AgenticShop studies personalized product curation~\cite{kim2026agenticshop}, while Android and mobile benchmarks emphasize constraint adherence and long-horizon paths~\cite{xing2024android,song2026colorbench}. These benchmarks motivate realistic interaction structure, but endpoint success alone does not identify whether the path protected the principal's interests. ST-WebAgentBench is the closest conceptual bridge because it separates completion from policy and risk~\cite{levy2024stwebagentbench}.
 
-Research on dark patterns describes deceptive interfaces as a broader design space that can be characterized at different levels of abstraction rather than as a flat list of UI tricks~\cite{gray2018darkpatterns,mathur2021makes}.
-Ontology-oriented work in particular separates higher-level pattern families from lower-level interface features~\cite{mathur2021makes}; we inherit this two-layer view, and our concrete instantiation in the current release is described in Section~\ref{sec:benchmark}.
+\paragraph{Security and environmental risk.}
+AgentDojo, WASP, BIPIA, and Hidden-in-Plain-Text evaluate indirect prompt injection and defenses~\cite{debenedetti2024agentdojo,evtimov2025wasp,yi2025bipia,guo2026hidden}. OS-Harm and RiOSWorld broaden the scope to harmful requests, prompt injection, model misbehavior, and latent environmental risk~\cite{kuntz2025osharm,yang2025riosworld}. Our setting differs in threat source and factorization: no attacker instruction is required, user intent is benign, and the current oracle-trigger layer asks whether a correctly placed warning changes the agent's choice.
 
-\subsection{Agent vulnerability and limits of existing mitigations}
-
-Two strands of recent work bear most directly on our setting.
-On the attack side, DeceptiCon~\cite{cuvin2025decepticon} and ST-WebAgentBench~\cite{levy2024stwebagentbench} document task-level susceptibility patterns, while focused studies isolate individual mechanisms: visual prompt injection embedded in web pages~\cite{cao2025vpi}, persuasion-style redirects in interface text~\cite{korgul2025trap}, and contextually plausible fine-print content~\cite{chen2025fineprint}.
-The shared finding across these works is that agents fail by completing the task through the wrong action path, not by failing to reach the goal.
-On the defense side, prompt-injection filtering~\cite{shi2025promptarmor} and instruction-priority training~\cite{wallace2024instruction} act upstream of execution, while human oversight~\cite{humanoversight2025} acts after the fact and is costly to scale.
-None of these layers isolates the effect of an execution-time warning delivered at the risky decision point, nor the role of the channel through which that warning reaches the agent---the comparison our benchmark is built around.
-
-\subsection{Benchmarking deceptive-web safety}
-
-Work such as WebArena and VisualWebArena established the value of controlled, self-hosted environments with realistic interaction structure for evaluating web agents~\cite{zhou2023webarena,koh2024visualwebarena}.
-Subsequent analyses have argued that headline numbers from such benchmarks can be inflated by evaluation-design choices, motivating closer attention to outcome definitions and realism gaps~\cite{xue2025illusion}.
-Safety-oriented benchmarks make a related point from a different angle: deployment-relevant evaluation must consider whether the task was completed under safety or policy constraints, not only whether it ended in a ``success'' terminal state~\cite{levy2024stwebagentbench}.
-Recent dark-pattern--focused benchmarking work has extended this perspective specifically to manipulative interfaces, showing that susceptibility patterns can differ across attack types and across agents versus humans~\cite{cuvin2025decepticon,levy2024stwebagentbench}.
-These observations are especially relevant in deceptive-interface settings, where the main risk may be unsafe completion rather than failure to reach the endpoint.
-
-Table~\ref{tab:bench-compare} positions our benchmark against the closest prior work along five axes that matter for our research question: primary focus, deceptive coverage, outcome decomposition, support for execution-time warnings, and matched-channel comparison.
-Existing web-agent benchmarks~\cite{zhou2023webarena,koh2024visualwebarena} measure task capability on general web tasks; ST-WebAgentBench~\cite{levy2024stwebagentbench} measures policy-violation safety on extended WebArena tasks; and DeceptiCon~\cite{cuvin2025decepticon} measures susceptibility to dark-pattern attacks across pattern categories.
-All three are built to ask whether \emph{attacks or tasks succeed against an agent}; none of them is built to ask whether an execution-time \emph{warning} can change the agent's behavior at the risky decision point, and none compare matched warning semantics across delivery channels.
-The gap is therefore in benchmark design as much as in task coverage---a different research question requires different scaffolding---and is what Section~\ref{sec:benchmark} addresses.
+\paragraph{Deceptive interfaces and safeguards.}
+HCI and legal scholarship characterizes dark patterns as threats to consent, autonomy, privacy, and consumer welfare~\cite{gray2018darkpatterns,mathur2021makes,nouwens2020gdpr,luguri2021shining}. Recent agent studies show susceptibility to dark-pattern interfaces, visual or fine-print injection, and persuasive task redirection~\cite{cuvin2025decepticon,cao2025vpi,chen2025fineprint,korgul2025trap}. Human oversight can help but is neither costless nor a substitute for a separately designed human study~\cite{humanoversight2025}. Instruction-priority training addresses a different layer~\cite{wallace2024instruction}. Table~\ref{tab:bench-compare} makes these distinctions explicit.
 
 \input{tabs/tab_benchmark_comparison.tex}
 
-\section{Benchmark design and experimental setting}
+\section{Trustworthy Completion Framework}
+\label{sec:framework}
+
+For a run, let $C$ indicate that the nominal endpoint is reached and $U$ that the annotated unsafe action is taken. The four outcomes are: \emph{safe completion} $(C{=}1,U{=}0)$, \emph{unsafe completion} $(C{=}1,U{=}1)$, \emph{safe abort} $(C{=}0,U{=}0)$ when the agent deliberately stops before the risk, and \emph{other failure} for an execution breakdown or an outcome that cannot be reliably classified. Nominal completion is safe plus unsafe completion; trustworthy completion is safe completion. Safe abort protects the interest but does not satisfy the goal, so it remains distinct.
+
+This schema is stakeholder-relative rather than severity-weighted. Each task identifies the acting principal, immediately affected stakeholder, protected interest, machine-verifiable unsafe action, potential consequence, safe alternative, qualitative reversibility, and expected safeguard response (avoid, clarify, confirm, or abort). These are author-defined annotations of represented risk, not measurements that downstream harm occurred. We assign no numerical harm score because such weighting would require separate normative validation. Table~\ref{tab:stakeholders} summarizes the nine tasks; the supplement gives all eight fields.
+
+\input{tabs/tab_stakeholder_summary.tex}
+
+Figure~\ref{fig:framework} summarizes the outcome and layer factorization. The \emph{oracle-trigger layer} tests agent response when the risk point is correctly annotated and the safeguard is delivered as designed. A future \emph{detector-coupled layer} must measure false positives, false negatives, delayed triggers, and localization errors. An \emph{end-to-end deployment layer} must then combine detector quality, safeguard efficacy, and operational monitoring. The current pilot evaluates only the agent-response layer under an oracle trigger; it does not assume real deployments have perfect detectors.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{trustworthy_completion_framework}
+  \caption{Trustworthy completion separates safe from unsafe endpoint success and factors the evaluation pipeline into detection, delivery, and response.}
+  \label{fig:framework}
+\end{figure}
+
+\section{Benchmark Construction}
 \label{sec:benchmark}
 
-The benchmark combines a controlled deceptive-web environment, task-level risk annotations, matched warning conditions, and an outcome-centered evaluation protocol; Figure~\ref{fig:pipeline} summarizes the resulting pipeline end-to-end.
-The current release keeps scope narrow---a unified local sandbox, three high-level deceptive pattern families, and a single fixed agent configuration---so that the channel comparison is causal rather than entangled with task or agent variance.
+We define a task as
+\[
+T=(G,E,D,R,A_{\mathrm{safe}},A_{\mathrm{unsafe}},S,H),
+\]
+where $G$ is the nominal goal; $E$ the interface and trajectory; $D$ the deceptive family and low-level implementation; $R$ the risk point; $A_{\mathrm{safe}}$ and $A_{\mathrm{unsafe}}$ the safe and unsafe paths; $S$ the deterministic terminal-state specification; and $H$ the protected interest and potential harm.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figure1}
-  \caption{Execution-time warning benchmark pipeline. Each task--condition cell pairs a fixed goal and interface with one of three warning conditions (No / System / UI); runs are scored deterministically into the four-way outcome schema.}
-  \label{fig:pipeline}
-\end{figure}
+Tasks are included only when: (1) a safe route to the nominal goal exists; (2) safe and unsafe paths reach comparable nominal endpoints; (3) the unsafe path has a concrete financial, privacy, consent, autonomy, or policy consequence; (4) the risk control is perceptible and actionable at the fixed viewport or documented interaction point; (5) both outcomes are deterministically verifiable; (6) the task maps to a documented deceptive-interface category; and (7) no real account, payment endpoint, or sensitive personal data is used.
 
-\subsection{Environment and task setting}
+\paragraph{Sandboxes and inventory.}
+ShopLane hosts six consumer tasks; WorkHub Admin hosts three organizational tasks. The nine short-horizon tasks are balanced across forced action, sneaking, and interface interference. All use synthetic data and terminate in a shared state schema.
 
-The benchmark uses a local, reproducible web environment: open-web evaluation introduces uncontrolled layout and script variance that confounds channel comparisons, and a fully toy interface would understate the perceptual pressure shaping agent decisions in practice.
+The present pilot holds task, agent, and oracle trigger fixed while varying warning delivery; deterministic terminal states produce the four outcomes in Figure~\ref{fig:framework}.
 
-The current release uses two complementary sandbox shells that share a single in-browser session state: ShopLane is a shopping-and-account sandbox (Home~$\rightarrow$~Browse~$\rightarrow$~Product~$\rightarrow$~Cart~$\rightarrow$~Result) hosting the consumer-facing tasks, and WorkHub Admin is a small enterprise-style admin console (index $\rightarrow$ setup $\rightarrow$ shared result page) hosting the privacy/permission tasks.
-Both shells reuse the same site-page templates and terminal page, so task-specific deceptive logic and warning behavior are conditionally injected at runtime without page duplication across conditions.
+\paragraph{Warning conditions.}
+No Warning supplies the goal and interface only. System Warning adds the task warning through the privileged instruction channel. UI Warning renders a warning near the risk-relevant control. The intended template is: ``This step may involve [RISK\_SLOT]. Complete the goal without taking it. If unsure, stop.'' Current task and warning files use one concrete slot per task.
 
-A benchmark task is defined by (i) a user goal, (ii) an interface instance, (iii) a risk annotation, and (iv) a terminal-state specification, so that the nominal goal remains solvable across all three conditions while unsafe completion appears as a distinct failure mode.
-Table~\ref{tab:inventory} lists the 9-task inventory by family and sandbox shell.
+\paragraph{Scoring and artifact.}
+At a terminal action, the sandbox records safe completion, unsafe completion, or safe abort in \texttt{terminal\_state.json}; the Python scorer extracts this label without an LLM judge. Missing or unreadable terminal evidence maps conservatively to other failure. The anonymous artifact includes the sandbox, task YAML files, warning configuration, deterministic scorer, analysis code, and frozen outputs at \url{https://anonymous.4open.science/r/DeceptiveWebBench-960E/}. The artifact log records the access and synchronization status.
 
-\input{tabs/tab_inventory.tex}
+\section{Pilot Evaluation}
+\label{sec:pilot}
 
-\subsection{Deceptive pattern organization}
+\paragraph{Setup.}
+The pilot uses BrowserUse with Amazon Nova Lite v1 (\texttt{amazon.nova-lite-v1:0}) through AWS Bedrock, temperature 0, top-$p$ 1, and a 15-step budget. The headless browser viewport is $1280\times720$. Nine tasks, three conditions, and three repeats yield 81 uniquely keyed runs. The run manifest identifies every \texttt{(task\_id, condition, repeat\_id)} cell and hashes its available metadata and terminal artifacts.
 
-Following ontology-oriented dark-pattern work~\cite{mathur2021makes}, the reporting layer (three high-level pattern families: interface interference, sneaking, forced action) is separated from the implementation layer (task-specific low-level UI patterns attached to concrete risk points).
-This separation keeps reporting stable while preserving implementation-level clarity, and the current release uses a small set of short-horizon, locally instantiable mechanisms rather than aiming for taxonomy completeness.
-Table~\ref{tab:inventory} shows how the current tasks map from high-level families to low-level instantiations.
+\paragraph{Denominators and uncertainty.}
+Safe completion, unsafe completion, and safe abort are mutually exclusive \emph{scorable} outcomes; their rates use the scorable denominator. Other failure uses all runs. Uncertainty uses 10{,}000 task-cluster bootstrap replicates (seed 42): tasks are resampled with replacement while retaining their repeated runs, so task identity is not treated as exchangeable run noise. Intervals communicate uncertainty and are not a binary significance ritual.
 
-\subsection{Warning conditions and intervention design}
+\subsection{Outcome Distribution}
 
-The experimental variable is warning \emph{channel}, instantiated through three conditions.
-Under \emph{No Warning} the agent receives only the task goal and page content; under \emph{System Warning} a warning with fixed semantic content is prepended through the privileged system-instruction channel; under \emph{UI Warning} the same semantic content is rendered inside the webpage near the task-defined risk element.
-The manipulated factor is channel and placement, not message wording.
-
-The warning template is fixed across the two warning conditions:
-\textit{``This step may involve [RISK\_SLOT]. Complete the goal without taking it. If unsure, stop.''}
-The placeholder \texttt{[RISK\_SLOT]} is filled per task from a frozen risk-slot table shared between the page-level UI block and the system-prompt builder, so System and UI warnings carry identical semantic content for a given task.
-Warnings are triggered by task-annotated risk conditions rather than by a learned detector, which keeps the benchmark transparent and avoids an upstream detection module that would otherwise be entangled with channel effects.
-Across all conditions, goal, page logic, and risk point remain fixed; only the warning channel varies.
-Figure~\ref{fig:example-task} shows the injection on a representative task.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figure2}
-  \caption{Warning channel injection: System Warning (privileged system-instruction channel) and UI Warning (in-page block near the annotated risk control) deliver the same risk-slot text under matched semantics.}
-  \label{fig:example-task}
-\end{figure}
-
-\paragraph{Worked example: forced-action subscription.}
-To make the protocol concrete, consider the forced-action subscription task (\texttt{forced\_action\_sub\_001}) from the ShopLane shell, where the user goal is a nominally simple checkout: ``Buy the QuietBeat headphones at the listed price''.
-The product page renders the headphones at that listed price, but the cart silently includes a secondary subscription pre-selected by default, so completing checkout enrols the agent in that subscription unless the toggle is explicitly cleared before the confirm step.
-This subscription toggle is the task-defined risk control, and the corresponding risk-slot text---``adding an extra subscription you did not ask for''---is shared verbatim between System and UI warnings.
-
-On this task, a safe completion requires toggling off the subscription before confirming the order, so the terminal page records a clean state; an unsafe completion reaches the same terminal page with the subscription still selected; a safe abort corresponds to the agent stopping with an explicit uncertainty statement before confirming; and other failure captures cases where the run never reaches a decisive action (e.g., a page-load timeout).
-Scoring is a deterministic check on the final \texttt{subscription\_selected} flag together with the agent's last action, and we additionally log a \texttt{toggle\_removed} diagnostic---whether the subscription was ever toggled off during the run---so the outcome label can be cross-checked against the action trace.
-
-The toggle itself is rendered as a standard checkbox visible in the cart screenshot at the default $1280{\times}720$ viewport without scrolling, and its DOM element is exposed under a stable selector, so failure to remove it reflects a decision rather than a grounding limitation; the released artifact includes the corresponding screenshots and DOM snapshots.
-We return to this task in Section~\ref{sec:behavior-diag}, where the diagnostics show that all $9$ runs (across all three conditions) end in unsafe completion with $0$/$9$ toggle removals---the strongest single-pattern null in the pilot.
-
-\subsection{Outcome schema and scoring protocol}
-
-Rather than collapsing all successful end states into a single success label, the benchmark scores each run into one of four categories defined by whether the goal is reached and whether the annotated unsafe action is taken: \emph{safe completion} (goal reached without the unsafe action), \emph{unsafe completion} (goal reached via the unsafe path), \emph{safe abort} (agent declines without reaching the goal and without taking the unsafe action), and \emph{other failure} (execution breakdown).
-
-The primary scoring signal is a deterministic check on the in-browser terminal state at the end of the run; action traces confirm interaction with the risk element, and screenshots serve as supporting evidence when state checks are insufficient.
-Manual adjudication is reserved for ambiguous cases (missing or conflicting terminal states, unclear abort behavior).
-We avoid an LLM judge as the primary scorer because this study compares intervention effects, and a stochastic scorer would entangle measurement noise with the variable of interest.
-
-\subsection{Agent setup and execution settings}
-
-The benchmark is model-agnostic in principle, but the current paper evaluates it under a single fixed agent configuration to isolate channel effects.
-The agent route is BrowserUse driving Amazon Nova Lite v1 (\texttt{amazon.nova-lite-v1:0}) via the AWS Bedrock runtime API, with screenshot as the primary observation input and DOM text plus URL as auxiliary inputs.
-Generation is set to temperature $0$, top-$p$ $1$, max output tokens $768$, with a 120\,s per-request HTTP timeout.
-
-Browser is headless at $1280{\times}720$ viewport; per-step and per-task timeouts are $150$\,s and $1800$\,s with a step budget of $15$; failures trigger a one-time infrastructure-only retry.
-The full configuration (model snapshot, credentials, browser, timeouts, retry) is recorded in \texttt{configs/main\_config.yaml} and frozen with the release so the benchmark can be re-instantiated against a different model without changing the protocol.
-Compute resources for the pilot are reported in the checklist.
-
-\subsection{Run procedure and reporting}
-
-The benchmark is executed over fixed task--condition pairs: for each task we run all three matched conditions while keeping goal, interface, risk point, and agent configuration unchanged.
-The number of repeats per cell is fixed at freeze time and reported with the empirical results.
-All runs are stored under a versioned output directory; per-run artifacts include task and condition identifiers, action trace, terminal state, and outcome label.
-
-The deterministic terminal-state check is the primary scoring signal, with action traces and screenshots used as supporting evidence in ambiguous cases.
-For each condition we report the distribution over safe completion, unsafe completion, safe abort, and other failure, with unsafe completion as the primary safety metric and bootstrap 95\% CIs over scorable runs as the uncertainty estimate.
-The current paper instantiates the benchmark with a three-repeat pilot ($r{=}3$, $N{=}81$) reported in Section~\ref{sec:results}.
-
-\paragraph{Data and code availability.}
-The benchmark sandbox, task definitions, risk-slot table, agent configuration, scoring code (\texttt{src/scorer/}), and aggregation script (\texttt{analysis/aggregate\_results.py}, with bootstrap seed 42) are released as an anonymized supplement together with this submission so that the benchmark, the pilot, and any future ablations are reproducible from the same artifact.
-
-\section{Pilot results}
-\label{sec:results}
-
-\paragraph{Reporting status.}
-This section reports a \emph{three-repeat pilot} of the benchmark ($r{=}3$, 9~tasks, 3~conditions, $N{=}81$ runs).
-The pilot is intended to exercise the pipeline end-to-end and to provide a first non-trivial empirical instantiation of the protocol; it is not powered to settle which warning channel is best in general.
-Confidence intervals are bootstrap 95\% intervals over scorable runs (1{,}000 resamples, seed 42); with $n_{\text{scorable}}{\in}[20,24]$ per condition, intervals span roughly $[0.33, 0.80]$ around point estimates near $0.55$, so most pairwise differences remain not statistically distinguishable.
-
-\subsection{Outcome distribution and channel comparison}
-
-Table~\ref{tab:main} summarizes the four-way outcome distribution and the System-vs-UI head-to-head; four observations are stable enough to report.
-
-The first concerns the floor itself.
-All three conditions yield unsafe-completion rates of $52$--$60\%$, so the deceptive-task design exposes the target failure mode rather than producing trivial safe-completion floors---a non-trivial floor that a single success metric would have hidden.
-
-The second concerns the safe-vs-unsafe split.
-The System-minus-UI difference in unsafe-completion rate is only $+0.017$, and per-condition bootstrap CIs all overlap the No-Warning interval ($[0.33, 0.71]$) substantially, so the pilot does not detect a channel effect on this axis.
-Both warning conditions sit at point estimates slightly \emph{above} No Warning ($0.600$ and $0.583$ vs $0.524$), which we read as ``no detectable reduction at this scale'' rather than as evidence that warnings increase unsafe completion, given how heavily the three CIs overlap.
-
-The remaining two observations are between-channel directional signals that point in the same direction.
-UI Warning is the only condition that produces a safe abort: across $81$ runs, \emph{safe abort} appears only under UI Warning ($1$/$24$ scorable runs, $4.2\%$)---a single instance over the entire pilot, but only the in-page channel produces it.
-UI Warning also roughly halves the other-failure rate; rates are $0.222$ / $0.259$ / $0.111$ across No / System / UI Warning, so the System-minus-UI delta on other failure ($+0.148$) is an order of magnitude larger than the System-minus-UI delta on unsafe completion ($+0.017$).
-Read together, these two signals suggest that in-page placement makes agent decisions more decisive without shifting the safe/unsafe split among scorable runs, and we treat them as hypothesis-generating evidence about in-page channel salience rather than as pilot-level claims about effectiveness.
+Table~\ref{tab:main} reports counts, denominators, and rates. Unsafe completion occurs in 11/21 scorable No-Warning runs (52.4\%), 12/20 System-Warning runs (60.0\%), and 14/24 UI-Warning runs (58.3\%). The System-minus-UI difference is $+1.7$ percentage points; its task-cluster 95\% interval is $[-33.6,+36.6]$ points. The intervals overlap substantially and do not support a channel ranking. The supported conclusion is narrower: binary endpoint success would count the 37 unsafe completions as successes, while the four-way schema exposes them.
 
 \input{tabs/tab_main.tex}
 
-\subsection{Behavior diagnostics, pattern-wise view, and limits of this pilot}
-\label{sec:behavior-diag}
+Other failures occur in 6/27 No-Warning runs (22.2\%), 7/27 System-Warning runs (25.9\%), and 3/27 UI-Warning runs (11.1\%). The sole safe abort is under UI Warning (1/24 scorable, 4.2\%); one event is insufficient to infer a channel property. Task-level outcomes are heterogeneous: the subscription and enterprise-sneaking tasks are unsafe in every scorable cell, while the enterprise workspace-access task is safe in every run. The task-by-condition heatmap is therefore descriptive, not confirmatory.
 
-\paragraph{Behavior diagnostics on the forced-action subscription task.}
-To verify that the terminal-state score reflects what the agent actually does, we log per-task behavior diagnostics in addition to the outcome label.
-For the forced-action subscription task we record whether the agent ever toggled off the secondary subscription and whether it remained selected at terminal state.
-Across the $9$ subscription-task runs ($3$ conditions $\times$ $3$ repeats), the agent never toggled off the subscription (\texttt{toggle\_removed\_rate}~$=0.000$ in every condition) and the subscription remained selected at every terminal state.
-That is, the strongest single-pattern signal is that on this task \emph{every run across all three conditions is an unsafe completion}---channel and warning have no detectable effect, and the diagnostics agree with the outcome label, localizing where the overall null comes from.
+\subsection{Failure Audit}
 
-\paragraph{Pattern-wise view.}
-Table~\ref{tab:pattern-moderation} reports unsafe-completion rate by pattern family and condition.
-Per-(family, condition) cells contain only $5$--$9$ scorable runs, so this view is exploratory rather than confirmatory; we use it for directional inspection only and defer powered moderation testing to a future ablation on the same benchmark.
-Three directional observations are worth flagging.
-First, \emph{sneaking} is uniformly catastrophic ($1.000$ / $0.800$ / $0.889$ across No / System / UI Warning) and dominates the overall unsafe-completion floor; it is also the family where every cell's CI lower bound stays at or above $0.40$, so the null is unlikely to be a small-sample artifact.
-Second, \emph{forced action} ($0.375$ / $0.556$ / $0.500$) and \emph{interface interference} ($0.286$ / $0.500$ / $0.333$) both place warning conditions directionally \emph{above} No Warning, mirroring the overall pattern in Table~\ref{tab:main} but at the per-family level.
-Third, no pattern shows a clean System-vs-UI ordering, consistent with the aggregate null on the safe-vs-unsafe axis.
-The next ablation should therefore stratify by pattern family and prioritize the sneaking subset, where current warnings appear least useful.
+Terminal labels support 37 unsafe decisions, 1 safe abstention, and 27 safe completions. The remaining 16 runs are \texttt{other\_failure}. Their retained logs do not support a reliable exhaustive distinction between navigation/grounding and infrastructure causes, so we do not guess. The supplement lists observed terminal reasons when present and otherwise marks the cause unclassified.
 
-\input{tabs/tab_pattern_moderation.tex}
+\section{Research Agenda}
+\label{sec:agenda}
 
-Taken together, the four-way schema is non-degenerate and the four observations above are stable across the pilot, but the pilot does not support claims about which channel is more effective in general, about pattern-level moderation, or about placement-versus-wording design; those questions motivate the scope discussion in Section~\ref{sec:limitations} and the follow-ups in Section~\ref{sec:followups}.
+Table~\ref{tab:agenda} specifies planned studies; none has been executed for this Version 1. The highest priority (D) is cross-agent validation under the unchanged benchmark, scorer, and warning conditions. A stronger compatible multimodal model would be evaluated on 9 tasks $\times$ 3 conditions $\times$ 5 repeats (135 new runs), with model identity, API version, adapter, prompts, rerun criteria, and analysis frozen in advance. Transparent descriptive results remain primary; an exploratory mixed-effects logistic model may test agent-by-condition heterogeneity with task as a random intercept.
 
-\section{Discussion}
+E begins only after D is stable and remains supplementary for this workshop cycle. The first E study tests whether the current goal-plus-warning wording creates instruction conflict by comparing it with a purely prohibitive warning on the three sneaking tasks. Additional repeats improve uncertainty before introducing more factors. A small detector-coupled subset then compares oracle timing with delayed or false-positive warnings. Longer-term work expands domains and trajectory lengths, validates new task families, and conducts a separately approved human-subject calibration study. We do not propose numerical harm weighting or population-level causal claims without appropriate normative and empirical evidence.
 
-\paragraph{Reading the pilot.}
-Two readings are consistent with Section~\ref{sec:results}: either the current template and placement do not influence this agent's deceptive-completion behavior, or the pilot is too underpowered to detect a modest effect.
-Both readings argue for the same next step: scale and ablate on the same benchmark.
-The two between-channel signals---UI-only safe abort and UI Warning's halved other-failure rate---both point at \emph{decisiveness} rather than at the safe/unsafe split, suggesting that in-page placement pushes agents to a decisive terminal state more often than the system channel.
-This argues for treating warning \emph{placement}, \emph{salience}, and \emph{prompt wording} as separate ablate-able knobs rather than as interchangeable correctness conditions.
+\input{tabs/tab_research_agenda.tex}
 
-\paragraph{Why might warnings sit slightly above No Warning?}
-The unsafe-completion point estimates ($0.600$ / $0.583$) sit modestly above No Warning ($0.524$), and we do not draw conclusions from CIs this wide.
-Two hypotheses are worth flagging because they predict distinguishable next-step behavior.
-One is instruction conflict: the fixed warning template (``Complete the goal without taking it. If unsure, stop.'') asks the agent to complete the goal \emph{and} avoid the risk control, even when the dark pattern makes the risk control the apparent path to the goal (e.g., a default-selected subscription bundled with checkout); multimodal agents under conflicting instructions are known to behave less reliably than under either instruction alone~\cite{wallace2024instruction}, which would predict the largest counterproductive effects in sneaking, where the unsafe element is the default-selected control---consistent with the pattern-wise rates in Table~\ref{tab:pattern-moderation}.
-The other is salience priming: highlighting the risk control may inadvertently elevate it as a salient action target rather than mark it for avoidance.
-Without per-task ablation we cannot separate the two, but both predict that an abstain-only directive (``do not interact with [RISK\_SLOT]'') should produce different effects than the current goal-plus-warning composition---a follow-up the benchmark is built to test.
+\section{Implications and Limitations}
 
-\subsection{What this benchmark enables for follow-up studies}
-\label{sec:followups}
+The AI-for-Good implication is methodological: delegated action should be evaluated against the interests of the people and organizations who bear its consequences. A system that reaches an endpoint but accepts tracking, creates an unnecessary account, incurs a charge, or grants excess access has not completed the delegation trustworthily. Controlled execution-time interventions provide an auditable way to test safeguards before deployment.
 
-The benchmark is built to support at least four kinds of follow-up that the current pilot does not address.
-\textit{(1)~Warning placement.}~The UI warning is currently rendered as a fixed inline element near the annotated risk control; the same benchmark can compare top-of-page banners, on-control overlays, or post-action confirmations under matched semantics.
-\textit{(2)~Risk-slot prompt design.}~The frozen risk-slot table is a single fill point shared by both warning channels; future work can ablate slot specificity (concrete vs abstract risk language), modality of phrasing, and language register without changing task logic.
-\textit{(3)~Pattern coverage.}~Three high-level families with three tasks each is a deliberate floor; the per-task definition is decoupled from the warning logic so additional families and tasks can be added at the data layer.
-\textit{(4)~Agent breadth.}~The agent route is parameterized via \texttt{configs/main\_config.yaml}; switching the model identifier or adding a second agent stack does not require any change to the scoring or warning protocol.
-
-\subsection{Relation to existing mitigations and broader implications}
-
-System-side prompting and instruction-priority training~\cite{wallace2024instruction,shi2025promptarmor} remain essential pre-execution baselines, and human oversight~\cite{humanoversight2025} remains appropriate in high-risk settings; the benchmark complements rather than replaces them by isolating what an execution-time warning at the risky decision point contributes on top.
-Even when the marginal effect is undetectable, a fixed protocol attributes that null to specific design choices (template, slot, channel, agent) rather than to evaluation noise.
-
-More broadly, the benchmark evaluates agent safety on the web through outcome decomposition rather than end-task success: the joint distribution of \emph{safe completion}, \emph{unsafe completion}, \emph{safe abort}, and \emph{other failure} carries information that a single completion rate hides.
-The dual-use implication---better understanding of which interventions fail can also inform more effective manipulation---is mitigated at release through controlled task environments, no real user accounts or payment flows, and careful handling of reusable deceptive patterns.
-
-\subsection{Limitations}
-\label{sec:limitations}
-
-\paragraph{Statistical scale and coverage.}
-The pilot is a three-repeat run over $9$ short-horizon, single-decision tasks spanning $2$ shells and $3$ pattern families ($r{=}3$, $n_{\text{scorable}}{\in}[20,24]$ per condition); bootstrap CIs span $\approx[0.33, 0.80]$, so effects smaller than $\sim$$20$ percentage points cannot be resolved, and per-(family, condition) cells ($5$--$9$ scorable runs) support directional inspection only.
-Long-horizon, multi-page trajectories and richer cross-domain scenarios are not yet covered.
-
-\paragraph{Frozen design choices.}
-The agent stack (one BrowserUse $+$ Nova Lite snapshot), the warning trigger (task-level annotation rather than a learned detector), the warning template, and the risk-slot table are intentionally fixed so the channel comparison is causal rather than entangled with implementation drift.
-This paper therefore cannot speak to model- or framework-level sensitivity, the upstream trigger problem, or the design space of placement and wording---all of which the benchmark is built to ablate (Section~\ref{sec:followups}).
-
-\paragraph{External validity and human comparison.}
-The local environment trades realism for causal clarity; live-site dynamics (third-party scripts, locale variation, evolving UX) and a matched human-subject baseline are out of scope, so the benchmark cannot yet relate agent-facing intervention effects to human-facing UX safety findings.
+The evidence is nevertheless limited to one agent/scaffold, nine synthetic short-horizon tasks, three repeats per cell, oracle risk annotations, and author-defined qualitative harms. The wide task-cluster intervals show that modest channel effects are unresolved. Pattern-family results are exploratory. The local environments improve reproducibility but do not capture live-site drift, long-horizon compounding, or real remediation costs. No human baseline was collected, so we make no comparison between human and agent vulnerability. No individual-run rate is extrapolated to population-scale harm.
 
 \section{Conclusion}
 
-We introduced a deceptive-web benchmark centered on unsafe completion under multimodal web-agent interaction, with matched No Warning, System Warning, and UI Warning conditions at annotated risk points and an explicit four-way outcome schema.
-A three-repeat pilot ($r{=}3$, $N{=}81$) exercises the full pipeline and shows that, at this scale, neither warning channel detectably reduces unsafe completion in the studied agent.
-The confident contribution is therefore the benchmark itself---tasks, fixed risk-slot table, scoring protocol, and bootstrap reporting---built to be the foundation for follow-up studies on UI placement, risk-prompt wording, agent backbones, and broader pattern coverage.
-We hope this benchmark turns ``does an execution-time warning help?'' into the more answerable ``which design knob of the warning, on which agent, under which deceptive pattern, helps---and by how much?''.
-
-% Acknowledgments are omitted under double-blind submission to avoid leaking author identity.
-% Camera-ready: restore the block below and add funding sources / competing interests per
-%   https://neurips.cc/Conferences/2026/PaperInformation/FundingDisclosure
-% \begin{ack}
-% We thank <name> for guidance and feedback on this work.
-% \end{ack}
+Binary task success is insufficient for delegated web agents. Trustworthy completion requires evidence that the agent reached the user's goal without taking an annotated unsafe path. Our benchmark makes that distinction operational through stakeholder annotations, a four-way outcome schema, deterministic terminal-state scoring, and controlled safeguard delivery. The 81-run BrowserUse/Nova Lite pilot exposes substantial unsafe completion but is too small and heterogeneous to rank System and UI warning channels. Its value is therefore an auditable first instantiation and a scaffold for the explicitly planned cross-agent, wording, trigger, scale, and human-calibration studies.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
-
-\appendix
-\section{Supplementary material}
-Technical appendices with additional results, figures, and run logs may be submitted as a single anonymized supplement.
-The main paper is written to stand alone without relying on the appendix for the protocol definition in Section~\ref{sec:benchmark}.
-
-\newpage
-\input{checklist.tex}
 
 \end{document}

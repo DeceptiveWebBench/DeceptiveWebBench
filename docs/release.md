@@ -11,7 +11,8 @@ This repo is the **benchmark code + protocol** release. Tabular run-level data i
 | `src/`, `scripts/`, `analysis/*.py` | Runnable benchmark + scoring + aggregation |
 | `env/site/`, `env/tasks/`, `src/env/static/` | Sandbox pages, tasks, static assets |
 | `configs/` | Frozen agent config, warnings, manifests |
-| `docs/experiment_protocol.md` | Canonical protocol |
+| `docs/archive/v1/experiment_protocol.md` | Historical 81-run protocol |
+| `docs/protocol_v2_consumer.md` | Canonical Protocol v2 |
 | `analysis/outputs/` | Frozen summary tables for the paper |
 | `dataset/*.py`, `dataset/README.md`, `dataset/metadata/` | HF export helpers + Croissant card |
 | `paper/` (LaTeX source, figs, tabs) | Paper source (optional in anonymous supplement) |
@@ -28,13 +29,13 @@ This repo is the **benchmark code + protocol** release. Tabular run-level data i
 
 ## Hugging Face (dataset repo)
 
-Target: `deceptive-web/deception-warning-study-runs` (see `dataset/upload_to_hf.py`).
+Target: `deceptive-web-benchmark/execution-time-warnings-web-agents` (see `dataset/upload_to_hf.py`).
 
 **Upload**
 
-1. `run_level.csv` / `run_level.jsonl` / `run_level.parquet` (from `dataset/export_staging.py`)
-2. Copy `dataset/README.md` as the dataset card
-3. Optionally include `dataset/metadata/croissant.json`
+1. `python dataset/build_hf_package.py` → `dataset/hf_staging/`
+2. `python dataset/upload_to_hf.py`
+3. Dataset card is copied from `dataset/README.md`; Croissant from `dataset/metadata/croissant.json`
 
 **Do not** put API keys or raw `logs/` trees on a public Hub repo unless you intentionally release traces under `LICENSE_DATA`.
 

@@ -4,7 +4,7 @@ Requires authentication: set `HF_TOKEN` / `HUGGING_FACE_HUB_TOKEN`, or run `hf a
 Org members need a token with write access to the organization.
 
 Usage (from repo root):
-  python dataset/export_staging.py
+  python dataset/build_hf_package.py
   python dataset/upload_to_hf.py
 """
 
@@ -16,13 +16,15 @@ from pathlib import Path
 
 from huggingface_hub import HfApi
 
+DEFAULT_REPO_ID = "deceptive-web-benchmark/execution-time-warnings-web-agents"
+
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument(
         "--repo-id",
-        default="deceptive-web/deception-warning-study-runs",
-        help="Dataset repo id (org/name)",
+        default=DEFAULT_REPO_ID,
+        help=f"Dataset repo id (default: {DEFAULT_REPO_ID})",
     )
     p.add_argument(
         "--folder",
@@ -42,7 +44,7 @@ def main() -> int:
         else (root / "dataset" / "hf_staging").resolve()
     )
     if not folder.is_dir():
-        print(f"Missing {folder}; run: python dataset/export_staging.py")
+        print(f"Missing {folder}; run: python dataset/build_hf_package.py")
         return 1
 
     token = os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")
@@ -58,7 +60,22 @@ def main() -> int:
         folder_path=str(folder),
         repo_id=args.repo_id,
         repo_type="dataset",
-        commit_message="Upload run-level benchmark artifacts (parquet, jsonl, csv)",
+        commit_message="Upload formal run-level results, summaries, and scrubbed raw JSON",
+        allow_patterns=[
+            "README.md",
+            "croissant.json",
+            "export_meta.json",
+            "run_level.*",
+            "run_manifest_v1.csv",
+            "summaries/summary.md",
+            "summaries/summary_by_condition.csv",
+            "summaries/summary_system_vs_ui.csv",
+            "summaries/task_by_condition.csv",
+            "summaries/failure_decomposition.csv",
+            "summaries/sensitivity_*.csv",
+            "summaries/run_matrix_audit.csv",
+            "raw_runs/**",
+        ],
     )
     print(f"Uploaded -> https://huggingface.co/datasets/{args.repo_id}")
     return 0

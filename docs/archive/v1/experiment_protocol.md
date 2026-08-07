@@ -203,4 +203,4 @@ Fill when runs are executed.
 - **v2:** Unified ShopLane sandbox, cart-centric flows, terminal-state scoring.
 - **v3:** Added ShopLane extension tasks (`forced_account_gate_002`, `sneaking_trial_renewal_002`, `interface_confirmshame_newsletter_002`).
 - **v4 (2026-05-01):** Restructured for reviewer/AI readability; aligned task table and flows with `sandbox_state.js`; merged WorkHub enterprise shell and runtime notes from decision log; agent/config pointers defer to `main_config.yaml`; clarified scoring priority and command section.
-- **v5 (2026-05-07):** `AGENTS.md` removed; implementation constraints live in `README.md`; `docs/decision_log.md` is a short infra changelog (design detail remains here).
+- **v5 (2026-05-07):** `AGENTS.md` removed; implementation constraints live in `README.md`; `docs/archive/v1/decision_log.md` is the historical infra changelog (design detail remains here).

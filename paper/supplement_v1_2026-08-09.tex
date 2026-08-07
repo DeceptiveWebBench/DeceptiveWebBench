@@ -1,0 +1,93 @@
+\documentclass{article}
+\PassOptionsToPackage{numbers,sort,compress}{natbib}
+\usepackage[dblblindworkshop]{neurips_2026}
+\workshoptitle{Trustworthy AI for Good}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{iftex}
+\ifXeTeX
+  \usepackage{fontspec}
+  \setmainfont{texgyretermes}[
+    Extension=.otf,
+    UprightFont=*-regular,
+    BoldFont=*-bold,
+    ItalicFont=*-italic,
+    BoldItalicFont=*-bolditalic]
+\fi
+\usepackage[hypertexnames=false]{hyperref}
+\hypersetup{hidelinks}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{pdflscape}
+\usepackage{xcolor}
+\definecolor{hdrblue}{HTML}{DAE3F3}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\graphicspath{{figs/}}
+\title{Supplement: Trustworthy Completion for Web Agents}
+\author{Anonymous Author(s)}
+
+\begin{document}
+\maketitle
+
+\section{Scope and Data Integrity}
+
+This supplement accompanies the Version 1 workshop manuscript. It reports only completed analyses of the frozen 81-run BrowserUse/Amazon Nova Lite v1 pilot. No cross-agent (D), warning-wording (E), trigger-robustness, or human-subject experiment was run. The canonical run table contains 9 tasks $\times$ 3 conditions $\times$ 3 repeats, with no missing or duplicate \texttt{(task\_id, condition, repeat\_id)} key. Its SHA-256 is \texttt{c7095c1189b03cb672b888209d41d18853e3236360587455368cca440c851b07}.
+
+Scorable outcomes are safe completion, unsafe completion, and safe abort. Their rates use the scorable denominator. Other failure is reported over all runs. The main uncertainty estimate is a 10{,}000-replicate task-cluster bootstrap with seed 42.
+
+\section{Complete Task and Harm Annotations}
+
+The annotations below operationalize the protected stakeholder interest represented by each synthetic task. No numerical severity score is assigned.
+
+\input{tabs/tab_harm_full_supp.tex}
+
+\section{Task-by-Condition Results}
+
+\input{tabs/tab_task_condition_supp.tex}
+
+Figure~\ref{fig:supp-heatmap} visualizes the same counts. Cells with no scorable run are shown as \texttt{0/0}; all interpretations are descriptive.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=.62\linewidth]{task_condition_heatmap}
+\caption{Unsafe-completion counts and scorable denominators by task and condition.}
+\label{fig:supp-heatmap}
+\end{figure}
+
+\section{Failure Decomposition and Path Evidence}
+
+Across 81 runs, deterministic terminal states establish 37 unsafe decisions, 27 safe completions, and one safe abstention. Sixteen runs are labeled other failure. The retained logs do not support a reliable exhaustive split of those 16 into navigation/grounding versus infrastructure causes; where a terminal reason is absent, the failure remains unclassified rather than being inferred. The machine-readable decomposition is \texttt{analysis/outputs/failure\_decomposition.csv}.
+
+For \texttt{forced\_action\_sub\_001}, all nine runs are unsafe completions and the event logs record no subscription removal. This path diagnostic is reliable because the terminal subscription flag and interaction events agree. We do not extrapolate that behavior to other tasks whose traces lack an equally specific event.
+
+\section{Historical Wording Deviation and Sensitivity Analysis}
+
+The current \texttt{interface\_perm\_001} task and warning configuration use the concrete risk slot ``unnecessary non-essential cookie acceptance.'' Repository history at the formal-pilot commit records the System-warning slot as ``an unnecessary permission grant.'' The nine task runs remain in the primary 81-run analysis. Table~\ref{tab:supp-sensitivity} reports the explicitly requested exclusion view; it is not a replacement dataset or a general leave-one-task-out exercise.
+
+\input{tabs/tab_sensitivity_supp.tex}
+
+The System-minus-UI unsafe-completion difference changes from $+1.7$ percentage points in the primary analysis to $-13.7$ points after exclusion; the sensitivity interval is $[-43.3,+12.3]$ points. The direction change and wide intervals preclude a warning-channel ranking.
+
+\section{Reproduction and Artifact Records}
+
+From the repository root:
+
+{\small
+\begin{verbatim}
+./.venv/bin/python -m analysis \
+  --input-csv logs/experiment_runs/results_run_level.csv \
+  --output-dir analysis/outputs \
+  --bootstrap-samples 10000 --seed 42
+./.venv/bin/python analysis/generate_figures.py
+./.venv/bin/python scripts/verify_analysis_freeze.py
+./.venv/bin/python scripts/verify_paper_numbers.py
+./.venv/bin/python scripts/verify_warning_task_contract.py
+\end{verbatim}
+}
+
+The analysis command reads but does not rewrite the canonical run CSV. \texttt{analysis/outputs/run\_manifest\_v1.csv} enumerates all 81 selected runs and hashes the available metadata, final result, and terminal state files. \texttt{docs/archive/v1/artifact\_verification\_log.md} records local checks and anonymous-access status. Planned extensions are described only in the main paper's Research Agenda.
+
+\end{document}

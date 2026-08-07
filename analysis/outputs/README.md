@@ -1,11 +1,11 @@
 # Frozen analysis summaries
 
-These CSV/Markdown files are **frozen paper-facing aggregates** from the formal run set (81 merged run-level rows). They ship on GitHub so reviewers can inspect headline rates without downloading Hugging Face artifacts.
+These outputs are a reproducible analysis freeze of the formal run set (81 canonical run-level rows). `logs/experiment_runs/results_run_level.csv` is input-only: the analysis validates it but does not alter it.
 
-Regenerate from merged logs (local only):
+Regenerate:
 
 ```bash
-python -m analysis
+./.venv/bin/python -m analysis --input-csv logs/experiment_runs/results_run_level.csv --output-dir analysis/outputs --bootstrap-samples 10000 --seed 42
 ```
 
-Raw per-run logs stay under `logs/` (gitignored) and are released via Hugging Face when applicable.
+Key outputs: `run_matrix_audit.csv`, `run_manifest_v1.csv`, `summary_by_condition.csv`, `task_by_condition.csv`, `summary_system_vs_ui.csv`, `failure_decomposition.csv`, the two `sensitivity_*interface_perm_001.csv` files, and `summary.md`. Unsafe-completion intervals are task-cluster bootstrap intervals; outcome rates state their denominator explicitly. The 81-run analysis is primary; the 72-run exclusion view is a supplementary sensitivity analysis for the documented wording deviation.

@@ -3,62 +3,67 @@ license: cc-by-nc-4.0
 language:
   - en
 tags:
-  - robotics
   - safety
   - agent
   - benchmark
   - human-computer-interaction
   - web-agents
   - dark-patterns
-pretty_name: Deception Warning Study (ShopLane / WorkHub)
+pretty_name: Trustworthy Completion for Web Agents (ShopLane / WorkHub)
 size_categories:
   - n<1K
 ---
 
-# Deception Warning Study — benchmark runs (staging)
+# Trustworthy Completion for Web Agents — frozen pilot results
 
-This repository will host **run-level** rows for the controlled benchmark described in the companion paper (NeurIPS-style release).
+Controlled benchmark runs distinguishing safe completion, unsafe completion, safe abort, and other failure under deceptive web interfaces. The pilot evaluates agent response under oracle task annotations; it does not establish a generally superior warning channel.
 
-## Contents (when populated)
+Companion code (anonymous review mirror): [anonymous.4open.science/r/DeceptiveWebBench-960E](https://anonymous.4open.science/r/DeceptiveWebBench-960E/)
 
-| Artifact | Description |
-|----------|-------------|
-| `run_level.jsonl` / `run_level.csv` | One row per merged run: task, condition, repeat, outcome, flags |
-| `run_level.parquet` | Optional if `pyarrow` is installed (Hub-friendly) |
-| `manifest.yaml` (optional) | `benchmark_version`, `repeats_per_task_condition`, model snapshot |
+## Contents
 
-**Raw logs** (screenshots, `terminal_state.json`, traces) are large; they may ship as a separate revision or via restricted access—document here before upload.
+| Path | Description |
+|------|-------------|
+| `run_level.csv` / `run_level.jsonl` / `run_level.parquet` | One row per formal run (81 rows): task, condition, repeat, outcome |
+| `export_meta.json` | Export provenance (schema version, columns, row count) |
+| `summaries/` | Frozen aggregate tables matching the paper analysis |
+| `run_manifest_v1.csv` | Machine-readable 81-cell provenance and artifact hashes |
+| `raw_runs/{shoplane,enterprise}/<run_id>/` | Per-run `terminal_state.json`, `final_result.json`, scrubbed `run_metadata.json` |
+| `croissant.json` | Croissant metadata card (optional consumers) |
 
-## Build staging files (local)
+**Not included:** smoke/debug/retry logs, screenshots (empty in this release), source code / task HTML (see code repo).
 
-From repo root, after `python -m analysis`:
+## Schema (`run_level`)
 
-```bash
-python dataset/export_staging.py
-```
+| Column | Meaning |
+|--------|---------|
+| `run_id` | Unique run folder id |
+| `task_id` | Task identifier |
+| `pattern_family` | `forced_action` / `sneaking` / `interface_interference` |
+| `condition` | `no_warning` / `system_warning` / `ui_warning` |
+| `repeat_id` | Repeat index (1–3) |
+| `outcome_label` / `terminal_state` | Deterministic outcome label |
+| `risk_taken` / `safe_path` / `completed` | Boolean flags from scorer |
+| `task_goal_source` / `system_warning_source` | Provenance pointers into the code repo |
 
-Outputs go to `dataset/hf_staging/` (gitignored). Croissant metadata lives at `dataset/metadata/croissant.json` (copy onto the Hub with the tabular files if desired). Review then:
+## Completed evidence and planned extensions
 
-```bash
-pip install huggingface_hub datasets pyarrow  # as needed
-python dataset/upload_to_hf.py
-```
+Completed: one fixed BrowserUse/Amazon Nova Lite v1 configuration, nine synthetic tasks, three warning conditions, three repeats, deterministic scoring, task-cluster uncertainty, and the documented `interface_perm_001` wording-deviation sensitivity view.
 
-## Upload to the Hub (outline)
+Planned only: cross-agent validation, warning-wording experiments, detector-coupled evaluation, broader task coverage, long-horizon tasks, and human calibration. The dataset contains no D/E results.
 
-1. Create a dataset repo on Hugging Face (default id in `upload_to_hf.py`: `deceptive-web/deception-warning-study-runs`).
-2. Use this file as the dataset card; fill license, citation, and author fields before public release.
-3. Upload staging folder (`run_level.*`) via `python dataset/upload_to_hf.py`; optionally add `metadata/croissant.json`.
-4. Companion code lives on GitHub; see the code repo `docs/release.md`.
+## License
+
+Non-code data assets: **CC BY-NC 4.0**.
 
 ## Citation
 
 ```bibtex
-@misc{deception_warning_study_2026,
-  title        = {Warning Placement for Web Agents under Deceptive Interfaces},
+@misc{execution_time_warnings_web_agents_2026,
+  title        = {Trustworthy Completion for Web Agents: A Benchmark and Research Agenda for Execution-Time Safeguards},
   author       = {[Anonymous]},
   year         = {2026},
   howpublished = {Hugging Face Dataset},
-  url          = {https://huggingface.co/datasets/deceptive-web/deception-warning-study-runs}
+  url          = {https://huggingface.co/datasets/deceptive-web-benchmark/execution-time-warnings-web-agents}
 }
 ```

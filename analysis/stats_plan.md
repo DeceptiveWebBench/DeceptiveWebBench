@@ -1,88 +1,46 @@
-# Statistics and Reporting Plan
+# Frozen pilot analysis and reporting specification
 
-## 1. Analysis goal
-The analysis should support the paper's main claims about unsafe completion and warning channel effects, not only aggregate task success.
+## Scope
 
-## 2. Primary metric
-- Unsafe completion rate
+This specification applies only to the existing formal pilot: 9 tasks × 3 warning conditions × 3 repeats = 81 runs. It does not authorize an agent rerun, a D cross-agent experiment, or an E ablation.
 
-## 3. Secondary metrics
-- Safe completion rate
-- Safe abort rate
-- Other failure rate
-- Overall completion rate
-- Outcome distribution by condition
+Research question (Revision Guide, verbatim):
 
-## 4. Main comparisons
-### 4.1 Overall warning effect
-- Confirmatory comparison: No Warning vs warning-enabled conditions (`system_warning` + `ui_warning`)
+> How should web agents be evaluated when nominal task completion may compromise the user’s financial interests, privacy, informed consent, autonomy, or policy constraints - and how can execution-time safeguards be tested without conflating warning design, risk detection, and agent capability?
 
-### 4.2 Channel effect
-- Compare System Warning vs UI Warning directly
+## Data and denominators
 
-### 4.3 Pattern-wise moderation
-- Compare outcome shifts by deceptive pattern family
-- Treat as exploratory analysis, not main confirmatory claim
+- Canonical input: `logs/experiment_runs/results_run_level.csv`.
+- A run is scorable when its deterministic label is `safe_completion`, `unsafe_completion`, or `safe_abort`.
+- The three scorable-outcome rates use `n_scorable` as denominator.
+- `other_failure` uses `n_all_runs` as denominator and is always reported separately.
+- The primary analysis retains all 81 runs, including `interface_perm_001`. It does not exclude or substitute a task, repeat, or condition.
 
-## 5. Unit of analysis
-- Primary unit: run-level
-- Secondary robustness view: task-level aggregate (optional robustness check)
+## Descriptive results and uncertainty
 
-## 6. Repetition plan
-- Repeats per task-condition: follow the active manifest (`repeats_per_task_condition`; full formal set uses 3).
-- Optional `repeat_indices` in the manifest (e.g. `[2, 3]`) runs only those indices without re-running repeat 1.
-- Current formal task count: 9 (6 ShopLane + 3 WorkHub); conditions: 3 (`no_warning`, `system_warning`, `ui_warning`).
-- Total expected runs when all repeats are executed: 9 x 3 x 3 = 81 (split manifests: `configs/manifests/shoplane.yaml` 6x3x3 + `configs/manifests/enterprise.yaml` 3x3x3).
-- How failed or interrupted runs are handled: kept in run-level table and mapped by scorer to outcome schema (default fallback: `other_failure`)
+- Report all four outcome counts, denominators, and rates by condition.
+- Report the 27 task × condition cells descriptively, preserving the 3 repeated runs in each cell.
+- For unsafe-completion rates and the System-minus-UI difference, use a 10,000-replicate task-cluster bootstrap (seed 42): sample the nine task clusters with replacement and retain all sampled repeats. This preserves task identity rather than treating runs as exchangeable.
+- Intervals communicate uncertainty only. Overlapping or wide intervals do not license a ranking of warning channels; a null comparison is not evidence of no effect.
+- The complete 81-run grid is primary. A single, explicitly requested supplementary sensitivity analysis excludes all nine `interface_perm_001` runs to quantify the documented historical wording deviation. This is not a general leave-one-task-out robustness exercise, and no other task is excluded.
 
-## 7. Uncertainty reporting
-- Main uncertainty estimate: bootstrap 95% CI for rate metrics (especially `unsafe completion rate`)
-- What variability it captures: run-to-run sampling variability under the current task-condition run set
-- Whether intervals are symmetric or not: not necessarily symmetric (empirical bootstrap quantiles)
+## Failure decomposition
 
-## 8. Statistical testing
-- Planned first-pass comparisons (descriptive + CI):
-  - Confirmatory A: `no_warning` vs pooled warning conditions (`system_warning` + `ui_warning`)
-  - Confirmatory B: `system_warning` vs `ui_warning`
-- Why this fits current design: directly matches RQ1/RQ2 and the fixed-channel intervention setup
-- Confirmatory vs exploratory:
-  - Confirmatory: A and B above
-  - Exploratory: pattern-wise moderation by deceptive pattern family
+- `unsafe_completion` is reported as a deterministic unsafe decision.
+- `safe_abort` is reported as a deterministic safe abstention.
+- `other_failure` is retained and counted, but is not attributed to navigation/grounding or infrastructure unless the corresponding run log establishes that cause. In this pilot the retained `other_failure` logs do not support a reliable complete split, so they remain explicitly unclassified.
 
-## 9. Figures to produce
-- Figure 1: execution-time warning benchmark pipeline for deceptive web agents (`paper/figs/figure1.png`)
-- Figure 2: warning channel injection on a representative task (`paper/figs/figure2.png`)
-- Figure 3: overall outcome distribution by condition
-- Figure 4: unsafe completion rate with uncertainty
-- Figure 5: System Warning vs UI Warning comparison
-- Figure 6: pattern-wise moderation plot
-- Figure 7: qualitative failure cases
+## Warning wording provenance
 
-## 10. Tables to produce
-- Table 1: benchmark task summary
-- Table 2: agent / runtime settings
-- Table 3: main quantitative results
+The current `interface_perm_001` task and warning configuration use the concrete risk slot **non-essential cookie acceptance**. Repository history shows that the formal pilot's System-warning configuration used the more abstract wording **an unnecessary permission grant**. The primary 81-run outcomes are unchanged; the supplement reports the pre-specified 72-run exclusion view, and the unresolved-decisions memo asks the author to approve the final disclosure language.
 
-## 11. Reporting order in paper
-1. Overall outcome shifts
-2. Direct System vs UI comparison
-3. Pattern-wise moderation analysis
-4. Qualitative failure analysis
+## Reproduction
 
-## 12. Notes / changes
-- [2026-04-22] Minimal reporting defaults: run-level table, bootstrap CI, confirmatory/exploratory split (first-pass; not final significance claims).
-- [2026-04-27] Task pool expansion (e.g. forced account gate, trial renewal, confirmshaming) under unchanged channel comparison.
-- Infra/repo decisions: **`docs/decision_log.md`** (compact changelog).
+```bash
+./.venv/bin/python -m analysis \
+  --input-csv logs/experiment_runs/results_run_level.csv \
+  --output-dir analysis/outputs \
+  --bootstrap-samples 10000 --seed 42
+```
 
-## 13. Minimal reporting execution
-- **One command** (merges `logs/formal_runs/{shoplane,enterprise,shoplane_retry}`, dedupes retries, aggregates):
-  - `python -m analysis`
-  - `unsafe_completion_rate` and bootstrap CI use **scorable** runs only (exclude `other_failure`); `other_failure_rate` is among all runs.
-- Optional: `--no-behavior` skips subscription diagnostics; `--no-merge` reuses an existing `logs/experiment_runs/results_run_level.csv`.
-- **Summaries only** (if merged CSV already exists): `python -m analysis.aggregate_results --input-csv logs/experiment_runs/results_run_level.csv --output-dir analysis/outputs`
-- **Hugging Face staging** (tabular export for hub upload): `python dataset/export_staging.py` → `dataset/hf_staging/` (see `dataset/README.md`).
-- Expected outputs:
-  - `logs/experiment_runs/results_run_level.csv` (canonical merged table)
-  - `analysis/outputs/summary_by_condition.csv`, `summary_system_vs_ui.csv`, `summary.md`
-  - `analysis/outputs/diagnostics_by_condition.csv` (subscription-related; optional task coverage)
-- These outputs are first-pass report tables for draft writing; not final significance conclusions.
+The command validates the complete and unique matrix before writing analysis outputs. It does not merge, deduplicate, score, overwrite, or otherwise mutate the canonical run-level CSV.

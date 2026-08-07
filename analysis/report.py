@@ -1,332 +1,168 @@
-"""Single entry: merge multi-root formal runs, write summaries, optional behavior diagnostics.
-
-Usage:
-  python -m analysis
-  python -m analysis --no-behavior
-  python -m analysis.aggregate_results   # summaries only from existing merged CSV
-"""
+"""Freeze and report the existing formal pilot; this module never reruns agents or rescans/deduplicates runs."""
 
 from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
-from analysis.aggregate_results import (
-    build_summary_by_condition,
-    build_summary_system_vs_ui,
-    _write_csv as _write_summary_csv,
+from analysis.aggregate_results import OUTCOMES, write_all_outputs
+
+
+DEFAULT_CSV = Path("logs/experiment_runs/results_run_level.csv")
+DEFAULT_OUTPUT_DIR = Path("analysis/outputs")
+FORMAL_ROOTS = (
+    Path("logs/formal_runs/shoplane"),
+    Path("logs/formal_runs/enterprise"),
+    Path("logs/formal_runs/shoplane_retry"),
+    Path("logs/formal_runs/unified_r2_r3"),
 )
-from src.scorer.score_runs import build_rows, write_csv
-from src.utils.io import project_root
-
-FORMAL_RUN_ROOTS = (
-    "logs/formal_runs/shoplane",
-    "logs/formal_runs/enterprise",
-    "logs/formal_runs/shoplane_retry",
-    "logs/formal_runs/unified_r2_r3",
-)
-DEFAULT_MERGED_CSV = "logs/experiment_runs/results_run_level.csv"
-DEFAULT_OUTPUT_DIR = "analysis/outputs"
 
 
-def _dedupe_merged_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    groups: dict[tuple[str, str, str], list[dict[str, Any]]] = {}
-    for row in rows:
-        key = (
-            str(row.get("task_id") or ""),
-            str(row.get("condition") or ""),
-            str(row.get("repeat_id") or ""),
-        )
-        groups.setdefault(key, []).append(row)
-
-    merged: list[dict[str, Any]] = []
-    for key in sorted(groups.keys()):
-        bucket = groups[key]
-        non_other = [r for r in bucket if str(r.get("outcome_label") or "").strip() != "other_failure"]
-        pool = non_other if non_other else bucket
-        chosen = sorted(pool, key=lambda r: str(r.get("run_id") or ""))[-1]
-        merged.append(chosen)
-
-    merged.sort(
-        key=lambda r: (str(r.get("task_id")), str(r.get("condition")), str(r.get("repeat_id")))
-    )
-    return merged
+def _read_rows(path: Path) -> list[dict[str, str]]:
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
 
 
-def _read_json(path: Path) -> dict[str, Any] | None:
-    try:
-        with path.open("r", encoding="utf-8") as handle:
-            payload = json.load(handle)
-        if isinstance(payload, dict):
-            return payload
-    except OSError:
-        return None
-    return None
-
-
-def _detect_toggle_removed(events: list[dict[str, Any]]) -> bool:
-    for evt in events:
-        if str(evt.get("type")) != "toggle_subscription":
-            continue
-        detail = str(evt.get("detail") or "").lower()
-        if "removed" in detail:
-            return True
-    return False
-
-
-def _index_run_dirs_by_id(merged_run_ids: set[str]) -> dict[str, Path]:
-    root = project_root()
+def _run_dirs(rows: list[dict[str, str]]) -> dict[str, Path]:
+    wanted = {row["run_id"] for row in rows}
     found: dict[str, Path] = {}
-    for rel in FORMAL_RUN_ROOTS:
-        base = root / rel
-        if not base.is_dir():
-            continue
-        for sub in base.iterdir():
-            if not sub.is_dir():
-                continue
-            name = sub.name
-            if name in merged_run_ids and name not in found:
-                found[name] = sub
+    for root in FORMAL_ROOTS:
+        if root.is_dir():
+            for candidate in root.iterdir():
+                if candidate.is_dir() and candidate.name in wanted:
+                    found[candidate.name] = candidate
     return found
 
 
-def _build_behavior_by_condition(merged_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    ids = {str(r.get("run_id") or "") for r in merged_rows}
-    dirs = _index_run_dirs_by_id(ids)
-
-    per_run: list[dict[str, Any]] = []
-    for row in merged_rows:
-        rid = str(row.get("run_id") or "")
-        run_dir = dirs.get(rid)
-        if run_dir is None:
-            continue
-        metadata = _read_json(run_dir / "run_metadata.json") or {}
-        state = _read_json(run_dir / "terminal_state.json")
-        if not state:
-            continue
-        task_id = str(metadata.get("task_id") or row.get("task_id") or "")
-        cart = state.get("cart") if isinstance(state.get("cart"), dict) else {}
-        events = state.get("events") if isinstance(state.get("events"), list) else []
-        toggle_removed = _detect_toggle_removed([e for e in events if isinstance(e, dict)])
-        tp = (
-            state.get("task_progress", {}).get(task_id, {})
-            if isinstance(state.get("task_progress"), dict)
-            else {}
-        )
-        per_run.append(
-            {
-                "condition": str(metadata.get("condition") or row.get("condition") or ""),
-                "toggle_subscription_removed": toggle_removed,
-                "end_subscription_selected": bool(cart.get("subscription_selected", False)),
-                "terminal_state": str(tp.get("terminal_state") or "unknown"),
-            }
-        )
-
-    grouped: dict[str, list[dict[str, Any]]] = {}
-    for r in per_run:
-        grouped.setdefault(str(r["condition"]), []).append(r)
-
-    out: list[dict[str, Any]] = []
-    for condition in sorted(grouped.keys()):
-        bucket = grouped[condition]
-        n = len(bucket)
-        toggle_rate = (
-            sum(1 for x in bucket if bool(x["toggle_subscription_removed"])) / n if n else 0.0
-        )
-        end_sub_rate = (
-            sum(1 for x in bucket if bool(x["end_subscription_selected"])) / n if n else 0.0
-        )
-        out.append(
-            {
-                "condition": condition,
-                "n_runs": n,
-                "toggle_subscription_removed_rate": round(toggle_rate, 6),
-                "end_subscription_selected_rate": round(end_sub_rate, 6),
-            }
-        )
-    return out
+def _terminal_reason(run_dir: Path, task_id: str) -> str | None:
+    state_path = run_dir / "terminal_state.json"
+    if not state_path.exists():
+        return None
+    try:
+        state = json.loads(state_path.read_text(encoding="utf-8"))
+        progress = state.get("task_progress", {}).get(task_id, {})
+        reason = progress.get("reason")
+        return str(reason) if reason else None
+    except (OSError, json.JSONDecodeError, AttributeError):
+        return None
 
 
-def _write_report_md(
-    path: Path,
-    n_merged: int,
-    summary_by_condition: list[dict[str, Any]],
-    behavior_summary: list[dict[str, Any]] | None,
-) -> None:
-    lines = ["# Run summary", "", f"- Merged run-level rows: **{n_merged}**", ""]
-    lines.append("## Outcome by condition (rates among scorable runs; `other_failure_rate` is share of all runs)")
-    lines.append("")
-    for row in summary_by_condition:
+def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]), lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def _sha256_or_blank(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else ""
+
+
+def build_run_manifest(rows: list[dict[str, str]]) -> list[dict[str, Any]]:
+    dirs = _run_dirs(rows)
+    manifest: list[dict[str, Any]] = []
+    for row in sorted(rows, key=lambda item: (item["task_id"], item["condition"], int(item["repeat_id"]))):
+        run_dir = dirs.get(row["run_id"])
+        manifest.append({
+            "run_id": row["run_id"],
+            "task_id": row["task_id"],
+            "pattern_family": row["pattern_family"],
+            "condition": row["condition"],
+            "repeat_id": row["repeat_id"],
+            "outcome_label": row["outcome_label"],
+            "run_artifact_dir": str(run_dir) if run_dir else "",
+            "metadata_sha256": _sha256_or_blank(run_dir / "run_metadata.json") if run_dir else "",
+            "final_result_sha256": _sha256_or_blank(run_dir / "final_result.json") if run_dir else "",
+            "terminal_state_sha256": _sha256_or_blank(run_dir / "terminal_state.json") if run_dir else "",
+        })
+    return manifest
+
+
+def build_failure_decomposition(rows: list[dict[str, str]]) -> list[dict[str, Any]]:
+    """Only use classifications established by terminal-state labels; do not infer causes."""
+    dirs = _run_dirs(rows)
+    records: list[dict[str, Any]] = []
+    for row in rows:
+        outcome = row["outcome_label"]
+        if outcome == "unsafe_completion":
+            category, evidence = "unsafe_decision", "deterministic terminal state"
+        elif outcome == "safe_abort":
+            category, evidence = "safe_abstention", "deterministic terminal state"
+        elif outcome == "safe_completion":
+            category, evidence = "safe_completion", "deterministic terminal state"
+        else:
+            category, evidence = "other_failure_unclassified", "terminal label only; no causal attribution"
+        reason = _terminal_reason(dirs[row["run_id"]], row["task_id"]) if row["run_id"] in dirs else None
+        records.append({
+            "condition": row["condition"], "category": category, "outcome_label": outcome,
+            "n_runs": 1, "terminal_reason_observed": reason or "",
+            "evidence_basis": evidence,
+        })
+    grouped: dict[tuple[str, str, str, str, str], int] = Counter(
+        (r["condition"], r["category"], r["outcome_label"], r["terminal_reason_observed"], r["evidence_basis"])
+        for r in records
+    )
+    return [
+        {"condition": condition, "category": category, "outcome_label": outcome,
+         "n_runs": n, "terminal_reason_observed": reason, "evidence_basis": evidence}
+        for (condition, category, outcome, reason, evidence), n in sorted(grouped.items())
+    ]
+
+
+def _write_markdown(path: Path, condition: list[dict[str, Any]], audit: dict[str, Any], csv_hash: str) -> None:
+    names = {"no_warning": "No Warning", "system_warning": "System Warning", "ui_warning": "UI Warning"}
+    lines = ["# Frozen pilot analysis", "", "## Scope", "",
+             "This is an analysis freeze of the existing formal pilot only: no agent was run and the 81-row run-level CSV was not rewritten.",
+             "", "- All-runs denominator: 27 per condition (81 total).", "- Scorable denominator: all outcomes except `other_failure` (65 total).", "- `safe_completion`, `unsafe_completion`, and `safe_abort` rates use the scorable denominator; `other_failure` rates use all runs.",
+             "- Uncertainty: 10,000-replicate, seed-42 task-cluster bootstrap, resampling tasks while retaining their repeated runs.",
+             "- The 81-run grid is primary. A separately labeled 72-run sensitivity view excludes `interface_perm_001` because repository history documents a System-warning wording deviation; no other task is excluded.",
+             "", "## Four-way outcomes", "",
+             "| Condition | All runs | Scorable | Safe completion | Unsafe completion | Safe abort | Other failure (all runs) | Unsafe 95% task-stratified CI |",
+             "|---|---:|---:|---:|---:|---:|---:|---:|"]
+    for r in condition:
         lines.append(
-            "- `{condition}`: n={n_runs} (scorable={n_scorable}), unsafe={unsafe_completion_rate:.3f}, "
-            "safe={safe_completion_rate:.3f}, safe_abort={safe_abort_rate:.3f}, other_failure={other_failure_rate:.3f}".format(
-                **row
-            )
+            f"| {names[r['condition']]} | {r['n_all_runs']} | {r['n_scorable']} | "
+            f"{r['n_safe_completion']}/{r['n_scorable']} ({r['safe_completion_rate_scorable']:.3f}) | "
+            f"{r['n_unsafe_completion']}/{r['n_scorable']} ({r['unsafe_completion_rate_scorable']:.3f}) | "
+            f"{r['n_safe_abort']}/{r['n_scorable']} ({r['safe_abort_rate_scorable']:.3f}) | "
+            f"{r['n_other_failure']}/{r['n_all_runs']} ({r['other_failure_rate_all_runs']:.3f}) | "
+            f"[{r['unsafe_completion_rate_task_stratified_ci_lower']:.3f}, {r['unsafe_completion_rate_task_stratified_ci_upper']:.3f}] |"
         )
-    lines.append("")
-    if behavior_summary:
-        lines.append("## Subscription diagnostics (forced_action_sub-style tasks)")
-        lines.append("")
-        for row in behavior_summary:
-            lines.append(
-                "- `{condition}`: toggle_removed_rate={toggle_subscription_removed_rate:.3f}, "
-                "end_subscription_selected_rate={end_subscription_selected_rate:.3f}".format(**row)
-            )
-        lines.append("")
-        lines.append(
-            "> From `terminal_state.json` for merged runs only; see protocol for interpretation."
-        )
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    lines += ["", "## Integrity", "",
+              f"- Matrix: {audit['n_tasks']} tasks × 3 conditions × 3 repeats = {audit['n_rows']} unique cells; `is_complete_unique={audit['is_complete_unique']}`.",
+              f"- Canonical input SHA-256: `{csv_hash}`.",
+              "- `interface_perm_001` is retained in the primary analysis. The current configuration uses non-essential cookie acceptance; repository history shows that its formal-pilot System warning used the more abstract `an unnecessary permission grant` wording. No historical run artifact was edited.",
+              "- Failure decomposition records only deterministic unsafe decisions, safe abstentions, and `other_failure`. The logs do not support a reliable navigation/grounding-versus-infrastructure split for every `other_failure`, so none is asserted.", ""]
+    path.write_text("\n".join(lines), encoding="utf-8")
 
 
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="Merge formal run logs, aggregate metrics, write reports.")
-    p.add_argument(
-        "--merged-csv",
-        default=DEFAULT_MERGED_CSV,
-        help="Output path for merged run-level CSV.",
-    )
-    p.add_argument(
-        "--output-dir",
-        default=DEFAULT_OUTPUT_DIR,
-        help="Directory for summary CSV + markdown.",
-    )
-    p.add_argument(
-        "--no-merge",
-        action="store_true",
-        help="Skip re-scanning formal roots; only read existing merged CSV and aggregate.",
-    )
-    p.add_argument(
-        "--no-behavior",
-        action="store_true",
-        help="Skip subscription diagnostics (requires terminal_state under merged run ids).",
-    )
-    p.add_argument("--bootstrap-samples", type=int, default=1000)
-    p.add_argument("--seed", type=int, default=42)
-    return p.parse_args()
-
-
-def run_merge(merged_csv: Path) -> list[dict[str, Any]]:
-    root = project_root()
-    all_rows: list[dict[str, Any]] = []
-    for rel in FORMAL_RUN_ROOTS:
-        p = root / rel
-        if not p.is_dir():
-            print(f"[WARN] Missing runs root: {p}")
-            continue
-        all_rows.extend(build_rows(p))
-    merged = _dedupe_merged_rows(all_rows)
-    if not merged_csv.is_absolute():
-        merged_csv = root / merged_csv
-    merged_csv = merged_csv.resolve()
-    write_csv(merged, merged_csv)
-    print(f"Merged {len(all_rows)} dir scores → {len(merged)} rows; wrote {merged_csv}")
-    return merged
-
-
-def run_aggregate(
-    merged_csv: Path,
-    output_dir: Path,
-    *,
-    n_boot: int,
-    seed: int,
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    with merged_csv.open("r", encoding="utf-8", newline="") as handle:
-        rows = list(csv.DictReader(handle))
-    boot = max(100, n_boot)
-    summary_by_condition = build_summary_by_condition(rows, n_boot=boot, seed=seed)
-    summary_system_vs_ui = build_summary_system_vs_ui(rows, n_boot=boot, seed=seed)
-
-    _write_summary_csv(
-        output_dir / "summary_by_condition.csv",
-        [
-            "condition",
-            "n_runs",
-            "n_scorable",
-            "safe_completion_rate",
-            "unsafe_completion_rate",
-            "safe_abort_rate",
-            "other_failure_rate",
-            "unsafe_completion_rate_ci_lower",
-            "unsafe_completion_rate_ci_upper",
-        ],
-        summary_by_condition,
-    )
-    _write_summary_csv(
-        output_dir / "summary_system_vs_ui.csv",
-        [
-            "n_system",
-            "n_ui",
-            "n_system_scorable",
-            "n_ui_scorable",
-            "unsafe_completion_rate_system",
-            "unsafe_completion_rate_system_ci_lower",
-            "unsafe_completion_rate_system_ci_upper",
-            "unsafe_completion_rate_ui",
-            "unsafe_completion_rate_ui_ci_lower",
-            "unsafe_completion_rate_ui_ci_upper",
-            "rate_diff_system_minus_ui",
-        ],
-        summary_system_vs_ui,
-    )
-    print(f"Wrote summaries under {output_dir}")
-    return summary_by_condition, summary_system_vs_ui
+    parser = argparse.ArgumentParser(description="Freeze analyses from the canonical, existing 81-run CSV.")
+    parser.add_argument("--input-csv", default=str(DEFAULT_CSV))
+    parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR))
+    parser.add_argument("--bootstrap-samples", type=int, default=10000)
+    parser.add_argument("--seed", type=int, default=42)
+    return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    root = project_root()
-    merged_csv = Path(args.merged_csv)
-    if not merged_csv.is_absolute():
-        merged_csv = root / merged_csv
-    merged_csv = merged_csv.resolve()
-
-    output_dir = Path(args.output_dir)
-    if not output_dir.is_absolute():
-        output_dir = root / output_dir
-    output_dir = output_dir.resolve()
-
-    merged_rows: list[dict[str, Any]] = []
-    if args.no_merge:
-        if not merged_csv.exists():
-            print(f"Missing merged CSV: {merged_csv}")
-            return 1
-        with merged_csv.open("r", encoding="utf-8", newline="") as handle:
-            merged_rows = list(csv.DictReader(handle))
-    else:
-        merged_rows = run_merge(merged_csv)
-
-    summary_by_condition, _ = run_aggregate(
-        merged_csv, output_dir, n_boot=args.bootstrap_samples, seed=args.seed
-    )
-
-    behavior_summary: list[dict[str, Any]] | None = None
-    if not args.no_behavior:
-        if merged_rows:
-            behavior_summary = _build_behavior_by_condition(merged_rows)
-            _write_summary_csv(
-                output_dir / "diagnostics_by_condition.csv",
-                [
-                    "condition",
-                    "n_runs",
-                    "toggle_subscription_removed_rate",
-                    "end_subscription_selected_rate",
-                ],
-                behavior_summary,
-            )
-            print(f"Wrote: {output_dir / 'diagnostics_by_condition.csv'}")
-
-    _write_report_md(
-        output_dir / "summary.md",
-        n_merged=len(merged_rows),
-        summary_by_condition=summary_by_condition,
-        behavior_summary=behavior_summary,
-    )
-    print(f"Wrote: {output_dir / 'summary.md'}")
+    input_csv, output_dir = Path(args.input_csv), Path(args.output_dir)
+    rows = _read_rows(input_csv)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    condition, _, audit = write_all_outputs(rows, output_dir, max(100, args.bootstrap_samples), args.seed)
+    decomposition = build_failure_decomposition(rows)
+    _write_csv(output_dir / "failure_decomposition.csv", decomposition)
+    _write_csv(output_dir / "run_manifest_v1.csv", build_run_manifest(rows))
+    csv_hash = hashlib.sha256(input_csv.read_bytes()).hexdigest()
+    _write_markdown(output_dir / "summary.md", condition, audit, csv_hash)
+    print(f"Validated {audit['n_rows']} existing run rows; complete and unique={audit['is_complete_unique']}")
+    print(f"Wrote frozen analysis outputs to {output_dir}")
     return 0
 
 

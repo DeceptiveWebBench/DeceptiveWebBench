@@ -1,8 +1,8 @@
-# Execution-Time Warnings for Web Agents Under Deceptive Interfaces
+# Trustworthy Completion for Web Agents
 
-A controlled local benchmark for evaluating whether **execution-time warnings** reduce **unsafe completion** when a multimodal web agent navigates deceptive UIs, and whether the **delivery channel** (system-prompt vs in-page) matters.
+A controlled local benchmark for evaluating trustworthy completion when nominal web-agent success can conflict with user interests, consent, autonomy, privacy, or policy constraints.
 
-> **Paper:** NeurIPS 2026 Evaluations & Datasets track. Build the PDF with `cd paper && pdflatex neurips_2026 && bibtex neurips_2026 && pdflatex neurips_2026 && pdflatex neurips_2026`.
+> **Paper:** Trustworthy AI for Good Workshop, NeurIPS 2026. The Version 1 A--C package uses the frozen 81-run pilot; D/E experiments are Research Agenda items only.
 
 ## Key ideas
 
@@ -53,11 +53,10 @@ python -m http.server
 # 4. Smoke test (single task)
 python -m scripts.smoke_browseruse.run
 
-# 5. Formal batch run
-python -m src.runner.run_experiment --manifest configs/manifests/formal.yaml
-
-# 6. Aggregate results
-python -m analysis
+# 5. Reproduce the frozen paper analysis (does not run an agent)
+python -m analysis --input-csv logs/experiment_runs/results_run_level.csv \
+  --output-dir analysis/outputs --bootstrap-samples 10000 --seed 42
+python analysis/generate_figures.py
 ```
 
 ## Analysis
@@ -67,16 +66,16 @@ python -m analysis
 python -m analysis.aggregate_results --input-csv logs/experiment_runs/results_run_level.csv
 ```
 
-Bootstrap 95% CIs (1,000 resamples, seed 42) over scorable runs. See `analysis/stats_plan.md`. Frozen paper-facing tables live in `analysis/outputs/`.
+Task-cluster-bootstrap 95% intervals use 10,000 resamples and seed 42. Outcome rates use explicitly labeled scorable or all-run denominators. Frozen paper-facing tables, the 72-run wording-deviation sensitivity view, and the 81-row run manifest live in `analysis/outputs/`.
 
 ## Data release (Hugging Face)
 
 ```bash
-python dataset/export_staging.py
+python dataset/build_hf_package.py
 python dataset/upload_to_hf.py
 ```
 
-Staging files land in `dataset/hf_staging/` (gitignored). Dataset card: `dataset/README.md`. Croissant: `dataset/metadata/croissant.json`. Raw `logs/` stay local / optional Hub revision.
+Staging files land in `dataset/hf_staging/` (gitignored). Public dataset: [deceptive-web-benchmark/execution-time-warnings-web-agents](https://huggingface.co/datasets/deceptive-web-benchmark/execution-time-warnings-web-agents).
 
 ## Licenses
 
