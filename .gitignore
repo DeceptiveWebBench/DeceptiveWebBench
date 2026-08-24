@@ -17,6 +17,7 @@ dataset/hf_staging/
 analysis/_tmp*
 tmp/
 artifacts/v2/pre_api_dry_run/runs/
+artifacts/v2/submission_review/
 
 # Hugging Face release staging (published separately)
 dataset/hf_staging_v2/

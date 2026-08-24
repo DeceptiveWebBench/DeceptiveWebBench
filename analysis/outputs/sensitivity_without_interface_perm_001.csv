@@ -1,4 +1,0 @@
-condition,n_all_runs,n_scorable,n_other_failure,other_failure_rate_all_runs,unsafe_completion_rate_task_stratified_ci_lower,unsafe_completion_rate_task_stratified_ci_upper,n_safe_completion,safe_completion_rate_scorable,n_unsafe_completion,unsafe_completion_rate_scorable,n_safe_abort,safe_abort_rate_scorable
-no_warning,24,19,5,0.208333,0.227273,0.9,8,0.421053,11,0.578947,0,0.0
-system_warning,24,17,7,0.291667,0.153846,0.882353,8,0.470588,9,0.529412,0,0.0
-ui_warning,24,21,3,0.125,0.333333,0.916667,6,0.285714,14,0.666667,1,0.047619

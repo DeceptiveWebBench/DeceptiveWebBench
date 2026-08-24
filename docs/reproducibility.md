@@ -1,79 +1,82 @@
 # Reproducibility
 
-## Protocol v2 pre-API environment
+## Frozen Protocol v2 environment
 
-The verified local candidate uses Python **3.12.13**, BrowserUse **0.12.6**, Playwright
-**1.61.0**, Google Chrome **151.0.7922.138**, a 1280×720 viewport, and `en-US` locale.
-Exact package and source hashes are recorded in
-`artifacts/v2/review/non_model_freeze_candidate.json`. `requirements.txt` is a dependency
-specification rather than a complete lock, so the installed-environment hash must be frozen again
-after the final clean install and repository commit.
+The formal study used Python 3.12.13, BrowserUse 0.12.6, Playwright 1.61.0, and Google Chrome 151.0.7922.138 in headless mode with a 1280 x 720 viewport, device scale factor 1, and `en-US` locale. The frozen vision-capable agent was `qwen.qwen3-vl-235b-a22b`, accessed through AWS Bedrock in `us-east-1`.
 
-The unique active v2 runtime is `configs/v2/runtime.yaml`. It freezes AWS Bedrock Claude Sonnet
-4.6, the documented model identifier, region/request version, sampling, headless browser settings,
-four distinct timeout levels, and retry policy. `configs/v2/pricing.yaml` freezes the dated standard
-price used for reconstruction. Access/inference-profile resolution and actual provider event/usage
-fields remain first-smoke checks. The static pre-API workflow neither needs nor reads credentials.
+The active configuration is `configs/v2/runtime.yaml`. It records the model and request schema, sampling behavior, clean-context policy, step and timeout limits, retry policy, and dated cost configuration. The experiment crossed 12 tasks, 3 safeguard conditions, and 3 repeats for 108 scheduled cells.
 
-## Local sandbox entry (Protocol v2)
+## Inspect the synthetic websites
 
-The current author-review entry covers all 12 Protocol v2 tasks:
+No credentials are needed to inspect or interact with the benchmark websites.
 
 ```bash
-cd DeceptiveWebBench
 python3 -m http.server 8000 --bind 127.0.0.1
-# open http://127.0.0.1:8000/env/index.html
+# Open http://127.0.0.1:8000/env/index.html
 ```
 
-`env/dashboard/index.html` is the historical Version 1 BenchScope dashboard for the 9-task / 81-run suite. New work should not treat it as the default entry. Path notes: `archive/v1_benchmark/README.md`.
-
-## Canonical commands
-
-| Step | Command |
-|------|---------|
-| Preview all 12 v2 tasks | `python3 -m http.server 8000 --bind 127.0.0.1` → `http://127.0.0.1:8000/env/index.html` |
-| Full v2 contracts and real-browser paths | `./.venv/bin/python -m unittest discover -s tests/v2 -v` |
-| Structural comparability audit | `./.venv/bin/python -m scripts.v2.audit_structural_metrics` |
-| Complete model-free 108-cell dry run | `./.venv/bin/python -m scripts.v2.run_pre_api_dry_run` |
-| Design-only repeat precision audit | `./.venv/bin/python -m scripts.v2.run_precision_audit` |
-| Capture non-model freeze candidate | `./.venv/bin/python -m scripts.v2.build_freeze_candidate` |
-| Confirm formal guard | `./.venv/bin/python -m scripts.v2.run_schedule --formal` (must exit blocked) |
-| Static smoke preflight (no credential read) | `PYTHONPATH=. ./.venv/bin/python scripts/v2/preflight_api_smoke.py` |
-
-The separately authorized real-smoke sequence is documented in `docs/smoke_api_handoff.md`. It is
-not part of model-free verification and has not been run.
-
-## Paper build
-
-From `paper/`, using Tectonic 0.16.9 or a compatible LaTeX installation:
+## Install and run the verification suite
 
 ```bash
-tectonic --keep-logs neurips_2026.tex
-tectonic --keep-logs supplement_v1_2026-08-09.tex
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+playwright install chromium
+
+python -m unittest discover -s tests/v2 -v
+python -m scripts.v2.audit_structural_metrics
 ```
 
-The released files are `paper/paper_v1_AC_2026-08-09.pdf` and `paper/supplement_v1_2026-08-09.pdf`. The main PDF has seven pages total; the main text ends on page 5 and References begins on page 6, satisfying the 2--8 page main-text limit.
+The public package contains 102 tests. These cover the task registry and randomized matrix, real-browser safe and unsafe paths, matched safeguard delivery, deterministic endpoint and boundary scoring, retry and timeout rules, formal-only analysis admission, and cost accounting. Three provenance-only checks skip automatically because the raw pilot/formal interaction trees are intentionally not released.
 
-## Protocol v2 seeds, scoring, and analysis admission
+## Frozen design and scoring
 
-- Planned aggregation: **10,000 task-cluster resamples**, seed **20260807**; task identity
-  is the cluster and all conditions/repeats travel together.
-- Outcomes: independent deterministic C/S checks in `src/v2/scorer.py`; no LLM judge.
-- Formal analysis rejects `formal_run=false`, `synthetic_fixture=true`, stale task versions, stale
-  matrix hashes, duplicate/missing cells, and invalid retry sequences.
-- Historical Version 1 reproduction remains governed by `docs/archive/v1/experiment_protocol.md`
-  and its frozen commands. It is not a fallback input for Protocol v2.
+- Matrix: `docs/experiment_matrix_v2.csv` (108 unique scheduled cells).
+- Task registry: `configs/v2/task_registry.json`.
+- Safeguard payload: `configs/v2/warnings_v0.2.yaml`.
+- Run-level scoring: independent deterministic `C` and `S` checks in `src/v2/scorer.py`; no LLM judge.
+- Statistical plan: 10,000 task-cluster bootstrap resamples with seed 20260807; task identity is the cluster and all conditions and repeats travel together.
+- Validity: non-formal, fixture, stale-version, duplicate, missing, and invalid-retry records are rejected from formal analysis.
 
-The pre-API dry run writes only to `artifacts/v2/pre_api_dry_run/`, declares
-`formal_run=false`, `synthetic_fixture=true`, and `agent_model_call=false`, and prohibits treatment
-analysis. It does not write `logs/v2/formal/` or produce paper-facing results.
+## Released results
 
-## Artifacts
+The authoritative aggregate release is under `artifacts/v2/formal_v02_108/author_insight_review/`. Important entry points are:
 
-| Artifact | Location |
-|----------|----------|
-| Protocol v2 registry/matrix | `configs/v2/`, `docs/experiment_matrix_v2.csv` |
-| Pre-API machine audits | `artifacts/v2/review/` |
-| Model-free dry run | `artifacts/v2/pre_api_dry_run/` (local validation only) |
-| Future formal v2 attempts | `logs/v2/formal/` (currently empty and authorization-guarded) |
-| Historical Version 1 summaries | `analysis/outputs/` (frozen) |
+| Artifact | Purpose |
+|---|---|
+| `analysis_dataset.csv` | Scored 108-cell analysis dataset |
+| `condition_summary.csv` | Four-quadrant counts and C/S/TC rates |
+| `contrast_bootstrap.csv` | Preregistered condition contrasts and cluster-bootstrap intervals |
+| `task_condition_summary.csv` | Task-by-condition outcomes |
+| `repeat_summary.csv` | Repeat-level consistency |
+| `cost_summary.csv` | Cost and latency accounting |
+| `data_integrity_audit.json` | Machine-readable completeness, validity, and provenance checks |
+| `statistical_analysis_report.md` | Human-readable statistical report |
+
+One malformed model action was classified as a valid behavioral safe non-completion through an append-only, hash-linked adjudication under the frozen validity rule. The original attempt artifacts were not modified and no API rerun occurred. See `artifacts/v2/formal_v02_108/ADJUDICATION_NOTICE.md`.
+
+Raw model/browser traces are intentionally omitted from the anonymous review package. The released aggregate tables, audit hashes, deterministic scorer, registry, and statistical code support inspection of the reported results without exposing credentials or large interaction logs.
+
+## Regenerate publication assets
+
+```bash
+python scripts/v2/generate_publication_figures_v02.py
+```
+
+## Build the paper
+
+From `paper/`, use a compatible LaTeX installation:
+
+```bash
+pdflatex venue_ai4good.tex
+bibtex venue_ai4good
+pdflatex venue_ai4good.tex
+pdflatex venue_ai4good.tex
+
+pdflatex supplement_v2_formal.tex
+bibtex supplement_v2_formal
+pdflatex supplement_v2_formal.tex
+pdflatex supplement_v2_formal.tex
+```
+
+The shared anonymous manuscript source is `paper/neurips_2026.tex`. Thin wrappers for the three considered workshops are retained alongside it; `venue_ai4good.tex` is the current primary wrapper.

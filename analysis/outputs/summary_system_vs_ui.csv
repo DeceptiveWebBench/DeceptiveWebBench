@@ -1,2 +1,0 @@
-n_system_all_runs,n_ui_all_runs,n_system_scorable,n_ui_scorable,unsafe_completion_rate_system_scorable,unsafe_completion_rate_ui_scorable,rate_diff_system_minus_ui,rate_diff_task_stratified_ci_lower,rate_diff_task_stratified_ci_upper
-27,27,20,24,0.6,0.583333,0.016667,-0.336232,0.3663

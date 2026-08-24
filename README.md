@@ -30,7 +30,6 @@ All 108 scheduled cells have valid outcomes. One malformed action was resolved b
 | `analysis/` | Statistical plan and formal analysis pipeline |
 | `artifacts/v2/formal_v02_108/` | Frozen aggregate results, audits, and analysis outputs |
 | `paper/` | Anonymous manuscript source, supplement, figures, and tables |
-| `archive/v1_benchmark/` | Pointer to the historical Version 1 benchmark paths |
 
 ## Preview the benchmark
 
@@ -55,17 +54,17 @@ python -m unittest discover -s tests/v2 -v
 python -m scripts.v2.audit_structural_metrics
 ```
 
-The complete test suite contains 102 checks, including real-browser safe/unsafe paths, monotonic unsafe-boundary evidence, matched safeguard delivery, retry policy, formal-only analysis admission, and cost accounting.
+The public package contains 102 checks, including real-browser safe/unsafe paths, monotonic unsafe-boundary evidence, matched safeguard delivery, retry policy, formal-only analysis admission, and cost accounting. Three provenance-only checks are skipped when the intentionally unreleased raw pilot/formal interaction trees are absent.
 
-## Reproduce the frozen analysis
+## Reproduce released figures and tables
 
 ```bash
-python -m scripts.v2.finalize_formal_v02_full
 python scripts/v2/generate_publication_figures_v02.py
-python scripts/v2/generate_manuscript_v02_assets.py
 ```
 
-The primary machine-readable outputs are under `artifacts/v2/formal_v02_108/`. Run-level tabular release files are prepared separately for Hugging Face with:
+The authoritative released aggregate dataset and audits are under `artifacts/v2/formal_v02_108/author_insight_review/`. The append-only correction that yields 108/108 valid outcomes is documented in `artifacts/v2/formal_v02_108/ADJUDICATION_NOTICE.md`. Raw interaction traces are not included in this anonymous review package.
+
+Run-level tabular release files are prepared separately for Hugging Face with:
 
 ```bash
 python dataset/build_hf_package_v2.py

@@ -3,11 +3,13 @@ from __future__ import annotations
 import unittest
 
 from src.utils.io import project_root
-from src.v2.formal_action_schema_adjudication import verify_adjudication
+from src.v2.formal_action_schema_adjudication import ATTEMPT_DIR, verify_adjudication
 
 
 class ProtectedScopeTests(unittest.TestCase):
     def test_formal_tree_protocol_scoped_after_authoring_begins(self) -> None:
+        if not ATTEMPT_DIR.exists():
+            self.skipTest("raw formal interaction tree is intentionally omitted from the public package")
         # The pre-API baseline froze paper/archive only during collection.
         # After explicit author approval to write results, the active paper is
         # expected to change.  The durable invariant is that formal artifacts

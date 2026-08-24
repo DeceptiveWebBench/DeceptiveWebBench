@@ -3,7 +3,7 @@ from __future__ import annotations
 import unittest
 
 from src.v2.formal_later_repeats_v02 import (
-    authorization_template, collection_id, repeat_cells, tranche_hash,
+    FORMAL_BASE, authorization_template, collection_id, repeat_cells, tranche_hash,
     verify_repeat1_freeze,
 )
 
@@ -26,6 +26,8 @@ class FormalV02LaterRepeatContractTests(unittest.TestCase):
             self.assertEqual(64, len(tranche_hash(repeat_id)))
 
     def test_repeat1_frozen_components_are_unchanged(self):
+        if not (FORMAL_BASE / "repeat_1/formal_manifest.json").exists():
+            self.skipTest("raw formal interaction tree is intentionally omitted from the public package")
         verify_repeat1_freeze()
 
 
