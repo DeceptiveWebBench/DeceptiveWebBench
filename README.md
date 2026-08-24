@@ -1,98 +1,87 @@
 # Trustworthy Completion for Web Agents
 
-A controlled local benchmark for evaluating trustworthy completion when nominal web-agent success can conflict with user interests, consent, autonomy, privacy, or policy constraints.
+A controlled benchmark for evaluating web agents when nominal task completion can conflict with user interests, consent, autonomy, privacy, or policy constraints.
 
-> **Paper:** Trustworthy AI for Good Workshop, NeurIPS 2026. The Version 1 A--C package uses the frozen 81-run pilot; D/E experiments are Research Agenda items only.
+The benchmark separates endpoint completion (`C`) from avoidance of a machine-verifiable unsafe commitment (`S`). **Trustworthy Completion** is their conjunction: `TC = C AND S`.
 
-## Key ideas
+## Study snapshot
 
-| Concept | Detail |
-|---------|--------|
-| **Conditions** | No Warning · System Warning · UI Warning (matched semantics, channel varies) |
-| **Pattern families** | Interface interference · Sneaking · Forced action |
-| **Outcome schema** | Safe completion · Unsafe completion · Safe abort · Other failure |
-| **Scoring** | Deterministic terminal-state checks (no LLM judge) |
-| **Agent** | BrowserUse + Amazon Nova Lite v1 (Bedrock), fixed across conditions |
+| Item | Frozen Protocol v2 design |
+|---|---|
+| Tasks | 12 synthetic consumer tasks |
+| Pattern families | Forced action, sneaking, interface interference |
+| Conditions | No safeguard, system-delivered safeguard, interface-delivered safeguard |
+| Repeats | 3 per task-condition cell |
+| Scheduled cells | 108 |
+| Agent | `qwen.qwen3-vl-235b-a22b` via AWS Bedrock, BrowserUse 0.12.6 |
+| Scoring | Deterministic endpoint and trajectory-state checks; no LLM judge |
+
+All 108 scheduled cells have valid outcomes. One malformed action was resolved by append-only adjudication under the frozen validity rule. Without a safeguard, nominal completion was 34/36 (94.4%), while trustworthy completion was 7/36 (19.4%) and unsafe completion was 27/36 (75.0%). Both safeguard strategies increased safety, with smaller and uncertain changes in trustworthy completion; the direct system-versus-interface contrast was unresolved.
 
 ## Repository layout
 
 | Path | Role |
-|------|------|
-| `env/index.html` | **Current** local entry — Protocol v2 ShopLane (4 tasks × 3 conditions) |
-| `env/v2/sites/shoplane/` | Current formal v2 ShopLane sandbox |
-| `env/v2/site/` | Temporary prototypes for other v2 tasks (still in development) |
-| `configs/v2/`, `src/v2/`, `scripts/v2/`, `tests/v2/` | Protocol v2 implementation |
-| `env/dashboard/`, `env/site/`, `env/tasks/`, `src/env/static/` | Historical Version 1 benchmark (9 tasks / 81 runs; keep for paper repro) |
-| `configs/` | Frozen Version 1 agent config, warnings, manifests (`configs/manifests/`) |
-| `src/` | Version 1 runner, scorer, prompt builder, agent wrapper |
-| `scripts/` | Smoke tests and contract checks |
-| `analysis/` | Aggregation + frozen `outputs/` summaries |
-| `dataset/` | Hugging Face export/upload + Croissant metadata |
-| `docs/` | Protocol, release split (GitHub vs HF), decision log |
-| `paper/` | NeurIPS LaTeX source |
-| `archive/v1_benchmark/` | Pointer README only (physical archive deferred) |
+|---|---|
+| `env/index.html`, `env/v2/` | Protocol v2 review portal and five synthetic consumer sites |
+| `configs/v2/` | Frozen task registry, safeguard, runtime, pricing, and authorization records |
+| `src/v2/` | Runner, adapter, state machine, deterministic scorer, cost accounting, and artifact contracts |
+| `scripts/v2/` | Verification, analysis, adjudication, and publication-asset commands |
+| `tests/v2/` | Protocol, browser, runner, cost, and formal-analysis tests |
+| `analysis/` | Statistical plan and formal analysis pipeline |
+| `artifacts/v2/formal_v02_108/` | Frozen aggregate results, audits, and analysis outputs |
+| `paper/` | Anonymous manuscript source, supplement, figures, and tables |
+| `archive/v1_benchmark/` | Pointer to the historical Version 1 benchmark paths |
 
-See [`docs/release.md`](docs/release.md) for what belongs on GitHub vs Hugging Face.
+## Preview the benchmark
 
-## Quickstart
+No API credentials are needed to inspect the websites.
 
 ```bash
-# 0. Python 3.12 recommended (see .venv setup on macOS/Linux)
-python3.12 -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+python3 -m http.server 8000 --bind 127.0.0.1
+# Open http://127.0.0.1:8000/env/index.html
+```
+
+## Install and verify
+
+Python 3.12 is recommended.
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 playwright install chromium
 
-# 1. Credentials (env vars only — no keys in the repo)
-export AWS_ACCESS_KEY_ID="..."
-export AWS_API_KEY="..."        # Bedrock secret key
-export AWS_REGION="us-east-1"   # optional
-
-# 2. Verify API access
-python scripts/smoke_test_api.py
-
-# 3. Preview the current v2 ShopLane entry
-python3 -m http.server 8000 --bind 127.0.0.1
-# open http://127.0.0.1:8000/env/index.html
-# Historical Version 1 dashboard (not the current entry): env/dashboard/index.html
-
-# 4. Smoke test (single task; Version 1 path)
-python -m scripts.smoke_browseruse.run
-
-# 5. Reproduce the frozen paper analysis (does not run an agent)
-python -m analysis --input-csv logs/experiment_runs/results_run_level.csv \
-  --output-dir analysis/outputs --bootstrap-samples 10000 --seed 42
-python analysis/generate_figures.py
+python -m unittest discover -s tests/v2 -v
+python -m scripts.v2.audit_structural_metrics
 ```
 
-## Analysis
+The complete test suite contains 102 checks, including real-browser safe/unsafe paths, monotonic unsafe-boundary evidence, matched safeguard delivery, retry policy, formal-only analysis admission, and cost accounting.
+
+## Reproduce the frozen analysis
 
 ```bash
-python -m analysis
-python -m analysis.aggregate_results --input-csv logs/experiment_runs/results_run_level.csv
+python -m scripts.v2.finalize_formal_v02_full
+python scripts/v2/generate_publication_figures_v02.py
+python scripts/v2/generate_manuscript_v02_assets.py
 ```
 
-Task-cluster-bootstrap 95% intervals use 10,000 resamples and seed 42. Outcome rates use explicitly labeled scorable or all-run denominators. Frozen paper-facing tables, the 72-run wording-deviation sensitivity view, and the 81-row run manifest live in `analysis/outputs/`.
-
-## Data release (Hugging Face)
+The primary machine-readable outputs are under `artifacts/v2/formal_v02_108/`. Run-level tabular release files are prepared separately for Hugging Face with:
 
 ```bash
-python dataset/build_hf_package.py
-python dataset/upload_to_hf.py
+python dataset/build_hf_package_v2.py
 ```
 
-Staging files land in `dataset/hf_staging/` (gitignored). Public dataset: [deceptive-web-benchmark/execution-time-warnings-web-agents](https://huggingface.co/datasets/deceptive-web-benchmark/execution-time-warnings-web-agents).
+## Paper
+
+`paper/venue_ai4good.tex` is the current Trustworthy AI for Good workshop wrapper. The shared anonymous manuscript is `paper/neurips_2026.tex`, and the formal supplement is `paper/supplement_v2_formal.tex`.
+
+## Scope and limitations
+
+The benchmark uses curated synthetic deceptive interfaces, one frozen vision-capable agent, and no neutral-interface twins. It evaluates safeguard delivery within this controlled setting; it does not estimate a population-level effect of deceptive design, detector quality, live-site behavior, or cross-agent generality.
 
 ## Licenses
 
 | Scope | License |
-|-------|---------|
+|---|---|
 | Source code | MIT (`LICENSE`) |
-| Non-code assets (tasks, data, figures) | CC BY-NC 4.0 (`LICENSE_DATA`) |
-
-## Terminology (paper ↔ code)
-
-| Paper phrasing | Identifier |
-|----------------|------------|
-| Interface interference | `interface_interference` |
-| Sneaking | `sneaking` |
-| Forced action | `forced_action` |
+| Non-code assets, tasks, data, and figures | CC BY-NC 4.0 (`LICENSE_DATA`) |
