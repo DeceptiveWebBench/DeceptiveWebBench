@@ -1,19 +1,33 @@
 \begin{table}[t]
-  \caption{Threat-model distinctions. ``Deterministic'' refers to task-specific terminal-state checks.}
+  \caption{Closest comparisons by evaluation object. Prior work contributes capability environments, policy-aware outcomes, causal deception tests, or learned defenses; our contribution combines stakeholder grounding, independent $C/S$, deterministic trajectory scoring, and controlled safeguard delivery.}
   \label{tab:bench-compare}
   \centering
   \scriptsize
-  \resizebox{\linewidth}{!}{%
-  \begin{tabular}{lllll}
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{L{.16\linewidth}L{.24\linewidth}L{.27\linewidth}L{.25\linewidth}}
     \toprule
-    Work & Threat source & User intent & Failure definition & Intervention / scorer \\
+    Work & Evaluation object & Outcome and scoring & Intervention / distinction \\
     \midrule
-    WebArena / VWA~\cite{zhou2023webarena,koh2024visualwebarena} & General task complexity & Benign & Task failure & None / functional \\
-    AgentDojo / WASP~\cite{debenedetti2024agentdojo,evtimov2025wasp} & Injected instruction & Benign & Attack success & Defenses / benchmark \\
-    OS-Harm / RiOSWorld~\cite{kuntz2025osharm,yang2025riosworld} & Misuse and environmental risk & Mixed & Safety violation & None / policy checks \\
-    ST-WebAgentBench~\cite{levy2024stwebagentbench} & Policy and web risk & Benign & Unsafe policy completion & None / policy checks \\
-    DeceptiCon~\cite{cuvin2025decepticon} & Deceptive UI & Benign & Pattern susceptibility & None / per-pattern \\
-    \textbf{Ours} & \textbf{Deceptive choice architecture} & \textbf{Benign} & \textbf{Unsafe completion} & \textbf{Warning / deterministic} \\
+    WebArena / VWA / OSWorld~\cite{zhou2023webarena,koh2024visualwebarena,xie2024osworld}
+      & General web or computer tasks
+      & Endpoint/task success; execution checks
+      & Capability evaluation; no stakeholder boundary \\
+    ST-WebAgentBench~\cite{levy2026stwebagentbench}
+      & Web tasks with explicit policies
+      & Completion and policy/safety dimensions
+      & Policy-aware completion; not deceptive consumer choice \\
+    TrickyArena / WebDecept~\cite{ersoy2025darkpatterns,shi2026webdecept}
+      & Neutral versus injected deceptive interfaces
+      & Susceptibility or task behavior under manipulation
+      & Estimates deception effects; multiple agents/prompt constraints \\
+    DUDE~\cite{zhang2026dontclick}
+      & Deceptive UI click scenarios
+      & Click-level trapped/correct judgments
+      & Learns transferable defensive guidance \\
+    \textbf{Ours}
+      & \textbf{Stakeholder-grounded unsafe commitments}
+      & \textbf{Independent $C/S$ from deterministic trajectory state}
+      & \textbf{Matched start-of-task safeguard delivery} \\
     \bottomrule
-  \end{tabular}}
+  \end{tabular}
 \end{table}

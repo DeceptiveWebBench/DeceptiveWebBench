@@ -1,0 +1,22 @@
+{
+  "dry_run_schema_version": "protocol-v2-pre-api-dry-run-1.0",
+  "purpose": "pipeline_and_schema_validation_only",
+  "treatment_analysis_permitted": false,
+  "formal_run": false,
+  "synthetic_fixture": true,
+  "agent_model_call": false,
+  "schedule_sha256": "50a5b1e4bb42602469cf347add41515552ccc5f32f20fa040d7b674ec3d1d417",
+  "scheduled_cells": 108,
+  "unique_scheduled_cells": 108,
+  "valid_dry_run_records": 108,
+  "attempts": 111,
+  "infrastructure_retries_exercised": 3,
+  "retry_planned_orders": [
+    1,
+    54,
+    108
+  ],
+  "all_raw_states_rescored": true,
+  "formal_directory_written": false,
+  "model_or_api_calls": 0
+}

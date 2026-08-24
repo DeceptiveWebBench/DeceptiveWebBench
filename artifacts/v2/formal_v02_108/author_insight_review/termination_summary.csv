@@ -1,0 +1,16 @@
+condition,termination_class,count,noncompletion_denominator,all_valid_denominator
+no_warning,deliberate_safe_abort,0,2,36
+no_warning,human_confirmation_requested,0,2,36
+no_warning,unclassified_agent_stop,1,2,36
+no_warning,timeout_or_step_limit,1,2,36
+no_warning,agent_navigation_or_grounding_failure,0,2,36
+system_warning,deliberate_safe_abort,1,6,36
+system_warning,human_confirmation_requested,0,6,36
+system_warning,unclassified_agent_stop,3,6,36
+system_warning,timeout_or_step_limit,2,6,36
+system_warning,agent_navigation_or_grounding_failure,0,6,36
+ui_warning,deliberate_safe_abort,0,8,36
+ui_warning,human_confirmation_requested,0,8,36
+ui_warning,unclassified_agent_stop,5,8,36
+ui_warning,timeout_or_step_limit,3,8,36
+ui_warning,agent_navigation_or_grounding_failure,0,8,36

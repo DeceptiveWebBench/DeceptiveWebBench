@@ -1,0 +1,42 @@
+{
+  "analysis_version": "formal-v02-author-insight-review-1.0",
+  "generated_files": {
+    "analysis_dataset.csv": "964828e3736ca38eadddcadd9808095f5923bbcd9a4eeaebd615d5dcae17705b",
+    "attempt_audit.csv": "977592af8532fbeb657d6aaaf5df5b8bb51318b4c8d04dc5571e5444c579d030",
+    "author_decision_checklist.md": "cead9e671acfb0adb85497b01bf4ab230cadb561e933298aecb20e190eea8ec3",
+    "claim_evidence_matrix.csv": "5beaa7e4f08516114c7f40b42b03e3704f4088a4e46733124dbc337f910727a9",
+    "condition_summary.csv": "3f4663a2539740ca76c700b8a399f967232f07633bf2de122e1304c10dcf1fdd",
+    "contrast_bootstrap.csv": "947a2701b4b703c433ce0139de4378b102c949d75c277425d714d26f1f1f3e95",
+    "cost_by_task.csv": "58366eb60f5c645b7405258034a5ace67fb12f9241e00d5d86a524195b78584c",
+    "cost_efficiency_analysis.md": "c91bfde6d25a69d40e41fdf5d00032ec47c008c819b4a3bb61255256b338b796",
+    "cost_summary.csv": "9ce56365c1460816ab7dc0621ee5ca9858c019ef75f41174c8766d3d509aee58",
+    "data_integrity_audit.json": "26751a7dae6404577aa03fc597e9f7d8e80c4c95b953af01c4fc4754a927563e",
+    "data_integrity_audit.md": "cc2d665fb812796de9cfa6794b80a7504f4d9c61efc658ad8d8c34ceed6e78f3",
+    "family_summary_exploratory.csv": "4258487004cbb8044ec3653c95061e18b86e5f12ce19ab8a267d74cfc2c93dc5",
+    "fig_cost_latency_supplement.png": "343fbda2ad6df3e7af645a72fec13be68be4c11263c32ef00b1de3b5de887f39",
+    "fig_cs_quadrants_by_condition.png": "a9d86d4532b4c4913e5f899cec013c69fc91bfd3193048e199b49b5158dac611",
+    "fig_paired_transitions.png": "2a609f051c112196e16a054d16436f83c085ef7a1d94e3a101854bdc96313f86",
+    "fig_task_condition_heatmap.png": "c23c3fadc1ce7678dfa9d43b05f6d1248ef80335f9edb58359aa4dcb8e4688fd",
+    "fig_tradeoff_contrasts.png": "04c036c9d6b5839c9fa62bc70ddd579937c92bf5870d40b99c93b216032af055",
+    "leave_one_task_out_posthoc.csv": "dd733a61c2e3a607e864431716ca0a1923ddf182c8f7116157f2c3bae4af212c",
+    "manuscript_insight_memo.md": "ccc24d9919e514c37d460bab67e1ffd2fb2177a25f7470e64621c8fe01ac1514",
+    "missing_cell_sensitivity.csv": "dbfd85acd5042e0a840f45b515bf28cf65c2985243e2976a9edbb841a5085ac4",
+    "paired_transitions.csv": "4a4abefb0ea80a6876373f79b22bbce5cf3a4ebe585c87c831997348268e2eb2",
+    "proposed_results_outline.md": "d1fc6a1df1148db6732691d0fef3f637bf3d4bb53636cdb61862f0d90ce01190",
+    "repeat_consistency.csv": "5f01359774b3424729b194ad3336d1c97dda157b47674c6e3f9b471d086ef90c",
+    "repeat_summary.csv": "ae4daaf014038f2383a6f2a038137f0046f7493e677219e49f47ec9a914ffda9",
+    "statistical_analysis_report.md": "7d39a5d66e9482edbe9c7da3e99eec632012735d62f1bf1242e8246e0956b55a",
+    "task_condition_summary.csv": "3a005ce752ecef8251119c5a77f0fd0623b867971bbb4acdbd654ccbb3c9456d",
+    "task_level_insights.md": "0dbe7ba9df3d4b12ffe3c3d64be9ac57283588a64ea446dbbd3fc6cc996ce504",
+    "termination_and_failure_analysis.md": "c75f918c9df91d70d8bf4bbf26b81ad90b003d5fd17099596040652230274b85",
+    "termination_summary.csv": "faba9685d1f5834c4cc7e6f1ffd3cce1bc9e9e2333f475dd596af2a9791cf377"
+  },
+  "source_roots": [
+    "logs/v2/formal/protocol-v2-generic-safeguard-v0.2/repeat_1",
+    "logs/v2/formal/protocol-v2-generic-safeguard-v0.2/repeat_2",
+    "logs/v2/formal/protocol-v2-generic-safeguard-v0.2/repeat_3"
+  ],
+  "reproduction_command": "PYTHONPATH=. .venv/bin/python -m analysis.formal_v02_author_insights",
+  "paid_api_calls": 0,
+  "paper_modified": false
+}

@@ -18,15 +18,19 @@ A controlled local benchmark for evaluating trustworthy completion when nominal 
 
 | Path | Role |
 |------|------|
-| `configs/` | Frozen agent config, warnings, task index, run manifests (`configs/manifests/`) |
-| `env/site/`, `env/tasks/` | ShopLane & WorkHub HTML shells + per-task `task.yaml` |
-| `src/env/static/` | CSS/JS served by the sandbox pages |
-| `src/` | Runner, scorer, prompt builder, agent wrapper |
+| `env/index.html` | **Current** local entry — Protocol v2 ShopLane (4 tasks × 3 conditions) |
+| `env/v2/sites/shoplane/` | Current formal v2 ShopLane sandbox |
+| `env/v2/site/` | Temporary prototypes for other v2 tasks (still in development) |
+| `configs/v2/`, `src/v2/`, `scripts/v2/`, `tests/v2/` | Protocol v2 implementation |
+| `env/dashboard/`, `env/site/`, `env/tasks/`, `src/env/static/` | Historical Version 1 benchmark (9 tasks / 81 runs; keep for paper repro) |
+| `configs/` | Frozen Version 1 agent config, warnings, manifests (`configs/manifests/`) |
+| `src/` | Version 1 runner, scorer, prompt builder, agent wrapper |
 | `scripts/` | Smoke tests and contract checks |
 | `analysis/` | Aggregation + frozen `outputs/` summaries |
 | `dataset/` | Hugging Face export/upload + Croissant metadata |
 | `docs/` | Protocol, release split (GitHub vs HF), decision log |
 | `paper/` | NeurIPS LaTeX source |
+| `archive/v1_benchmark/` | Pointer README only (physical archive deferred) |
 
 See [`docs/release.md`](docs/release.md) for what belongs on GitHub vs Hugging Face.
 
@@ -46,11 +50,12 @@ export AWS_REGION="us-east-1"   # optional
 # 2. Verify API access
 python scripts/smoke_test_api.py
 
-# 3. Preview the sandbox
-python -m http.server
-# open http://localhost:8000/env/dashboard/index.html
+# 3. Preview the current v2 ShopLane entry
+python3 -m http.server 8000 --bind 127.0.0.1
+# open http://127.0.0.1:8000/env/index.html
+# Historical Version 1 dashboard (not the current entry): env/dashboard/index.html
 
-# 4. Smoke test (single task)
+# 4. Smoke test (single task; Version 1 path)
 python -m scripts.smoke_browseruse.run
 
 # 5. Reproduce the frozen paper analysis (does not run an agent)

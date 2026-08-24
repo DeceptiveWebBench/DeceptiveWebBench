@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "matrix_sha256": "50a5b1e4bb42602469cf347add41515552ccc5f32f20fa040d7b674ec3d1d417",
+  "scheduled_cells": 108,
+  "unique_cells": 108,
+  "valid_cells": 107,
+  "unavailable_cells": 1,
+  "attempts": 112,
+  "invalid_attempts": 5,
+  "unexplained_artifact_errors": 0,
+  "authorization_status": {
+    "1": "consumed",
+    "2": "consumed",
+    "3": "consumed"
+  },
+  "protected_paper_archive_unchanged": true,
+  "known_cost_usd": 7.51396168,
+  "unknown_cost_attempts": 3,
+  "conservative_exposure_usd": 10.513961680000001,
+  "model_calls_with_usage": 1031,
+  "recorded_tokens": 12383360
+}

@@ -1,0 +1,24 @@
+pricing_config_version: protocol-v2-bedrock-pricing-1.1
+pricing_date: '2026-08-17'
+currency: USD
+unit: per_1m_tokens
+source:
+  publisher: AWS
+  url: https://aws.amazon.com/bedrock/pricing/
+  verification_status: official_public_pricing_page_checked
+model:
+  provider: aws_bedrock
+  intended_model_family: qwen3_vl_235b_a22b
+  documented_model_identifier: qwen.qwen3-vl-235b-a22b
+  endpoint_region: us-east-1
+rates_per_1m_tokens:
+  input_tokens: 0.53
+  output_tokens: 2.66
+  cache_creation_input_tokens_5m: null
+  cache_creation_input_tokens_1h: null
+  cache_read_input_tokens: null
+  reasoning_tokens: null
+notes:
+  reasoning: No separate reasoning configuration or hidden reasoning-token estimate is used.
+  cache: The selected Bedrock Runtime pricing row does not publish prompt-cache rates; cache fields remain null.
+  model_price_row: Qwen3 VL 235B A22B, US East on-demand standard tier.

@@ -1,0 +1,40 @@
+manuscript_location,metric,displayed_value,numerator,denominator,source_artifact,source_field_or_calculation,analysis_status
+Main Results/Table 1/No safeguard,C,34/36 (94.4%),34,36,author_insight_review/condition_summary.csv,C count / n_valid,prespecified primary
+Main Results/Table 1/No safeguard,S,9/36 (25.0%),9,36,author_insight_review/condition_summary.csv,S count / n_valid,prespecified primary
+Main Results/Table 1/No safeguard,TC,7/36 (19.4%),7,36,author_insight_review/condition_summary.csv,TC count / n_valid,prespecified primary
+Main Results/Table 1/No safeguard,unsafe completion,27/36 (75.0%),27,36,author_insight_review/condition_summary.csv,unsafe completion count / n_valid,prespecified primary
+Main Results/Table 1/No safeguard,safe non-completion,2/36 (5.6%),2,36,author_insight_review/condition_summary.csv,safe non-completion count / n_valid,prespecified primary
+Main Results/Table 1/No safeguard,unsafe failure,0/36 (0.0%),0,36,author_insight_review/condition_summary.csv,unsafe failure count / n_valid,prespecified primary
+Main Results/Table 1/No safeguard,scheduled/valid/unavailable,36/36/0,36,36,author_insight_review/condition_summary.csv,"n_scheduled,n_valid,n_unavailable",prespecified accounting
+Main Results/Table 1/System-delivered safeguard,C,30/36 (83.3%),30,36,author_insight_review/condition_summary.csv,C count / n_valid,prespecified primary
+Main Results/Table 1/System-delivered safeguard,S,15/36 (41.7%),15,36,author_insight_review/condition_summary.csv,S count / n_valid,prespecified primary
+Main Results/Table 1/System-delivered safeguard,TC,10/36 (27.8%),10,36,author_insight_review/condition_summary.csv,TC count / n_valid,prespecified primary
+Main Results/Table 1/System-delivered safeguard,unsafe completion,20/36 (55.6%),20,36,author_insight_review/condition_summary.csv,unsafe completion count / n_valid,prespecified primary
+Main Results/Table 1/System-delivered safeguard,safe non-completion,5/36 (13.9%),5,36,author_insight_review/condition_summary.csv,safe non-completion count / n_valid,prespecified primary
+Main Results/Table 1/System-delivered safeguard,unsafe failure,1/36 (2.8%),1,36,author_insight_review/condition_summary.csv,unsafe failure count / n_valid,prespecified primary
+Main Results/Table 1/System-delivered safeguard,scheduled/valid/unavailable,36/36/0,36,36,author_insight_review/condition_summary.csv,"n_scheduled,n_valid,n_unavailable",prespecified accounting
+Main Results/Table 1/Interface-delivered safeguard,C,28/36 (77.8%),28,36,author_insight_review/condition_summary.csv,C count / n_valid,prespecified primary
+Main Results/Table 1/Interface-delivered safeguard,S,15/36 (41.7%),15,36,author_insight_review/condition_summary.csv,S count / n_valid,prespecified primary
+Main Results/Table 1/Interface-delivered safeguard,TC,10/36 (27.8%),10,36,author_insight_review/condition_summary.csv,TC count / n_valid,prespecified primary
+Main Results/Table 1/Interface-delivered safeguard,unsafe completion,18/36 (50.0%),18,36,author_insight_review/condition_summary.csv,unsafe completion count / n_valid,prespecified primary
+Main Results/Table 1/Interface-delivered safeguard,safe non-completion,5/36 (13.9%),5,36,author_insight_review/condition_summary.csv,safe non-completion count / n_valid,prespecified primary
+Main Results/Table 1/Interface-delivered safeguard,unsafe failure,3/36 (8.3%),3,36,author_insight_review/condition_summary.csv,unsafe failure count / n_valid,prespecified primary
+Main Results/Table 1/Interface-delivered safeguard,scheduled/valid/unavailable,36/36/0,36,36,author_insight_review/condition_summary.csv,"n_scheduled,n_valid,n_unavailable",prespecified accounting
+Main Results/contrasts and Figure 3,system_warning_minus_no_warning TC,"+8.3 pp [+0.0, +16.7]",,12 task clusters,author_insight_review/contrast_bootstrap.csv,"estimate,ci95_low,ci95_high; 10,000 task-cluster bootstrap replicates",prespecified primary
+Main Results/contrasts and Figure 3,system_warning_minus_no_warning S,"+16.7 pp [+2.8, +33.3]",,12 task clusters,author_insight_review/contrast_bootstrap.csv,"estimate,ci95_low,ci95_high; 10,000 task-cluster bootstrap replicates",prespecified primary
+Main Results/contrasts and Figure 3,system_warning_minus_no_warning C,"-11.1 pp [-22.2, +0.0]",,12 task clusters,author_insight_review/contrast_bootstrap.csv,"estimate,ci95_low,ci95_high; 10,000 task-cluster bootstrap replicates",prespecified primary
+Main Results/contrasts and Figure 3,ui_warning_minus_no_warning TC,"+8.3 pp [-8.3, +30.6]",,12 task clusters,author_insight_review/contrast_bootstrap.csv,"estimate,ci95_low,ci95_high; 10,000 task-cluster bootstrap replicates",prespecified primary
+Main Results/contrasts and Figure 3,ui_warning_minus_no_warning S,"+16.7 pp [+0.0, +38.9]",,12 task clusters,author_insight_review/contrast_bootstrap.csv,"estimate,ci95_low,ci95_high; 10,000 task-cluster bootstrap replicates",prespecified primary
+Main Results/contrasts and Figure 3,ui_warning_minus_no_warning C,"-16.7 pp [-30.6, -5.6]",,12 task clusters,author_insight_review/contrast_bootstrap.csv,"estimate,ci95_low,ci95_high; 10,000 task-cluster bootstrap replicates",prespecified primary
+Main Results/contrasts and Figure 3,ui_warning_minus_system_warning TC,"+0.0 pp [-16.7, +16.7]",,12 task clusters,author_insight_review/contrast_bootstrap.csv,"estimate,ci95_low,ci95_high; 10,000 task-cluster bootstrap replicates",prespecified secondary
+Main Results/contrasts and Figure 3,ui_warning_minus_system_warning S,"+0.0 pp [-22.2, +19.4]",,12 task clusters,author_insight_review/contrast_bootstrap.csv,"estimate,ci95_low,ci95_high; 10,000 task-cluster bootstrap replicates",prespecified secondary
+Main Results/contrasts and Figure 3,ui_warning_minus_system_warning C,"-5.6 pp [-22.2, +11.1]",,12 task clusters,author_insight_review/contrast_bootstrap.csv,"estimate,ci95_low,ci95_high; 10,000 task-cluster bootstrap replicates",prespecified secondary
+Main Results/run accounting,scheduled cells,108,108,108,data_integrity_audit.json,scheduled_cells,prespecified accounting
+Main Results/run accounting,valid cells,108,108,108,data_integrity_audit.json,valid_cells,prespecified accounting plus append-only protocol adjudication
+Main Results/run accounting,attempts/invalid/retries,112/5/4,112,,data_integrity_audit.json,"attempts,invalid_attempts,retries",prespecified accounting
+Main Results/adjudication,malformed action C/S,C=0; S=1,0,1,technical_adjudication.json,"C_r,S_r; no rerun",protocol-consistency adjudication
+Main Results/paired transitions,unsafe-to-TC System,2/36,2,36,paired_transitions.csv,"sum(unsafe_to_trustworthy), system",secondary diagnostic
+Main Results/paired transitions,unsafe-to-TC Interface,4/36,4,36,paired_transitions.csv,"sum(unsafe_to_trustworthy), interface",secondary diagnostic
+Main Results/paired transitions,completion loss,6 System; 7 Interface,6;7,36,paired_transitions.csv,sum(completion_loss) by condition,secondary diagnostic
+Methods/design,design cells,12 x 3 x 3 = 108,108,108,docs/experiment_matrix_v2.csv,unique task-condition-repeat grid,prespecified design
+Methods/statistics,bootstrap,"10,000; seed 20260807; 12 task clusters",,12,contrast_bootstrap.csv,"bootstrap_replicates,seed,cluster_unit",prespecified primary

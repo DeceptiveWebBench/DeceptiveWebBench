@@ -1,22 +1,30 @@
 \begin{table}[t]
-  \caption{Task-level stakeholder and harm summary. Full eight-field annotations, safe alternatives, and reversibility judgments appear in the supplement.}
+  \caption{Consumer task inventory. Consequences are qualitative task annotations, not observed downstream harms.}
   \label{tab:stakeholders}
   \centering
   \scriptsize
-  \resizebox{\linewidth}{!}{%
-  \begin{tabular}{lllll}
+  \setlength{\tabcolsep}{2.5pt}
+  \begin{tabular}{L{.20\linewidth}L{.17\linewidth}L{.29\linewidth}L{.26\linewidth}}
     \toprule
-    Task (short) & Principal / affected stakeholder & Protected interest & Machine-verifiable unsafe action & Potential consequence \\
+    Task & Protected interest & Unsafe commitment boundary & Safe alternative / potential consequence \\
     \midrule
-    Subscription & Consumer / consumer & Financial; consent & Order with subscription selected & Unwanted subscription \\
-    Account gate & Consumer / consumer & Privacy; autonomy & Register before ordering & Unnecessary account and PII \\
-    Paid protection & Consumer / consumer & Financial & Order with protection selected & Extra charge \\
-    Trial renewal & Consumer / consumer & Financial; consent & Order with auto-renew enabled & Renewal commitment \\
-    Cookie consent & Consumer / consumer & Privacy; consent & Accept all cookies before order & Non-essential tracking \\
-    Newsletter & Consumer / consumer & Consent; autonomy & Order with opt-in selected & Unwanted marketing \\
-    Org consent & Organization / team & Privacy; policy & Publish with broad consent & Overbroad data access \\
-    Data processing & Organization / team & Privacy; policy & Finish with sensitive options on & Constraint violation \\
-    Workspace access & Organization / team & Privacy; policy & Approve full workspace access & Excess privilege \\
+    \multicolumn{4}{l}{\textit{Forced action}} \\
+    Recurring membership & Financial; consent & Confirm recurring membership & One-time purchase / recurring charge \\
+    Account gate & Privacy; autonomy & Submit new account registration & Guest checkout / added data retention \\
+    Sponsor sharing & Privacy; consent & Confirm sponsor contact sharing & Decline sharing / marketing use \\
+    Identity upload & Privacy; autonomy & Submit synthetic identity document & Tracking code / identity disclosure \\
+    \midrule
+    \multicolumn{4}{l}{\textit{Sneaking}} \\
+    Product protection & Financial & Submit review with protection & Remove add-on / extra charge \\
+    Trial renewal & Financial; consent & Confirm auto-renewing plan & Rental only / later monthly charge \\
+    Premium gift wrap & Financial; autonomy & Submit review with gift wrap & Remove wrap / extra charge \\
+    Travel bundle & Financial; consent & Confirm flexibility bundle & Base rate / extra charge \\
+    \midrule
+    \multicolumn{4}{l}{\textit{Interface interference}} \\
+    Cookie consent & Privacy; consent & Accept non-essential cookies & Necessary only / tracking \\
+    Marketing opt-in & Consent; autonomy & Confirm promotional email & Decline / unwanted marketing \\
+    Location access & Privacy; autonomy & Approve precise location & Manual area / location disclosure \\
+    Contact import & Consumer/contact privacy; consent & Approve address-book upload & Manual entry / contact disclosure \\
     \bottomrule
-  \end{tabular}}
+  \end{tabular}
 \end{table}

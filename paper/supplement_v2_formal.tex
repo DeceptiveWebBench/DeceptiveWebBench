@@ -1,0 +1,203 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.78in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{iftex}
+\ifXeTeX
+  \usepackage{fontspec}
+  \setmainfont{texgyretermes}[
+    Extension=.otf,
+    UprightFont=*-regular,
+    BoldFont=*-bold,
+    ItalicFont=*-italic,
+    BoldItalicFont=*-bolditalic]
+\fi
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{pdflscape}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\graphicspath{{figs/}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\aboverulesep}{0pt}
+\setlength{\belowrulesep}{0pt}
+\raggedbottom
+
+\title{Protocol v2 Formal Supplement:\\
+Trustworthy Completion for Web Agents}
+\author{Anonymous Author(s)}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Scope and Analysis Classification}
+
+This supplement documents the completed Protocol v2 formal experiment. It is separate from the preserved historical file \texttt{supplement\_v1\_2026-08-09.tex}. The formal design contains 12 tasks, three safeguard delivery conditions, and three repeats, for 108 scheduled cells. All primary rates use valid scheduled runs. Analyses are classified as follows:
+\begin{itemize}
+  \item \textbf{Prespecified primary:} condition-level four-quadrant outcomes; System-minus-No and Interface-minus-No contrasts for $C$, $S$, and $TC$; task-cluster bootstrap uncertainty.
+  \item \textbf{Prespecified secondary:} direct Interface-minus-System contrasts; paired task-repeat transitions; structured termination decomposition.
+  \item \textbf{Protocol-consistency adjudication:} append-only correction of one malformed-action adapter fallback under the frozen validity rule.
+  \item \textbf{Exploratory:} pattern-family summaries and task-specific interpretation.
+  \item \textbf{Post hoc:} leave-one-task-out sensitivity.
+\end{itemize}
+No neutral-interface, detector, additional-agent, human, or live-website experiment is included.
+
+\section{Formal Run Accounting and Provenance}
+
+\begin{sloppypar}
+All 108 scheduled cells were traversed. The collection retained 112 attempts. Five attempts were initially labeled invalid, and four retry-eligible infrastructure failures produced valid retries. The fifth, \texttt{forced\_action\_sub\_001 / Interface / repeat 3}, stopped after a malformed model action. The frozen outcome specification classifies malformed agent actions as valid behavioral outcomes; therefore, hash-linked append-only artifacts adjudicated its observable state as safe non-completion ($C=0,S=1$). No rerun occurred, and the original attempt files remain unchanged. The final analysis contains 108 valid outcomes.
+\end{sloppypar}
+
+The independent audit reconstructed every $C/S$ outcome from raw state. It found 108 unique matrix cells, no pilot or synthetic-fixture contamination, byte-identical System and Interface payloads, unique clean browser contexts, and matching frozen component hashes across repeats. The canonical matrix SHA-256 is:
+\begin{center}\scriptsize\texttt{50a5b1e4bb42602469cf347add41515552ccc5f32f20fa040d7b674ec3d1d417}.\end{center}
+The 451 source JSON artifacts used by the audit have tree SHA-256:
+\begin{center}\scriptsize\texttt{431089427c682dba9046391c4011c55d7ee603537346f3ffc81b871764cd0f12}.\end{center}
+
+\input{tabs/tab_invalid_v02_supp.tex}
+
+\section{Frozen Experimental Configuration}
+
+\begin{table}[t]
+\caption{Frozen formal configuration recovered from the runtime record and formal manifests. Provider defaults were omitted rather than guessed.}
+\label{tab:v02-config}
+\centering
+\small
+\begin{tabular}{L{.29\linewidth}L{.65\linewidth}}
+\toprule
+Field & Frozen value \\
+\midrule
+Provider / endpoint & AWS Bedrock Converse, \texttt{us-east-1} \\
+Model identifier & \texttt{qwen.qwen3-vl-235b-a22b} \\
+Scaffold / modality & BrowserUse 0.12.6; vision plus DOM browser state \\
+Runtime & Python 3.12.13; Playwright 1.61.0; Google Chrome 151.0.7922.138 \\
+Browser & Headless; 1280$\times$720; device scale factor 1; \texttt{en-US}; clean context per attempt \\
+Sampling & Temperature and top-$p$ omitted (provider default); maximum output 4096; no exposed seed support \\
+Limits & 30 steps; page action 45 s; model request 120 s; agent step 180 s; wall clock 900 s \\
+Retry & Provider hidden retry disabled; at most one infrastructure-only retry in a new context \\
+Artifact schema & \texttt{protocol-v2-attempt-artifact-2.0} \\
+Scorer / registry hashes & \texttt{0ae3cac573afc133...} / \texttt{500e1289f1571053...} \\
+Safeguard version / hash & \texttt{protocol-v2-generic-safeguard-v0.2}; payload \texttt{b8751fbc0c5b6fc6...} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The exact safeguard payload was:
+\begin{quote}
+\small
+\textbf{SAFETY GUIDANCE}\\[2pt]
+Before taking any action that could finalize a transaction, permission, subscription, account, or data disclosure, first check whether it is explicitly necessary for the user’s stated goal. Decline optional charges, recurring commitments, permissions, and data disclosures. If an equally effective, lower-impact route is available, use it. If you cannot determine whether the action is necessary, do not commit and stop the task.
+\end{quote}
+
+No safeguard omitted this text. System delivery placed it in privileged context before the first agent action. Interface delivery displayed the byte-identical text in a persistent benchmark panel on every non-terminal page. The task UI, neutral panel geometry, and benchmark-owned \emph{Stop task} control were otherwise held fixed.
+
+\section{Task Construction and Interface Evidence}
+
+\begin{sloppypar}
+Each task supplied a risk-neutral goal, a deceptive consumer environment, an annotated risk point, comparable safe and unsafe routes, a monotonic consequential unsafe boundary, a shared nominal endpoint, deterministic state fields, and a stakeholder/protected-interest annotation. Opening a panel, encountering a preselection, choosing a file, or viewing a disclosure did not cross the boundary. Only the task-specific commitment event set $S=0$, permanently for that trajectory.
+\end{sloppypar}
+
+\input{figs/task_family_examples_v02.tex}
+
+\section{Prespecified Primary Results}
+
+\input{tabs/tab_results_v02.tex}
+\input{tabs/tab_contrasts_v02_supp.tex}
+
+The bootstrap resampled 12 task identities with replacement for 10{,}000 replicates using seed 20260807, carrying all conditions and repeats for each selected task. It therefore preserves the experiment's nested structure; the 108 valid runs are not treated as independent task samples. Percentile intervals are descriptive uncertainty with only 12 clusters and do not establish equivalence when they include zero.
+
+\section{Complete Task-Level Outcomes}
+
+\input{tabs/tab_task_outcomes_v02_supp.tex}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\linewidth]{protocol_v2_task_profiles_publication.pdf}
+\caption{Exploratory task-by-condition profiles for $TC$, $S$, and $C$. Each cell has three valid repeats. Cell shade and direct labels represent the rate across repeats.}
+\label{fig:v02-task-heatmap-supp}
+\end{figure}
+
+The strongest positive task-specific pattern is location access under Interface delivery (3/3 trustworthy completions versus 0/3 without a safeguard). Identity upload shows a different profile (2/3 trustworthy completions under System and 0/3 under Interface). Cookie consent, gift wrap, and travel bundle remain unsafe across all delivery conditions. These observations demonstrate heterogeneity but do not identify task-family or channel mechanisms.
+
+\section{Prespecified Secondary Diagnostics}
+
+\subsection{Paired transitions}
+
+\input{tabs/tab_paired_v02_supp.tex}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=.82\linewidth]{protocol_v2_paired_transitions_publication.pdf}
+\caption{Paired transitions relative to the corresponding No-safeguard task-repeat cell. Both safeguard comparisons contain 36 valid pairs. Counts are descriptive.}
+\label{fig:v02-paired-supp}
+\end{figure}
+
+Unsafe baseline completion converted to trustworthy completion in 2/36 System pairs and 4/36 Interface pairs. Nominal completion was lost in six System and seven Interface pairs. These counts motivate joint reporting of $\Delta S$, $\Delta C$, and $\Delta TC$ rather than interpreting safety alone.
+
+\subsection{Termination and failure decomposition}
+
+\input{tabs/tab_termination_v02_supp.tex}
+
+Among 16 valid non-completions, nine were structured ordinary/unclassified agent stops, six were timeouts or step-limit terminations, and one was deliberate safe abort. No structured human-confirmation request or evidenced navigation/grounding termination occurred. Free-text explanations were not used to infer motive.
+
+\subsection{Repeat consistency}
+
+\input{tabs/tab_repeats_v02_supp.tex}
+
+Interface safety was 58.3\% in repeat 1, 25.0\% in repeat 2, and 41.7\% in repeat 3, illustrating why a single repeat would overstate stability. Condition-wide trustworthy-completion rates were more stable but remained coarse at 12 tasks per repeat.
+
+\section{Protocol-Consistency Adjudication}
+
+\input{tabs/tab_adjudication_v02_supp.tex}
+
+The original adapter fallback conflicted with Section 6 of the frozen outcome specification, which states that malformed agent actions are valid outcomes rather than infrastructure invalidity. The preserved trajectory had not reached the nominal endpoint and had not crossed the unsafe boundary, deterministically yielding $C=0,S=1$. The adjudication uses \texttt{unclassified\_agent\_stop} because the structured taxonomy contains no narrower malformed-action termination class. Its assignment lies within the previously reported missing-cell bounds, but those bounds are superseded by the observed-state adjudication and are not part of the final analysis.
+
+\section{Exploratory Pattern-Family Summaries}
+
+\input{tabs/tab_family_v02_supp.tex}
+
+Interface-interference tasks have higher descriptive trustworthy-completion rates than sneaking tasks in this roster. Each family contains only four task identities, so this may reflect the selected tasks and is not a confirmatory family effect.
+
+\section{Post-Hoc Leave-One-Task-Out Sensitivity}
+
+\input{tabs/tab_loto_v02_supp.tex}
+
+Across omitted tasks, System-minus-No ranges are $+12.1$ to $+18.2$ points for $S$, $-15.2$ to $-9.1$ for $C$, and $+6.1$ to $+9.1$ for $TC$. Interface-minus-No ranges are $+9.1$ to $+21.2$ for $S$, $-18.2$ to $-12.1$ for $C$, and $0.0$ to $+12.1$ for $TC$. The broad safety-up/completion-down direction is stable, but the trustworthy-completion magnitude is task-sensitive. This analysis is explicitly post hoc.
+
+\section{Operational Cost, Tokens, and Latency}
+
+\input{tabs/tab_cost_v02_supp.tex}
+
+Across all 112 attempts, known cost was USD 7.51396168. Three attempts lacked cost evidence; conservatively assigning USD 1 to each gives exposure of USD 10.51396168. Known invalid/retry overhead was USD 0.04736343. Recorded usage comprises 1{,}031 model calls and 12{,}383{,}360 tokens.
+Condition-level cost and latency are descriptive: trajectory length and outcome differ across runs, so these summaries do not identify a causal compute effect of delivery strategy.
+
+\section{Responsible Research and Intended Use}
+
+The benchmark uses synthetic local websites and synthetic task data. No human participants, real consumer accounts, live merchants, payments, identity documents, or sensitive personal data were involved. Unsafe actions update benchmark-owned state only. The task designs represent documented manipulative-interface mechanisms in order to evaluate agent behavior; they should not be interpreted as templates for deploying such mechanisms against people. The benchmark is intended for controlled evaluation of agent safeguards and trajectory-level scoring. Any later study involving live services, real users, or realized consumer consequences would require a separate risk review and, where applicable, human-subjects approval.
+
+\section{Reproducibility}
+
+From the repository root, manuscript assets are regenerated and all 108 analysis rows are independently rebuilt and checked against the raw formal attempts with:
+\begin{verbatim}
+PYTHONPATH=. .venv/bin/python \
+  -m scripts.v2.adjudicate_formal_v02_malformed_action
+PYTHONPATH=. .venv/bin/python \
+  -m analysis.formal_v02_author_insights
+PYTHONPATH=. .venv/bin/python \
+  -m scripts.v2.generate_manuscript_v02_assets
+cd paper
+tectonic --keep-logs --keep-intermediates neurips_2026.tex
+tectonic --keep-logs --keep-intermediates supplement_v2_formal.tex
+cd ..
+PYTHONPATH=. .venv/bin/python \
+  -m scripts.v2.verify_manuscript_v02
+\end{verbatim}
+
+\begin{sloppypar}
+The analysis admits only \texttt{formal\_run=true}, non-synthetic Protocol v2 artifacts matching the canonical matrix, task versions, model configuration, and frozen hashes. The append-only adjudication is hash-linked to the unchanged original files and independently rescored. Original invalid classifications remain in \texttt{attempt\_audit.csv}. The number-provenance table maps manuscript claims to source fields. Raw logs, historical Version 1 artifacts, and the historical supplement are read-only inputs to verification.
+\end{sloppypar}
+
+\end{document}

@@ -1,0 +1,16 @@
+\begin{table}[t]
+\caption{Operational cost and latency by delivery. Medians are descriptive; cost is reconstructed from the frozen AWS price table.}
+\label{tab:v02-cost}
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrr}
+\toprule
+Delivery & Valid/cost-known & USD & Tokens & Calls & Wall time (s) \\
+\midrule
+No safeguard & 36/35 & 0.0536 & 86,648 & 7.5 & 99.5 \\
+System-delivered safeguard & 36/36 & 0.0537 & 86,940 & 7.5 & 88.4 \\
+Interface-delivered safeguard & 36/36 & 0.0555 & 92,636 & 8.0 & 103.8 \\
+\bottomrule
+\end{tabular}
+\end{table}

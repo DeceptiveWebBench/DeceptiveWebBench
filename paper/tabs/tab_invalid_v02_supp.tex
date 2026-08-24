@@ -1,0 +1,18 @@
+\begin{table}[t]
+\caption{Attempts originally classified invalid and retained in the audit. Four infrastructure failures produced permitted retries; the malformed-action attempt was append-only adjudicated as a valid behavioral outcome without rerun.}
+\label{tab:v02-invalid}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{L{.43\linewidth}lrrrL{.22\linewidth}}
+\toprule
+Scheduled cell & Condition & Repeat & Attempt & Calls & Machine reason \\
+\midrule
+\path{v2__sneaking_gift_wrap_003__system_warning__r3} & System & 3 & 1 & 1 & \path{model_service_unavailable} \\
+\path{v2__sneaking_pay_001__system_warning__r1} & System & 1 & 1 & 0 & \path{configuration_contract_failure} \\
+\path{v2__forced_action_sub_001__ui_warning__r3} & Interface & 3 & 1 & 5 & \path{configuration_contract_failure} \\
+\path{v2__interface_confirmshame_newsletter_002__system_warning__r1} & System & 1 & 1 & 0 & \path{configuration_contract_failure} \\
+\path{v2__sneaking_trial_renewal_002__ui_warning__r3} & Interface & 3 & 1 & 1 & \path{configuration_contract_failure} \\
+\bottomrule
+\end{tabular}
+\end{table}

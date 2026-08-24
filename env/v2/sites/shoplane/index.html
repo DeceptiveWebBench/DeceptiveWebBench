@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ShopLane</title>
+    <link rel="stylesheet" href="/env/v2/shared/base.css" />
+    <link rel="stylesheet" href="styles.css?v=20260815-stop-control" />
+    <script defer src="app.js?v=20260808-membership-options"></script>
+  </head>
+  <body>
+    <header class="sl-header">
+      <div class="sl-header__inner">
+        <a class="sl-logo" href="#" data-nav="home">Shop<span>Lane</span></a>
+        <form class="sl-search" id="sl-search" onsubmit="return false;">
+          <select aria-label="Department" id="sl-search-dept">
+            <option>All</option>
+          </select>
+          <input id="sl-search-input" type="text" aria-label="Search ShopLane" />
+          <button type="button" aria-label="Search">Search</button>
+        </form>
+        <div class="sl-header__actions">
+          <span class="sl-account"><small>Hello, shopper</small><strong>Account &amp; Lists</strong></span>
+          <span class="sl-account"><small>Returns</small><strong>&amp; Orders</strong></span>
+          <button class="sl-cart" id="sl-cart" type="button" aria-label="Cart">
+            <span class="sl-cart__icon" aria-hidden="true">🛒</span>
+            <span class="sl-cart__count" id="sl-cart-count">0</span>
+          </button>
+        </div>
+      </div>
+      <nav class="sl-subnav">
+        <div class="sl-subnav__inner" id="sl-subnav">
+          <span class="sl-subnav__menu">☰ All</span>
+          <a href="#" data-nav="home">Today's Deals</a>
+          <a href="#" data-nav="home">Electronics</a>
+          <a href="#" data-nav="home">Home &amp; Kitchen</a>
+          <a href="#" data-nav="home">Grocery</a>
+          <a href="#" data-nav="home">Customer Service</a>
+          <a href="#" data-nav="home">Gift Cards</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="benchmark-shell" class="sl-shell" aria-busy="true">
+      <aside id="safeguard-panel" class="safeguard-panel" aria-label="Benchmark task controls">
+        <div class="benchmark-panel-row">
+          <strong id="benchmark-status" class="benchmark-status">Consumer task · In progress</strong>
+          <button id="benchmark-stop-task" class="benchmark-stop-task" type="button" aria-label="Stop task">Stop task</button>
+        </div>
+        <div id="safeguard-text" class="safeguard-text" aria-live="polite"></div>
+      </aside>
+      <section id="task-content" class="sl-content" aria-live="polite">
+        <p class="sl-loading">Loading ShopLane…</p>
+      </section>
+    </main>
+
+    <footer class="sl-footer">
+      <div class="sl-footer__top" data-nav="home">Back to top</div>
+      <div class="sl-footer__cols">
+        <div><strong>Get to Know Us</strong><span>About ShopLane</span><span>Careers</span><span>Press</span></div>
+        <div><strong>Make Money with Us</strong><span>Sell on ShopLane</span><span>Affiliate</span><span>Advertise</span></div>
+        <div><strong>Payment Products</strong><span>ShopLane Card</span><span>Gift Cards</span><span>Reload Balance</span></div>
+        <div><strong>Let Us Help You</strong><span>Your Account</span><span>Shipping Rates</span><span>Help</span></div>
+      </div>
+      <div class="sl-footer__legal">© 2026 ShopLane. Conditions of Use · Privacy Notice</div>
+    </footer>
+  </body>
+</html>

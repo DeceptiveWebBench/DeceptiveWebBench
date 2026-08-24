@@ -1,0 +1,124 @@
+manifest_version: protocol-v2-pre-api-freeze-candidate
+formal_authorization: false
+formal_collection_status: blocked_pending_author_confirmation
+study:
+  agent_config_id: consumer_web_agent_frozen_v2
+  interface_design: deceptive
+  conditions:
+  - no_warning
+  - system_warning
+  - ui_warning
+  task_count: 12
+  repeats: 3
+  scheduled_cells: 108
+  warning_timing: before_first_agent_action
+  ui_warning_persistence: every_non_terminal_page
+  risk_detection: oracle_fixed_by_task
+schedule:
+  canonical_path: docs/experiment_matrix_v2.csv
+  seed_label: tc-v2-order-20260807-deceptive-only
+  sha256: 50a5b1e4bb42602469cf347add41515552ccc5f32f20fa040d7b674ec3d1d417
+  randomization_key_recomputation:
+    status: verified
+    contract: randomization_seed|agent_config_id|task_id|task_version|interface_design|safeguard_condition|repeat_id
+    seed_label: tc-v2-order-20260807-deceptive-only
+versions:
+  task_registry: protocol-v2-pre-api-freeze-candidate
+  safeguard: protocol-v2-pre-api-freeze-candidate
+  scorer: protocol-v2-pre-api-freeze-candidate
+  runner: protocol-v2-pre-api-freeze-candidate
+  repository_commit: UNRESOLVED
+  active_runtime_config: protocol-v2-active-runtime-1.1
+  attempt_artifact_schema: protocol-v2-attempt-artifact-2.0
+agent:
+  provider: aws_bedrock
+  intended_model_family: qwen3_vl_235b_a22b
+  documented_model_identifier: qwen.qwen3-vl-235b-a22b
+  endpoint_region: us-east-1
+  endpoint_service: bedrock-runtime
+  request_path: bedrock_converse
+  request_schema: bedrock_converse
+  access_verified: true
+  access_status: VERIFIED_BY_NONFORMAL_API_SMOKE_2026_08_17
+  authentication: bedrock_bearer_token
+  credential_environment_variable: AWS_BEARER_TOKEN_BEDROCK
+  scaffold: browser_use
+  scaffold_version: 0.12.6
+  dependency_lock_hash: 63175f52833fc0d5676e871aaec5c8dd2ea466c25967b61c77aa20a91e7cb755
+  observation_modality: vision_plus_dom
+  tool_definitions_hash: 3119940bf20376bb626184655f6b966548227fcdc1451b1955f522dc982a4fd8
+sampling:
+  temperature: provider_default_omitted
+  top_p: provider_default_omitted
+  max_output_tokens: 4096
+  thinking_mode: not_requested
+  effort: null
+  seed: null
+  seed_support: unsupported_by_selected_endpoint
+  stop_sequences: []
+  model_retry_policy: provider_sdk_total_attempts_1_no_hidden_retry
+browser:
+  viewport_width: 1280
+  viewport_height: 720
+  viewport_status: verified_candidate
+  locale: en-US
+  device_scale_factor: 1
+  mode: headless
+  clean_context_per_attempt: true
+limits:
+  max_steps: 30
+  page_or_browser_action_timeout_seconds: 45
+  llm_request_timeout_seconds: 120
+  agent_step_timeout_seconds: 180
+  wall_clock_timeout_seconds: 900
+retry:
+  agent_consecutive_llm_failure_limit: 1
+  final_response_after_failure: false
+  infrastructure_only_retry_limit: 1
+  maximum_attempts_per_cell: 2
+  new_browser_context_required: true
+  retryable_invalidity_codes:
+  - environment_boot_failure
+  - browser_transport_failure
+  - model_service_unavailable
+  - artifact_write_failure
+  - warning_adapter_failure
+smoke_budget:
+  maximum_usd: 10.0
+  currency: USD
+  checked_before_each_api_attempt: true
+  unknown_cost_conservative_next_attempt_usd: 1.0
+formal_budget:
+  value_usd: null
+  status: blocked_until_smoke_projection_and_explicit_authorization
+  projection_rule: projected_valid_run_cost_plus_projected_retry_overhead_plus_25_percent_contingency
+outputs:
+  smoke_root: logs/v2/smoke
+  formal_root: logs/v2/formal
+  smoke_formal_run: false
+  formal_write_requires_complete_manifest: true
+  formal_write_requires_authorization: true
+review:
+  stop_task_control: VERIFIED_12_OF_12
+  stop_task_scope: benchmark_layer_every_non_terminal_page_all_conditions
+  necessity_admission_contract: VERIFIED_12_OF_12
+  forced_account_replacement: MuseumPass_timed_entry_v4_proposed_VERIFIED
+  identity_upload_boundary: same_address_tracking_code_sufficient_v3_proposed_VERIFIED
+  termination_adapter_contract: NONFORMAL_QWEN_API_SMOKE_VERIFIED
+  unattended_confirmation_policy: immediate_termination_no_simulated_user_reply
+  final_consumer_copy_and_prices: VERIFIED_WITH_DISCLOSED_TASK_LIMITATIONS
+  current_review_screenshot_count: 5
+  current_review_screenshots: artifacts/v2/review/pre_api_visuals
+  visual_geometry_audit: artifacts/v2/review/pre_api_visual_audit.json
+  stale_prior_screenshot_materials: EXCLUDED_FROM_FREEZE_CANDIDATE
+  structural_metrics: artifacts/v2/review/task_structural_metrics.csv
+  scientific_validity_audit: artifacts/v2/review/scientific_validity_audit.json
+  dry_run_manifest: artifacts/v2/pre_api_dry_run/manifest.json
+  test_report: artifacts/v2/review/pre_api_test_report.json
+  protected_scope_baseline: artifacts/v2/review/protected_scope_baseline.json
+  freeze_candidate: artifacts/v2/review/non_model_freeze_candidate.json
+  active_runtime_config: configs/v2/runtime.yaml
+  pricing_config: configs/v2/pricing.yaml
+  cost_reporting_template: artifacts/v2/review/cost_reporting_template.json
+  smoke_handoff: docs/smoke_api_handoff.md
+generated_at: '2026-08-16T00:55:42+08:00'

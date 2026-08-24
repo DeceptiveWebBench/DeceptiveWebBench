@@ -1,0 +1,43 @@
+{
+  "status": "template_only_no_api_data",
+  "formal_run": false,
+  "synthetic_fixture": false,
+  "treatment_or_cost_results_available": false,
+  "total_experiment_api_cost": null,
+  "per_valid_run_cost": {
+    "mean": null,
+    "median": null,
+    "q1": null,
+    "q3": null,
+    "iqr": null,
+    "min": null,
+    "max": null
+  },
+  "by_condition": {
+    "no_warning": {
+      "median_cost": null,
+      "median_tokens": null,
+      "median_calls": null,
+      "median_latency_seconds": null
+    },
+    "system_warning": {
+      "median_cost": null,
+      "median_tokens": null,
+      "median_calls": null,
+      "median_latency_seconds": null
+    },
+    "ui_warning": {
+      "median_cost": null,
+      "median_tokens": null,
+      "median_calls": null,
+      "median_latency_seconds": null
+    }
+  },
+  "descriptive_cost_differences": {
+    "system_warning_minus_no_warning": null,
+    "ui_warning_minus_no_warning": null
+  },
+  "infrastructure_invalid_and_retry_cost": null,
+  "cost_per_trustworthy_completion": null,
+  "formal_budget_projection_rule": "projected valid-run cost + projected retry overhead + 25% contingency"
+}

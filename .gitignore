@@ -15,6 +15,11 @@ dataset/hf_staging/
 
 # Temporary / scratch
 analysis/_tmp*
+tmp/
+artifacts/v2/pre_api_dry_run/runs/
+
+# Hugging Face release staging (published separately)
+dataset/hf_staging_v2/
 
 # Legacy draft folder (paper source is paper/)
 draft/

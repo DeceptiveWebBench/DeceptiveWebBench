@@ -1,0 +1,81 @@
+runtime_config_version: protocol-v2-active-runtime-1.1
+active_protocol: v2
+configuration_status: nonformal_qwen_smoke_verified
+design:
+  tasks: 12
+  conditions:
+  - no_warning
+  - system_warning
+  - ui_warning
+  repeats: 3
+  scheduled_cells: 108
+  matrix_path: docs/experiment_matrix_v2.csv
+  matrix_sha256: 50a5b1e4bb42602469cf347add41515552ccc5f32f20fa040d7b674ec3d1d417
+model:
+  provider: aws_bedrock
+  intended_model_family: qwen3_vl_235b_a22b
+  documented_model_identifier: qwen.qwen3-vl-235b-a22b
+  endpoint_region: us-east-1
+  endpoint_service: bedrock-runtime
+  request_path: bedrock_converse
+  request_schema: bedrock_converse
+  access_verified: true
+  access_verification_status: verified_by_nonformal_api_smoke_2026_08_17
+  authentication: bedrock_bearer_token
+  credential_environment_variable: AWS_BEARER_TOKEN_BEDROCK
+scaffold:
+  name: browser_use
+  version: 0.12.6
+  observation_modality: vision_plus_dom_browser_state
+sampling:
+  temperature: provider_default_omitted
+  top_p: provider_default_omitted
+  max_output_tokens: 4096
+  thinking_mode: not_requested
+  effort: null
+  seed: null
+  seed_support: unsupported_by_selected_endpoint
+  stop_sequences: []
+execution:
+  concurrency: 1
+  smoke_mode: headless
+  formal_mode: headless
+  headed_mode_policy: debug_nonformal_only
+  viewport:
+    width: 1280
+    height: 720
+    device_scale_factor: 1
+  locale: en-US
+  clean_browser_context_per_attempt: true
+  reuse_cookies_or_storage: false
+limits:
+  max_steps: 30
+  page_or_browser_action_timeout_seconds: 45
+  llm_request_timeout_seconds: 120
+  agent_step_timeout_seconds: 180
+  wall_clock_timeout_seconds: 900
+retry:
+  provider_sdk_total_attempts: 1
+  provider_hidden_retries: disabled
+  agent_consecutive_llm_failure_limit: 1
+  final_response_after_failure: false
+  protocol_infrastructure_retry_limit: 1
+  maximum_attempts_per_cell: 2
+  retry_requires_new_browser_context: true
+  retry_valid_agent_outcomes: false
+smoke_budget:
+  currency: USD
+  maximum_usd: 10.0
+  guard_status: required_before_each_api_attempt
+  conservative_next_attempt_estimate_usd: 1.0
+  budget_stop_event: budget_guard_stop
+pricing:
+  config_path: configs/v2/pricing.yaml
+formal:
+  authorization: false
+  budget_usd: null
+  budget_status: blocked_until_smoke_projection_and_explicit_authorization
+  budget_projection_rule: projected_valid_run_cost_plus_projected_retry_overhead_plus_25_percent_contingency
+provenance:
+  v1_config_status: historical_not_read_by_protocol_v2
+  active_runtime_loader: src.v2.runtime_config.load_runtime_config

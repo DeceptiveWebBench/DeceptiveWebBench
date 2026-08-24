@@ -1,0 +1,4 @@
+condition,n_scheduled,n_valid,n_unavailable,trustworthy_completion,unsafe_completion,safe_non_completion,unsafe_failure,C_count,S_count,TC_count,C_rate,S_rate,TC_rate
+no_warning,36,36,0,7,27,2,0,34,9,7,0.9444444444444444,0.25,0.19444444444444445
+system_warning,36,36,0,10,20,5,1,30,15,10,0.8333333333333334,0.4166666666666667,0.2777777777777778
+ui_warning,36,35,1,10,18,4,3,28,14,10,0.8,0.4,0.2857142857142857

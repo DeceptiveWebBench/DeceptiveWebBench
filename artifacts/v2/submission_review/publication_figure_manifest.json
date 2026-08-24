@@ -1,0 +1,30 @@
+{
+  "condition_palette": {
+    "no_warning": "#7A7A7A",
+    "system_warning": "#0072B2",
+    "ui_warning": "#E69F00"
+  },
+  "data_modified": false,
+  "figure_set": "protocol-v2-publication-figures-1.1",
+  "outcome_palette": {
+    "safe_non_completion": "#B8C4CE",
+    "trustworthy_completion": "#4C78A8",
+    "unsafe_completion": "#D97941",
+    "unsafe_failure": "#555B66"
+  },
+  "outputs": {
+    "paper/figs/protocol_v2_cost_latency_publication.pdf": "a4b7a5cf7c411037c0f3b94fa355f8e54f58c0da0c87ceb4391f3180a8f68617",
+    "paper/figs/protocol_v2_cs_quadrants_publication.pdf": "5c54d0059689139ce3adea3f4891de763b8c91b680c9097f3bcf4c47a2e3a60b",
+    "paper/figs/protocol_v2_paired_transitions_publication.pdf": "de2b6595124fadd0fee0dff90baa7e9d002611aaf043bd015e8a21ccf5843b7a",
+    "paper/figs/protocol_v2_task_profiles_publication.pdf": "18994663bf13fda7fad8a2ef9266f747d62a6b3b8754a889fa901bb861ec5769",
+    "paper/figs/protocol_v2_tradeoff_publication.pdf": "e52a887923d89e74ac98a13d5caffcf50ff86da2c09dc4b90f2011e1d711ac51"
+  },
+  "source_files": {
+    "condition_summary.csv": "3f4663a2539740ca76c700b8a399f967232f07633bf2de122e1304c10dcf1fdd",
+    "contrast_bootstrap.csv": "947a2701b4b703c433ce0139de4378b102c949d75c277425d714d26f1f1f3e95",
+    "cost_summary.csv": "9ce56365c1460816ab7dc0621ee5ca9858c019ef75f41174c8766d3d509aee58",
+    "paired_transitions.csv": "4a4abefb0ea80a6876373f79b22bbce5cf3a4ebe585c87c831997348268e2eb2",
+    "task_condition_summary.csv": "3a005ce752ecef8251119c5a77f0fd0623b867971bbb4acdbd654ccbb3c9456d"
+  },
+  "vector_output": true
+}
