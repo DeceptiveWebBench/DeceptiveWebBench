@@ -35,14 +35,14 @@ CONDITION_SHORT = {
     "ui_warning": "Interface-delivered",
 }
 CONDITION_COLORS = {
-    "no_warning": "#7A7A7A",
-    "system_warning": "#0072B2",
-    "ui_warning": "#E69F00",
+    "no_warning": "#7A7F87",
+    "system_warning": "#4C78A8",
+    "ui_warning": "#D97941",
 }
 CONDITION_HATCHES = {
     "no_warning": "",
-    "system_warning": "///",
-    "ui_warning": "xxx",
+    "system_warning": "//",
+    "ui_warning": "..",
 }
 OUTCOME_ORDER = (
     "trustworthy_completion",
@@ -150,9 +150,11 @@ def figure_outcomes(condition_rows: list[dict[str, str]]) -> Path:
             color=OUTCOME_COLORS[outcome], edgecolor="#FFFFFF", linewidth=0.8,
             label=OUTCOME_LABELS[outcome], zorder=3,
         )
-        for bar, count, value, bottom in zip(bars, counts, values, bottoms):
+        for condition_idx, (bar, count, value, bottom) in enumerate(zip(bars, counts, values, bottoms)):
+            if count == 0:
+                continue
+            percentage = int(round(value * 100))
             if value >= 0.075:
-                percentage = int(round(value * 100))
                 ax.text(
                     bar.get_x() + bar.get_width() / 2,
                     bottom + value / 2,
@@ -163,12 +165,28 @@ def figure_outcomes(condition_rows: list[dict[str, str]]) -> Path:
                     fontsize=7.7,
                     fontweight="bold",
                 )
+            else:
+                # Tiny terminal segments need a direct label at manuscript scale.
+                # Place it above and to the side of the bar to avoid collisions.
+                direction = -1 if condition_idx == 0 else 1
+                ax.annotate(
+                    f"{count} ({percentage}%)",
+                    xy=(bar.get_x() + bar.get_width() / 2, bottom + value / 2),
+                    xytext=(bar.get_x() + bar.get_width() / 2 + direction * 0.26, 1.105),
+                    textcoords="data",
+                    ha="center",
+                    va="bottom",
+                    fontsize=7.0,
+                    color="#2F3742",
+                    arrowprops={"arrowstyle": "-", "color": "#7A7F87", "linewidth": 0.7},
+                    annotation_clip=False,
+                )
         bottoms += values
-    ax.set_ylim(0, 1.08)
+    ax.set_ylim(0, 1.14)
     ax.set_yticks(np.linspace(0, 1, 6), [f"{int(v * 100)}%" for v in np.linspace(0, 1, 6)])
     ax.set_ylabel("Share of valid runs")
     ax.set_xticks(x, [CONDITION_SHORT[c] for c in CONDITIONS])
-    ax.set_title("Completion-safety outcomes by safeguard condition", pad=40)
+    ax.set_title("Completion–safety outcomes by safeguard condition", pad=40)
     for idx, condition in enumerate(CONDITIONS):
         row = lookup[condition]
         ax.text(idx, 1.025, f"n={row['n_valid']}", ha="center", va="bottom",
@@ -210,8 +228,8 @@ def figure_tradeoff(contrast_rows: list[dict[str, str]]) -> Path:
                         textcoords="offset points", ha="center", fontsize=7.5, color="#222222")
     ax.axhline(0, color="#222222", linewidth=0.9)
     ax.set_xticks(x, labels)
-    ax.set_ylabel("Difference from No safeguard (percentage points)")
-    ax.set_title("Safeguards change both safety and completion")
+    ax.set_ylabel("Difference from No safeguard (pp)")
+    ax.set_title("Estimated changes in safety and completion")
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.19), ncol=2, frameon=False)
     clean_axes(ax)
     fig.subplots_adjust(bottom=0.27, top=0.88, left=0.12, right=0.99)
@@ -295,37 +313,6 @@ def figure_transitions(transition_rows: list[dict[str, str]]) -> Path:
     return save_pdf(fig, "protocol_v2_paired_transitions_publication.pdf")
 
 
-def figure_cost(cost_rows: list[dict[str, str]]) -> Path:
-    lookup = {row["group"]: row for row in cost_rows if row["grouping"] == "condition"}
-    fig, axes = plt.subplots(1, 2, figsize=(7.0, 3.15))
-    panels = (
-        ("cost_median_usd", "Median reconstructed cost", "USD per valid run"),
-        ("wall_clock_median_seconds", "Median wall-clock latency", "Seconds per valid run"),
-    )
-    for ax, (field, title, ylabel) in zip(axes, panels):
-        values = [float(lookup[c][field]) for c in CONDITIONS]
-        bars = ax.bar(
-            range(3), values,
-            color=[CONDITION_COLORS[c] for c in CONDITIONS],
-            edgecolor="#222222",
-            hatch=[CONDITION_HATCHES[c] for c in CONDITIONS],
-            zorder=3,
-        )
-        labels = [f"{value:.3f}" if field == "cost_median_usd" else f"{value:.1f}" for value in values]
-        ax.bar_label(bars, labels=labels, padding=2, fontsize=7.5)
-        ax.set_xticks(range(3), [CONDITION_SHORT[c] for c in CONDITIONS], rotation=30, ha="right")
-        for tick, condition in zip(ax.get_xticklabels(), CONDITIONS):
-            tick.set_color(CONDITION_COLORS[condition])
-            tick.set_fontweight("bold")
-        ax.set_title(title)
-        ax.set_ylabel(ylabel)
-        ax.set_ylim(0, max(values) * 1.23)
-        clean_axes(ax)
-    fig.suptitle("Operational cost and latency (descriptive)", y=0.995)
-    fig.subplots_adjust(bottom=0.25, top=0.80, left=0.10, right=0.99, wspace=0.35)
-    return save_pdf(fig, "protocol_v2_cost_latency_publication.pdf")
-
-
 def main() -> int:
     configure_style()
     FIGS.mkdir(parents=True, exist_ok=True)
@@ -335,11 +322,10 @@ def main() -> int:
         figure_tradeoff(read_csv("contrast_bootstrap.csv")),
         figure_task_profiles(read_csv("task_condition_summary.csv")),
         figure_transitions(read_csv("paired_transitions.csv")),
-        figure_cost(read_csv("cost_summary.csv")),
     ]
     source_names = (
         "condition_summary.csv", "contrast_bootstrap.csv", "task_condition_summary.csv",
-        "paired_transitions.csv", "cost_summary.csv",
+        "paired_transitions.csv",
     )
     manifest = {
         "figure_set": "protocol-v2-publication-figures-1.1",

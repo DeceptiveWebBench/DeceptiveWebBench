@@ -16,7 +16,7 @@ The benchmark separates endpoint completion (`C`) from avoidance of a machine-ve
 | Agent | `qwen.qwen3-vl-235b-a22b` via AWS Bedrock, BrowserUse 0.12.6 |
 | Scoring | Deterministic endpoint and trajectory-state checks; no LLM judge |
 
-All 108 scheduled cells have valid outcomes. One malformed action was resolved by append-only adjudication under the frozen validity rule. Without a safeguard, nominal completion was 34/36 (94.4%), while trustworthy completion was 7/36 (19.4%) and unsafe completion was 27/36 (75.0%). Both safeguard strategies increased safety, with smaller and uncertain changes in trustworthy completion; the direct system-versus-interface contrast was unresolved.
+All 108 scheduled cells have valid outcomes. One malformed action was resolved by append-only adjudication under the frozen validity rule. Without a safeguard, nominal completion was 34/36 (94.4%), while trustworthy completion was 7/36 (19.4%) and unsafe completion was 27/36 (75.0%). Each safeguard had an estimated 16.7-point safety gain relative to No safeguard, although the Interface interval reached zero; trustworthy-completion gains were smaller and uncertain, and the direct system-versus-interface contrast was unresolved.
 
 ## Repository layout
 
@@ -30,6 +30,8 @@ All 108 scheduled cells have valid outcomes. One malformed action was resolved b
 | `analysis/` | Statistical plan and formal analysis pipeline |
 | `artifacts/v2/formal_v02_108/` | Frozen aggregate results, audits, and analysis outputs |
 | `paper/` | Anonymous manuscript source, supplement, figures, and tables |
+| `docs/benchmark_card.md` | Current Protocol v2 benchmark card |
+| `docs/stakeholder_harm_annotations.md` | Frozen 12-task stakeholder and consequence annotations |
 
 ## Preview the benchmark
 
@@ -56,13 +58,20 @@ python -m scripts.v2.audit_structural_metrics
 
 The public package contains 102 checks, including real-browser safe/unsafe paths, monotonic unsafe-boundary evidence, matched safeguard delivery, retry policy, formal-only analysis admission, and cost accounting. Three provenance-only checks are skipped when the intentionally unreleased raw pilot/formal interaction trees are absent.
 
-## Reproduce released figures and tables
+## Reproduce the released analysis, figures, tables, and manuscript
 
 ```bash
-python scripts/v2/generate_publication_figures_v02.py
+PYTHONPATH=. .venv/bin/python -m scripts.v2.reproduce_release_v02
+PYTHONPATH=. .venv/bin/python -m scripts.v2.generate_manuscript_v02_assets
+PYTHONPATH=. .venv/bin/python scripts/v2/generate_publication_figures_v02.py
+cd paper
+tectonic --keep-logs --keep-intermediates neurips_2026.tex
+tectonic --keep-logs --keep-intermediates supplement_v2_formal.tex
+cd ..
+PYTHONPATH=. .venv/bin/python -m scripts.v2.verify_manuscript_v02
 ```
 
-The authoritative released aggregate dataset and audits are under `artifacts/v2/formal_v02_108/author_insight_review/`. The append-only correction that yields 108/108 valid outcomes is documented in `artifacts/v2/formal_v02_108/ADJUDICATION_NOTICE.md`. Raw interaction traces are not included in this anonymous review package.
+The authoritative released aggregate dataset and audits are under `artifacts/v2/formal_v02_108/author_insight_review/`. The append-only correction that yields 108/108 valid outcomes is documented in `artifacts/v2/formal_v02_108/ADJUDICATION_NOTICE.md`; the byte-identical evidence bundle for that cell is included under `artifacts/v2/formal_v02_108/adjudication_evidence/`. Full raw interaction traces are not included in this anonymous review package.
 
 Run-level tabular release files are prepared separately for Hugging Face with:
 
@@ -72,7 +81,7 @@ python dataset/build_hf_package_v2.py
 
 ## Paper
 
-`paper/venue_ai4good.tex` is the current Trustworthy AI for Good workshop wrapper. The shared anonymous manuscript is `paper/neurips_2026.tex`, and the formal supplement is `paper/supplement_v2_formal.tex`.
+`paper/neurips_2026.tex` and `paper/neurips_2026.pdf` are the shared anonymous manuscript. The three `paper/venue_*.tex` files are thin workshop wrappers over the same scientific source, and `paper/supplement_v2_formal.tex` remains independently compilable.
 
 ## Scope and limitations
 

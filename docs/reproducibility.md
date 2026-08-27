@@ -1,82 +1,46 @@
 # Reproducibility
 
-## Frozen Protocol v2 environment
+## Released Protocol v2 evidence
 
-The formal study used Python 3.12.13, BrowserUse 0.12.6, Playwright 1.61.0, and Google Chrome 151.0.7922.138 in headless mode with a 1280 x 720 viewport, device scale factor 1, and `en-US` locale. The frozen vision-capable agent was `qwen.qwen3-vl-235b-a22b`, accessed through AWS Bedrock in `us-east-1`.
+The anonymous release contains the 108-row selected-cell dataset, the 112-row attempt audit, all aggregate CSVs used by the manuscript, frozen configurations and hashes, and a byte-identical evidence bundle for the one append-only adjudicated cell. Full provider traces and raw screenshots are intentionally omitted; the release does not claim that omitted traces can be reconstructed.
 
-The active configuration is `configs/v2/runtime.yaml`. It records the model and request schema, sampling behavior, clean-context policy, step and timeout limits, retry policy, and dated cost configuration. The experiment crossed 12 tasks, 3 safeguard conditions, and 3 repeats for 108 scheduled cells.
+The formal environment used Python 3.12.13, BrowserUse 0.12.6, Playwright 1.61.0, Google Chrome 151.0.7922.138, a 1280×720 headless viewport, and `en-US` locale. The evaluated endpoint was `qwen.qwen3-vl-235b-a22b` through AWS Bedrock in `us-east-1`. Exact non-model and protocol hashes are recorded in the v2 manifests and formal audit.
 
-## Inspect the synthetic websites
-
-No credentials are needed to inspect or interact with the benchmark websites.
-
-```bash
-python3 -m http.server 8000 --bind 127.0.0.1
-# Open http://127.0.0.1:8000/env/index.html
-```
-
-## Install and run the verification suite
+## Clean installation
 
 ```bash
 python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 playwright install chromium
-
-python -m unittest discover -s tests/v2 -v
-python -m scripts.v2.audit_structural_metrics
 ```
 
-The public package contains 102 tests. These cover the task registry and randomized matrix, real-browser safe and unsafe paths, matched safeguard delivery, deterministic endpoint and boundary scoring, retry and timeout rules, formal-only analysis admission, and cost accounting. Three provenance-only checks skip automatically because the raw pilot/formal interaction trees are intentionally not released.
+Tectonic is used for the documented PDF build. A compatible LaTeX installation may also be used if it preserves the official style and page geometry.
 
-## Frozen design and scoring
-
-- Matrix: `docs/experiment_matrix_v2.csv` (108 unique scheduled cells).
-- Task registry: `configs/v2/task_registry.json`.
-- Safeguard payload: `configs/v2/warnings_v0.2.yaml`.
-- Run-level scoring: independent deterministic `C` and `S` checks in `src/v2/scorer.py`; no LLM judge.
-- Statistical plan: 10,000 task-cluster bootstrap resamples with seed 20260807; task identity is the cluster and all conditions and repeats travel together.
-- Validity: non-formal, fixture, stale-version, duplicate, missing, and invalid-retry records are rejected from formal analysis.
-
-## Released results
-
-The authoritative aggregate release is under `artifacts/v2/formal_v02_108/author_insight_review/`. Important entry points are:
-
-| Artifact | Purpose |
-|---|---|
-| `analysis_dataset.csv` | Scored 108-cell analysis dataset |
-| `condition_summary.csv` | Four-quadrant counts and C/S/TC rates |
-| `contrast_bootstrap.csv` | Preregistered condition contrasts and cluster-bootstrap intervals |
-| `task_condition_summary.csv` | Task-by-condition outcomes |
-| `repeat_summary.csv` | Repeat-level consistency |
-| `cost_summary.csv` | Cost and latency accounting |
-| `data_integrity_audit.json` | Machine-readable completeness, validity, and provenance checks |
-| `statistical_analysis_report.md` | Human-readable statistical report |
-
-One malformed model action was classified as a valid behavioral safe non-completion through an append-only, hash-linked adjudication under the frozen validity rule. The original attempt artifacts were not modified and no API rerun occurred. See `artifacts/v2/formal_v02_108/ADJUDICATION_NOTICE.md`.
-
-Raw model/browser traces are intentionally omitted from the anonymous review package. The released aggregate tables, audit hashes, deterministic scorer, registry, and statistical code support inspection of the reported results without exposing credentials or large interaction logs.
-
-## Regenerate publication assets
+## One empirical reproduction pipeline
 
 ```bash
-python scripts/v2/generate_publication_figures_v02.py
+PYTHONPATH=. .venv/bin/python -m scripts.v2.reproduce_release_v02
+PYTHONPATH=. .venv/bin/python -m scripts.v2.generate_manuscript_v02_assets
+PYTHONPATH=. .venv/bin/python scripts/v2/generate_publication_figures_v02.py
+
+cd paper
+tectonic --keep-logs --keep-intermediates neurips_2026.tex
+tectonic --keep-logs --keep-intermediates supplement_v2_formal.tex
+tectonic --keep-logs --keep-intermediates venue_iaeval.tex
+tectonic --keep-logs --keep-intermediates venue_ai4good.tex
+tectonic --keep-logs --keep-intermediates venue_verify_agents.tex
+cd ..
+
+PYTHONPATH=. .venv/bin/python -m scripts.v2.verify_manuscript_v02
 ```
 
-## Build the paper
+`reproduce_release_v02` recomputes condition, task, repeat, family, transition, termination, leave-one-task-out, bootstrap, and cost aggregates from the released 108 rows and compares every CSV byte-for-byte with the audited source. It verifies the 108 unique canonical matrix cells and re-scores the released adjudication evidence. It never reads ignored formal logs or calls a model/API.
 
-From `paper/`, use a compatible LaTeX installation:
+The shared master PDF is ordered as eight pages of main text, references, formal appendix, and the official checklist. The standalone supplement inputs the same appendix source; it is not a manually maintained second data narrative.
 
-```bash
-pdflatex venue_ai4good.tex
-bibtex venue_ai4good
-pdflatex venue_ai4good.tex
-pdflatex venue_ai4good.tex
+## Full internal audit versus anonymous reproduction
 
-pdflatex supplement_v2_formal.tex
-bibtex supplement_v2_formal
-pdflatex supplement_v2_formal.tex
-pdflatex supplement_v2_formal.tex
-```
+The internal raw-attempt audit additionally rebuilds selected outcomes from 451 JSON artifacts in the local ignored `logs/v2/formal/` tree. Those full traces are deliberately outside the anonymous release. The tracked `data_integrity_audit.json` records the frozen raw-tree hash and deterministic-rescoring result, while the release-safe pipeline independently checks everything that can be verified from the released package.
 
-The shared anonymous manuscript source is `paper/neurips_2026.tex`. Thin wrappers for the three considered workshops are retained alongside it; `venue_ai4good.tex` is the current primary wrapper.
+Historical Version 1 reproduction remains governed by `docs/archive/v1/` and is not an input to Protocol v2 results.

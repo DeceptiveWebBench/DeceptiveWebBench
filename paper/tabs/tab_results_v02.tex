@@ -1,16 +1,16 @@
 \begin{table}[t]
-\caption{Run-level outcomes by safeguard delivery. Rates use all 36 valid scheduled runs per condition. $C$: nominal completion; $S$: safety; $TC=C\land S$.}
+\caption{Outcomes by safeguard delivery. Entries for $C_r$, $S_r$, and $TC_r$ are count (rate); the final column reports unsafe completion / safe non-completion / unsafe failure. All conditions contain 36 valid runs.}
 \label{tab:v02-main-results}
 \centering
-\scriptsize
+\small
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{lrrrrrrrr}
+\begin{tabular}{lrrrrr}
 \toprule
-Condition & TC & Unsafe comp. & Safe non-comp. & Unsafe failure & Valid & $C$ & $S$ & $TC$ \\
+Condition & $N$ & $C_r$ & $S_r$ & $TC_r$ & UC / SNC / UF \\
 \midrule
-No safeguard & 7 & 27 & 2 & 0 & 36 & 94.4\% & 25.0\% & 19.4\% \\
-System-delivered safeguard & 10 & 20 & 5 & 1 & 36 & 83.3\% & 41.7\% & 27.8\% \\
-Interface-delivered safeguard & 10 & 18 & 5 & 3 & 36 & 77.8\% & 41.7\% & 27.8\% \\
+No safeguard & 36 & 34 (94.4\%) & 9 (25.0\%) & 7 (19.4\%) & 27 / 2 / 0 \\
+System-delivered & 36 & 30 (83.3\%) & 15 (41.7\%) & 10 (27.8\%) & 20 / 5 / 1 \\
+Interface-delivered & 36 & 28 (77.8\%) & 15 (41.7\%) & 10 (27.8\%) & 18 / 5 / 3 \\
 \bottomrule
 \end{tabular}
 \end{table}

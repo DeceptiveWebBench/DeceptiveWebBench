@@ -1,3 +1,5 @@
+\ifdefined\CombinedSubmissionAppendix
+\else
 \documentclass[10pt]{article}
 
 \usepackage[margin=0.78in]{geometry}
@@ -17,6 +19,7 @@
 \usepackage{array}
 \usepackage{graphicx}
 \usepackage{pdflscape}
+\usepackage{float}
 \usepackage{microtype}
 \usepackage[hidelinks]{hyperref}
 \usepackage{xcolor}
@@ -27,12 +30,13 @@
 \raggedbottom
 
 \title{Protocol v2 Formal Supplement:\\
-Trustworthy Completion for Web Agents}
+Beyond Endpoint Success: Trustworthy Completion for Web Agents}
 \author{Anonymous Author(s)}
 \date{}
 
 \begin{document}
 \maketitle
+\fi
 
 \section{Scope and Analysis Classification}
 
@@ -100,11 +104,20 @@ No safeguard omitted this text. System delivery placed it in privileged context 
 Each task supplied a risk-neutral goal, a deceptive consumer environment, an annotated risk point, comparable safe and unsafe routes, a monotonic consequential unsafe boundary, a shared nominal endpoint, deterministic state fields, and a stakeholder/protected-interest annotation. Opening a panel, encountering a preselection, choosing a file, or viewing a disclosure did not cross the boundary. Only the task-specific commitment event set $S=0$, permanently for that trajectory.
 \end{sloppypar}
 
+\ifdefined\CombinedSubmissionAppendix
+The representative interface crops appear in Figure~\ref{fig:task-families} of the main paper.
+\else
 \input{figs/task_family_examples_v02.tex}
+\fi
+\input{tabs/tab_stakeholder_summary.tex}
 
 \section{Prespecified Primary Results}
 
+\ifdefined\CombinedSubmissionAppendix
+Table~\ref{tab:v02-main-results} in the main paper reports the complete condition-level outcome counts and rates.
+\else
 \input{tabs/tab_results_v02.tex}
+\fi
 \input{tabs/tab_contrasts_v02_supp.tex}
 
 The bootstrap resampled 12 task identities with replacement for 10{,}000 replicates using seed 20260807, carrying all conditions and repeats for each selected task. It therefore preserves the experiment's nested structure; the 108 valid runs are not treated as independent task samples. Percentile intervals are descriptive uncertainty with only 12 clusters and do not establish equivalence when they include zero.
@@ -180,6 +193,8 @@ The benchmark uses synthetic local websites and synthetic task data. No human pa
 
 \section{Reproducibility}
 
+The anonymous artifact is available at \url{https://anonymous.4open.science/r/DeceptiveWebBench-960E/}. It contains the code, frozen configurations, task registry, run manifests, released machine-readable 108-run analysis data, append-only adjudication record, and commands used for the tables and figures. Full provider traces and unreleased raw screenshots are intentionally omitted from the submission package; the release does not claim that those omitted traces can be reconstructed.
+
 From the repository root, manuscript assets are regenerated and all 108 analysis rows are independently rebuilt and checked against the raw formal attempts with:
 \begin{verbatim}
 PYTHONPATH=. .venv/bin/python \
@@ -200,4 +215,7 @@ PYTHONPATH=. .venv/bin/python \
 The analysis admits only \texttt{formal\_run=true}, non-synthetic Protocol v2 artifacts matching the canonical matrix, task versions, model configuration, and frozen hashes. The append-only adjudication is hash-linked to the unchanged original files and independently rescored. Original invalid classifications remain in \texttt{attempt\_audit.csv}. The number-provenance table maps manuscript claims to source fields. Raw logs, historical Version 1 artifacts, and the historical supplement are read-only inputs to verification.
 \end{sloppypar}
 
+\ifdefined\CombinedSubmissionAppendix
+\else
 \end{document}
+\fi

@@ -1,0 +1,101 @@
+{
+  "usage_cost_schema_version": "protocol-v2-usage-cost-1.0",
+  "model_calls_usage": [
+    {
+      "call_id": "model_call_1",
+      "input_tokens": 11374,
+      "output_tokens": 285,
+      "reasoning_tokens": null,
+      "reasoning_tokens_availability": "not_exposed_separately_by_selected_endpoint",
+      "cached_input_tokens": null,
+      "cache_creation_input_tokens": null,
+      "cache_creation_5m_input_tokens": null,
+      "cache_creation_1h_input_tokens": null,
+      "latency_seconds": 8.154139499994926,
+      "usage_availability": "complete",
+      "total_tokens": 11659
+    },
+    {
+      "call_id": "model_call_2",
+      "input_tokens": 11221,
+      "output_tokens": 418,
+      "reasoning_tokens": null,
+      "reasoning_tokens_availability": "not_exposed_separately_by_selected_endpoint",
+      "cached_input_tokens": null,
+      "cache_creation_input_tokens": null,
+      "cache_creation_5m_input_tokens": null,
+      "cache_creation_1h_input_tokens": null,
+      "latency_seconds": 9.398006208008155,
+      "usage_availability": "complete",
+      "total_tokens": 11639
+    },
+    {
+      "call_id": "model_call_3",
+      "input_tokens": 11258,
+      "output_tokens": 315,
+      "reasoning_tokens": null,
+      "reasoning_tokens_availability": "not_exposed_separately_by_selected_endpoint",
+      "cached_input_tokens": null,
+      "cache_creation_input_tokens": null,
+      "cache_creation_5m_input_tokens": null,
+      "cache_creation_1h_input_tokens": null,
+      "latency_seconds": 9.82903887500288,
+      "usage_availability": "complete",
+      "total_tokens": 11573
+    },
+    {
+      "call_id": "model_call_4",
+      "input_tokens": 11480,
+      "output_tokens": 160,
+      "reasoning_tokens": null,
+      "reasoning_tokens_availability": "not_exposed_separately_by_selected_endpoint",
+      "cached_input_tokens": null,
+      "cache_creation_input_tokens": null,
+      "cache_creation_5m_input_tokens": null,
+      "cache_creation_1h_input_tokens": null,
+      "latency_seconds": 5.010307416028809,
+      "usage_availability": "complete",
+      "total_tokens": 11640
+    },
+    {
+      "call_id": "model_call_5",
+      "input_tokens": 11506,
+      "output_tokens": 405,
+      "reasoning_tokens": null,
+      "reasoning_tokens_availability": "not_exposed_separately_by_selected_endpoint",
+      "cached_input_tokens": null,
+      "cache_creation_input_tokens": null,
+      "cache_creation_5m_input_tokens": null,
+      "cache_creation_1h_input_tokens": null,
+      "latency_seconds": 13.766790500027128,
+      "usage_availability": "complete",
+      "total_tokens": 11911
+    }
+  ],
+  "trajectory_totals": {
+    "model_calls": 5,
+    "input_tokens": 56839,
+    "output_tokens": 1583,
+    "reasoning_tokens": null,
+    "cached_input_tokens": null,
+    "cache_creation_input_tokens": null,
+    "total_tokens": 58422,
+    "cumulative_model_latency_seconds": 46.1582824990619
+  },
+  "provider_reported_cost": null,
+  "reconstructed_cost": 0.03433545,
+  "cost_currency": "USD",
+  "pricing_date": "2026-08-17",
+  "pricing_source_url": "https://aws.amazon.com/bedrock/pricing/",
+  "pricing_unit": "per_1m_tokens",
+  "rates_per_1m_tokens": {
+    "input_tokens": 0.53,
+    "output_tokens": 2.66,
+    "cache_creation_input_tokens_5m": null,
+    "cache_creation_input_tokens_1h": null,
+    "cache_read_input_tokens": null,
+    "reasoning_tokens": null
+  },
+  "cost_calculation_version": "protocol-v2-cost-calculator-1.0",
+  "cost_status": "reconstructed"
+}

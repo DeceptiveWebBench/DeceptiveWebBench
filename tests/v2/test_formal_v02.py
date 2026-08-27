@@ -11,7 +11,7 @@ from src.v2.costs import normalize_bedrock_usage
 from src.v2.execution_adapter_v02 import artifact_context, build_attempt_plan, verify_pre_action_exposure
 from src.v2.formal_repeat1_v02 import COLLECTION_ID, CONDITIONS, FormalV02Runner, repeat1_cells, tranche_hash, validate_requested_tranche, validate_v02_attempt
 from src.v2.matrix import load_schedule
-from src.v2.pilot import PILOT_ROOT, verify_frozen_manifest
+from src.v2.pilot import verify_frozen_manifest
 from src.v2.runner import FormalRunGuardError
 from src.v2.state_machine import fixture_for
 from src.v2.safeguards_v02 import EXPECTED_PAYLOAD, WARNING_VERSION, build_prompt_bundle, render_warning
@@ -19,8 +19,6 @@ from src.v2.safeguards_v02 import EXPECTED_PAYLOAD, WARNING_VERSION, build_promp
 
 class FormalV02ContractTests(unittest.TestCase):
     def test_v01_manifest_still_verifies(self):
-        if not (PILOT_ROOT / "pilot_manifest.json").exists():
-            self.skipTest("raw pilot interaction tree is intentionally omitted from the public package")
         verify_frozen_manifest()
 
     def test_exact_payload_and_delivery_byte_equality(self):

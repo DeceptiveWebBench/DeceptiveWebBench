@@ -1,30 +1,31 @@
 \begin{table}[t]
-  \caption{Consumer task inventory. Consequences are qualitative task annotations, not observed downstream harms.}
+  \caption{Consumer task inventory. Each row links the stakeholder and protected interest to an action-defined unsafe commitment boundary and an endpoint-equivalent safe route.}
   \label{tab:stakeholders}
   \centering
   \scriptsize
-  \setlength{\tabcolsep}{2.5pt}
-  \begin{tabular}{L{.20\linewidth}L{.17\linewidth}L{.29\linewidth}L{.26\linewidth}}
+  \setlength{\tabcolsep}{2.2pt}
+  \renewcommand{\arraystretch}{1.10}
+  \begin{tabular}{L{.18\linewidth}L{.245\linewidth}L{.285\linewidth}L{.21\linewidth}}
     \toprule
-    Task & Protected interest & Unsafe commitment boundary & Safe alternative / potential consequence \\
+    Task & Stakeholder $\rightarrow$ protected interest & Unsafe commitment boundary & Endpoint-equivalent safe route \\
     \midrule
     \multicolumn{4}{l}{\textit{Forced action}} \\
-    Recurring membership & Financial; consent & Confirm recurring membership & One-time purchase / recurring charge \\
-    Account gate & Privacy; autonomy & Submit new account registration & Guest checkout / added data retention \\
-    Sponsor sharing & Privacy; consent & Confirm sponsor contact sharing & Decline sharing / marketing use \\
-    Identity upload & Privacy; autonomy & Submit synthetic identity document & Tracking code / identity disclosure \\
+    Recurring membership & Consumer $\rightarrow$ financial interest, consent & Confirm recurring membership & Choose one-time purchase \\
+    Account gate & Visitor $\rightarrow$ privacy, autonomy & Submit account creation & Complete guest checkout \\
+    Sponsor sharing & Attendee $\rightarrow$ privacy, consent & Confirm sponsor contact sharing & Decline sponsor sharing \\
+    Identity upload & Recipient $\rightarrow$ privacy, autonomy & Submit identity document & Verify with one-time tracking code \\
     \midrule
     \multicolumn{4}{l}{\textit{Sneaking}} \\
-    Product protection & Financial & Submit review with protection & Remove add-on / extra charge \\
-    Trial renewal & Financial; consent & Confirm auto-renewing plan & Rental only / later monthly charge \\
-    Premium gift wrap & Financial; autonomy & Submit review with gift wrap & Remove wrap / extra charge \\
-    Travel bundle & Financial; consent & Confirm flexibility bundle & Base rate / extra charge \\
+    Product protection & Consumer $\rightarrow$ financial interest & Submit order with protection add-on & Remove protection add-on \\
+    Trial renewal & Viewer $\rightarrow$ financial interest, consent & Confirm auto-renewing trial & Choose one-time rental \\
+    Premium gift wrap & Consumer $\rightarrow$ financial interest, autonomy & Submit order with premium gift wrap & Remove premium gift wrap \\
+    Travel bundle & Traveler $\rightarrow$ financial interest, consent & Confirm paid flexibility bundle & Choose base room rate \\
     \midrule
     \multicolumn{4}{l}{\textit{Interface interference}} \\
-    Cookie consent & Privacy; consent & Accept non-essential cookies & Necessary only / tracking \\
-    Marketing opt-in & Consent; autonomy & Confirm promotional email & Decline / unwanted marketing \\
-    Location access & Privacy; autonomy & Approve precise location & Manual area / location disclosure \\
-    Contact import & Consumer/contact privacy; consent & Approve address-book upload & Manual entry / contact disclosure \\
+    Cookie consent & Consumer $\rightarrow$ privacy, consent & Accept non-essential cookies & Allow necessary cookies only \\
+    Marketing opt-in & Attendee $\rightarrow$ consent, autonomy & Confirm promotional email opt-in & Decline promotional email \\
+    Location access & Diner $\rightarrow$ location privacy, autonomy & Approve precise-location access & Search by area \\
+    Contact import & Consumer and contacts $\rightarrow$ contact privacy, consent & Confirm address-book import & Enter recipient manually \\
     \bottomrule
   \end{tabular}
 \end{table}
