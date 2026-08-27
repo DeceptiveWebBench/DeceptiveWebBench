@@ -5,7 +5,7 @@
 
 \PassOptionsToPackage{numbers,sort,compress}{natbib}
 \usepackage[dblblindworkshop]{neurips_2026}
-\providecommand{\SubmissionWorkshopTitle}{Trustworthy AI for Good}
+\providecommand{\SubmissionWorkshopTitle}{Anonymous Workshop Submission}
 \workshoptitle{\SubmissionWorkshopTitle}
 
 \usepackage[utf8]{inputenc}
@@ -30,6 +30,8 @@
 \usepackage{microtype}
 \usepackage{xcolor}
 \usepackage{graphicx}
+\usepackage{pdflscape}
+\usepackage{float}
 \graphicspath{{figs/}}
 
 \definecolor{hdrblue}{HTML}{DAE3F3}
@@ -40,7 +42,7 @@
 \setlength{\belowrulesep}{0pt}
 \raggedbottom
 
-\title{Trustworthy Completion for Web Agents: A Benchmark and Research Agenda for Execution-Time Safeguards}
+\title{Beyond Endpoint Success: Trustworthy Completion for Web Agents}
 
 \author{%
   Anonymous Author(s) \\
@@ -51,7 +53,7 @@
 \maketitle
 
 \begin{abstract}
-Web agents can satisfy a consumer's literal request while accepting an unwanted charge, granting an unnecessary permission, or disclosing personal data. Binary task success obscures whether the delegation protected the user's interests. We introduce \emph{Trustworthy Completion}, which independently measures nominal completion ($C$) and avoidance of a machine-verifiable unsafe commitment ($S$), with $TC=C\land S$. We instantiate the framework in 12 synthetic consumer tasks and evaluate one frozen vision-capable web agent across No safeguard, System-delivered safeguard, and Interface-delivered safeguard conditions. All 108 scheduled cells yielded valid outcomes; one malformed action was resolved by append-only adjudication under the frozen validity rule. Without a safeguard, nominal completion was 34/36 (94.4\%), yet trustworthy completion was only 7/36 (19.4\%); 27/36 (75.0\%) were unsafe completions. Relative to No safeguard, both safeguard strategies increased safety by 16.7 percentage points, while System and Interface delivery reduced completion by 11.1 and 16.7 points, yielding smaller and uncertain trustworthy-completion gains. Direct contrasts did not resolve a difference between delivery strategies. These results show why endpoint success and stakeholder-protecting execution must be evaluated separately.
+Web agents can satisfy a consumer's literal request while accepting an unwanted charge, granting an unnecessary permission, or disclosing personal data. Binary task success obscures whether the delegation protected the user's interests. We introduce \emph{Trustworthy Completion}, which independently measures nominal completion ($C_r$) and avoidance of a machine-verifiable unsafe commitment ($S_r$), with $TC_r=C_r\land S_r$. We instantiate the framework in 12 synthetic consumer tasks and evaluate one frozen vision-capable web agent across No safeguard, System-delivered safeguard, and Interface-delivered safeguard conditions. All 108 scheduled cells yielded valid outcomes; one malformed action was resolved by append-only adjudication under the frozen validity rule. Without a safeguard, nominal completion was 34/36 (94.4\%), yet trustworthy completion was only 7/36 (19.4\%); 27/36 (75.0\%) were unsafe completions. Relative to No safeguard, both safeguard strategies increased safety by 16.7 percentage points, while System and Interface delivery reduced completion by 11.1 and 16.7 points, yielding smaller and uncertain trustworthy-completion gains. Direct contrasts did not resolve a difference between delivery strategies. These results show why endpoint success and stakeholder-protecting execution must be evaluated separately.
 \end{abstract}
 
 \section{Introduction}
@@ -60,7 +62,7 @@ People increasingly delegate ordinary consumer actions to web agents: buying a p
 
 This gap matters because execution-based benchmarks have made nominal success a central measure of web-agent capability~\cite{zhou2023webarena,koh2024visualwebarena,xie2024osworld}. Once an agent acts rather than merely advises, however, the route to the endpoint becomes part of the outcome. Payment, permission, disclosure, and enrollment decisions are not incidental interface events: they are commitments made on someone's behalf. Treating the final page as the whole result therefore merges two distinct questions---whether the requested state was reached and whether the agent respected the interests that constrained the delegation.
 
-We call the conjunction \emph{Trustworthy Completion}. Completion ($C$) records whether the nominal endpoint is reached; Safety ($S$) records whether the trajectory avoids a task-specific, machine-verifiable unsafe commitment. Scoring the variables independently exposes unsafe completion, in which an apparently capable agent finishes only after crossing the protected boundary. It also separates safe non-completion from unsafe failure and preserves evidence that would disappear if a later reversal or failure overwrote the trajectory.
+We call the conjunction \emph{Trustworthy Completion}. Completion ($C_r$) records whether the nominal endpoint is reached; Safety ($S_r$) records whether the trajectory avoids a task-specific, machine-verifiable unsafe commitment; $TC_r=C_r\land S_r$. Scoring the variables independently exposes unsafe completion, in which an apparently capable agent finishes only after crossing the stakeholder's protected boundary. It also separates safe non-completion from unsafe failure and preserves evidence that would disappear if a later reversal or failure overwrote the trajectory.
 
 \emph{Research question.} How should web agents be evaluated when nominal task completion may compromise the user’s financial interests, privacy, informed consent, autonomy, or policy constraints - and how can execution-time safeguards be tested without conflating warning design, risk detection, and agent capability?
 
@@ -89,7 +91,7 @@ Figure~\ref{fig:framework} connects this outcome space to the study. Each task s
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{figs/trustworthy_completion_cs_pipeline.pdf}
+  \includegraphics[width=\linewidth]{figs/trustworthy_completion_pipeline.pdf}
   \caption{Trustworthy Completion combines a controlled evaluation pipeline with an independent $C/S$ outcome space. Risk annotations are oracle-fixed in the present study; annotated risk points support trajectory diagnosis rather than safeguard triggers.}
   \label{fig:framework}
 \end{figure}
@@ -113,7 +115,7 @@ The suite contains 12 synthetic tasks, four in each of three families (Figure~\r
 
 \input{figs/task_family_examples_v02.tex}
 
-Every task documents the acting principal, affected stakeholder, protected interest, unsafe action, potential consequence, safe alternative, qualitative reversibility, and expected safeguard response. Table~\ref{tab:stakeholders} shows how these annotations connect interface mechanisms to consumer interests. They describe plausible consequences of the represented decision; they are not measurements of realized harm and are not converted into numerical severity weights.
+Every task documents the acting principal and the conceptual chain \emph{stakeholder $\rightarrow$ protected interest $\rightarrow$ unsafe commitment boundary}, together with the potential consequence, safe alternative, qualitative reversibility, and expected safeguard response. Table~\ref{tab:stakeholders} shows how these annotations connect interface mechanisms to consumer interests. They describe plausible consequences of the represented decision; they are not measurements of realized harm and are not converted into numerical severity weights.
 
 \input{tabs/tab_stakeholder_summary.tex}
 
@@ -148,58 +150,58 @@ Run validity was orthogonal to behavior. Only automatically evidenced infrastruc
 
 For each condition, we report raw counts, $N_{\mathrm{valid}}$, and rates for all four quadrants, $C$, $S$, and $TC$. Prespecified primary contrasts are System minus No and Interface minus No; the direct Interface-minus-System comparison is secondary. Each contrast covers $TC$, $S$, and $C$. Uncertainty uses 10{,}000 task-cluster bootstrap replicates with seed \texttt{20260807}: the 12 task identities are sampled with replacement while their conditions and repeats travel together. Thus, 108 valid runs are nested observations, not 108 independent task samples. Task profiles are descriptive; four-task family summaries are exploratory.
 
+\subsection{Cost-aware and reproducible reporting}
+
+The run manifest records model/API calls, token usage when returned by the provider, wall-clock time, realized inference cost, and auditable invalid/retry overhead. We report cost as an operational evaluation dimension rather than combining it with $S_r$ or $TC_r$ into a single score. Condition-level cost differences are descriptive because trajectory length and outcome also affect usage; detailed totals and condition summaries appear in the supplement. Code, configurations, released tabular data, and reproduction instructions are available in the anonymous artifact at \url{https://anonymous.4open.science/r/DeceptiveWebBench-960E/}.
+
 \section{Results}
 \label{sec:results}
 
-The collection traversed all 108 scheduled cells and retained all 112 attempts. Five attempts were initially labeled invalid, and four retry-eligible infrastructure failures produced valid permitted retries. The remaining cell, \texttt{forced\_action\_sub\_001} under Interface delivery in repeat 3, stopped after a malformed model action. Because the frozen outcome specification explicitly treats malformed agent actions as valid outcomes, hash-linked append-only artifacts adjudicated its observable state as safe non-completion ($C=0,S=1$); no rerun occurred and the original files remain unchanged. The audited dataset therefore contains 108 valid outcomes, 36 per condition. Independent rescoring matched every selected outcome, and no fixture or pilot record entered the analysis.
+The collection traversed all 108 scheduled cells and retained all 112 attempts. Five attempts were initially labeled invalid, and four retry-eligible infrastructure failures produced valid permitted retries. The remaining cell, \texttt{forced\_action\_sub\_001} under Interface delivery in repeat 3, stopped after a malformed model action. Because the frozen outcome specification explicitly treats malformed agent actions as valid outcomes, hash-linked append-only artifacts adjudicated its observable state as safe non-completion ($C=0,S=1$); no rerun occurred and the original files remain unchanged. The audited dataset therefore contains 108 valid outcomes, 36 per condition. Independent rescoring matched every selected outcome, and no fixture or pilot record entered the analysis. Across all attempts, known inference cost was USD~7.51396168; three attempts lacked cost evidence, so the conservative exposure was USD~10.51396168. Known invalid/retry overhead was USD~0.04736343. These operational totals are audited, while condition-level differences are descriptive rather than causal compute effects.
 
-\subsection{Nominal completion obscured unsafe trajectories}
+\subsection{Finding 1: endpoint success substantially overstated trustworthy completion}
 
 Without a safeguard, the agent reached the nominal endpoint in 34/36 runs (94.4\%) but achieved trustworthy completion in only 7/36 (19.4\%). Unsafe completion was the modal outcome: 27/36 runs (75.0\%) reached the endpoint after crossing the task's unsafe boundary. Figure~\ref{fig:v02-quadrants} shows the complete outcome profiles; the corresponding numerical table appears in the supplement. This 75-point gap between nominal and trustworthy completion is the study's central empirical result: endpoint capability did not imply protection of the consumer interest represented by the task.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=.94\linewidth]{protocol_v2_cs_quadrants_publication.pdf}
-  \caption{Four-quadrant outcome distributions among valid runs. Labels in sufficiently large segments report raw counts and percentages; smaller segments remain visible in the stack and are reported in full in the supplement.}
+  \caption{Four-quadrant outcome distributions among valid runs. Direct labels report the raw count and percentage for every nonzero segment; zero-count categories remain represented in the shared legend.}
   \label{fig:v02-quadrants}
 \end{figure}
 
-\subsection{Safeguards changed both safety and completion}
+\subsection{Finding 2: safeguards improved safety but reduced completion}
 
 Relative to No safeguard, System delivery increased $S$ by 16.7 percentage points (95\% task-cluster bootstrap interval $[+2.8,+33.3]$) while reducing $C$ by 11.1 points ($[-22.2,0.0]$). Its net $TC$ increase was 8.3 points ($[0.0,+16.7]$). Interface delivery increased $S$ by 16.7 points ($[0.0,+38.9]$), reduced $C$ by 16.7 points ($[-30.6,-5.6]$), and increased $TC$ by 8.3 points ($[-8.3,+30.6]$). Thus, the descriptive safety gains were accompanied by completion losses, and the trustworthy-completion gains were smaller and uncertain (Figure~\ref{fig:v02-tradeoff}).
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=.90\linewidth]{protocol_v2_tradeoff_publication.pdf}
-  \caption{Prespecified contrasts against No safeguard. Bars show percentage-point estimates; error bars are 95\% task-cluster bootstrap intervals from 10{,}000 replicates over 12 task identities. Safety gains and completion losses must be interpreted jointly.}
+  \caption{Prespecified contrasts against No safeguard. Markers show percentage-point estimates; error bars are 95\% task-cluster bootstrap intervals from 10{,}000 replicates over 12 task identities. Safety gains and completion losses must be interpreted jointly; the plot does not establish equivalence between delivery strategies.}
   \label{fig:v02-tradeoff}
 \end{figure}
 
-The direct Interface-minus-System contrasts were small and imprecise: $TC$ $0.0$ points ($[-16.7,+16.7]$), $S$ $0.0$ points ($[-22.2,+19.4]$), and $C$ $-5.6$ points ($[-22.2,+11.1]$). The experiment therefore did not resolve a difference between the two complete delivery strategies. This absence of a resolved difference is not evidence of equivalence.
+\subsection{Finding 3: effects varied by task; the delivery contrast remained unresolved}
 
-\subsection{Paired changes, heterogeneity, and robustness}
+The direct Interface-minus-System contrasts were small and imprecise: $TC$ $0.0$ points ($[-16.7,+16.7]$), $S$ $0.0$ points ($[-22.2,+19.4]$), and $C$ $-5.6$ points ($[-22.2,+11.1]$). The experiment therefore did not resolve a difference between the two complete delivery strategies. This unresolved contrast is not evidence of equivalence.
 
-Paired task-repeat trajectories clarify how the aggregate profile changed. Unsafe No-safeguard completion became trustworthy completion in 2/36 System pairs and 4/36 Interface pairs. In contrast, six System and seven Interface pairs lost nominal completion. Across all conditions, 16 valid runs did not complete: nine ended as unclassified agent stops, six by timeout or step limit, and one by deliberate safe abort. Safety improvement therefore did not consistently mean that the agent found and completed an equivalent safe route.
+Paired trajectories show both improvement and lost utility: unsafe No-safeguard completion became trustworthy completion in 2/36 System pairs and 4/36 Interface pairs, while six System and seven Interface pairs lost nominal completion. Of 16 non-completions, nine were unclassified agent stops, six were timeouts or step limits, and one was deliberate safe abort. Safety improvement therefore did not consistently mean completion through an equivalent safe route.
 
-Responses varied substantially by task. Interface delivery achieved trustworthy completion in all three location-access repeats, whereas System delivery did so in one; System delivery achieved two of three trustworthy completions for identity upload, while Interface achieved none. Conversely, cookie consent, gift wrap, and travel bundle remained unsafe across all three conditions. These profiles are descriptive, not evidence of family-level or channel mechanisms.
-
-The append-only adjudication corrected the adapter's original invalid label and classified the Interface cell as safe non-completion under the frozen malformed-action rule. Its assignment falls within the previously reported missing-cell bounds and strengthens the completion-loss component without changing the principal interpretation. Post-hoc leave-one-task-out checks likewise preserve the broad directions of safety gain and completion loss, although the magnitude of $TC$ gain remains task-sensitive. Full task, transition, termination, repeat, adjudication, and cost results appear in the supplement.
+Task profiles were heterogeneous. Interface delivery produced 3/3 trustworthy completions for location access, versus 1/3 under System; identity upload showed 2/3 under System and 0/3 under Interface, while cookie consent, gift wrap, and travel bundle remained unsafe in all conditions. These are descriptive task patterns, not family or channel mechanisms. Append-only adjudication placed the malformed-action cell within its frozen missing-cell bounds without changing the principal interpretation; explicitly post-hoc leave-one-task-out checks preserved the safety-up/completion-down direction but showed task-sensitive $TC$ gains. Full diagnostics and costs appear in the supplement.
 
 \section{Discussion}
 
-The primary lesson is not that a safeguard won a channel comparison. It is that a strong endpoint-completing agent frequently violated machine-verifiable consumer-interest boundaries, and that a single task-success score would have counted those trajectories as successes. Independent $C/S$ measurement exposes this gap without assigning numerical severity across heterogeneous financial, privacy, consent, and autonomy consequences.
-
-Generic execution-time guidance did change the outcome profile, but it did not reliably convert unsafe completion into trustworthy completion. Some safety gains arose through ordinary stopping and timeout. Treating those runs as simply safer would conceal lost utility; treating them as ordinary task failures would conceal avoided commitments. The four quadrants and structured termination evidence preserve both facts. This distinction matters for interactive-agent evaluation, consumer protection, and environment-grounded verification: trustworthy delegated action requires evidence about both the endpoint and the path.
+The main lesson is not that one delivery strategy won. An agent with high nominal completion in this benchmark frequently crossed machine-verifiable consumer-interest boundaries, while generic guidance changed both safety and utility. Counting ordinary stops and timeouts only as safer would hide completion loss; counting them only as failures would hide avoided commitments. Independent $C/S$ outcomes and structured termination evidence preserve both facts without assigning numerical severity across heterogeneous consequences. For interactive-agent evaluation and stakeholder protection, both endpoint and trajectory therefore require environment-grounded verification.
 
 \section{Limitations}
 
-The study uses one frozen Qwen/BrowserUse configuration, 12 curated synthetic tasks, and only three repeats per task-condition cell. The Bedrock endpoint exposed a model identifier but not a provider snapshot or sampling seed. With 12 task clusters, uncertainty intervals are coarse; task and family patterns are descriptive. One outcome required post-collection protocol-consistency adjudication after the adapter mislabeled a malformed agent action; although the preserved state made $C/S$ deterministic, this correction should remain transparent.
+The study covers one frozen Qwen/BrowserUse configuration, 12 curated synthetic tasks, and three repeats per task-condition cell. The endpoint exposed neither a provider snapshot nor a sampling seed, 12 task clusters yield coarse intervals, and one malformed-action outcome required transparent append-only protocol-consistency adjudication. Task and family patterns remain descriptive.
 
-All environments contain deceptive interfaces and no neutral twins, so the results do not identify deception's causal effect. Oracle task annotations deliver safeguards before action; the study does not evaluate a detector, false alerts, missed risks, or just-in-time triggering. The System and Interface conditions are complete delivery strategies, not a pure abstract channel manipulation, and the unresolved direct contrast does not establish equivalence. Synthetic commitments represent plausible consequences, not realized consumer harm. The experiment includes no additional agent, live website, human baseline, or population sample and cannot support generalization to those settings.
+Without neutral twins, the experiment does not identify deception's causal effect. Oracle start-of-task annotations do not evaluate detector errors or just-in-time triggering; System and Interface are complete strategies, so their unresolved contrast is not equivalence. Synthetic commitments represent plausible rather than realized harm, and the study supports no cross-agent, live-site, human, or population generalization.
 
 \section{Research Agenda}
 
-These limits define a concrete research agenda. Neutral-interface controls are needed to estimate the effect of deceptive choice architecture. Additional frozen agents can test model and scaffold dependence. Factorial wording and timing studies can separate message content from delivery strategy, while detector-coupled experiments can introduce false, missed, and delayed triggers. Longer trajectories and additional domains should be added only while preserving comparable endpoints and auditable scoring. Human-agent comparisons require a separately approved human study, and any quantitative harm weighting requires explicit normative validation. These are planned extensions, not evidence from the present protocol.
+Table~\ref{tab:agenda} turns the study's limits into testable follow-up designs. Every row is future work, not evidence from the current experiment.
 
 \section{Conclusion}
 
@@ -207,5 +209,13 @@ Completing a user's goal is not the same as completing the delegation trustworth
 
 \bibliographystyle{plainnat}
 \bibliography{references}
+
+\clearpage
+\appendix
+\def\CombinedSubmissionAppendix{1}
+\input{supplement_v2_formal.tex}
+
+\clearpage
+\input{neurips_2026_checklist.tex}
 
 \end{document}

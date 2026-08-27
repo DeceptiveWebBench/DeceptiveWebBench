@@ -1,33 +1,39 @@
 \begin{table}[t]
-  \caption{Closest comparisons by evaluation object. Prior work contributes capability environments, policy-aware outcomes, causal deception tests, or learned defenses; our contribution combines stakeholder grounding, independent $C/S$, deterministic trajectory scoring, and controlled safeguard delivery.}
+  \caption{Comparison of evaluation settings and measurement designs. The rows summarize the principal unit, observable signals, scoring structure, and intervention studied in each line of work.}
   \label{tab:bench-compare}
   \centering
   \scriptsize
-  \setlength{\tabcolsep}{3pt}
-  \begin{tabular}{L{.16\linewidth}L{.24\linewidth}L{.27\linewidth}L{.25\linewidth}}
+  \setlength{\tabcolsep}{2.2pt}
+  \renewcommand{\arraystretch}{1.12}
+  \begin{tabular}{L{.135\linewidth}L{.185\linewidth}L{.145\linewidth}L{.245\linewidth}L{.20\linewidth}}
     \toprule
-    Work & Evaluation object & Outcome and scoring & Intervention / distinction \\
+    Work & Threat or setting & Evaluation unit & Verifiable signals and scoring & Intervention \\
     \midrule
     WebArena / VWA / OSWorld~\cite{zhou2023webarena,koh2024visualwebarena,xie2024osworld}
-      & General web or computer tasks
-      & Endpoint/task success; execution checks
-      & Capability evaluation; no stakeholder boundary \\
-    ST-WebAgentBench~\cite{levy2026stwebagentbench}
-      & Web tasks with explicit policies
-      & Completion and policy/safety dimensions
-      & Policy-aware completion; not deceptive consumer choice \\
+      & General web and computer-use capability
+      & Task episode
+      & Endpoint state or execution checks; nominal task success
+      & Benchmark environment; no safeguard comparison \\
+    ST-WebAgent\-Bench~\cite{levy2026stwebagentbench}
+      & Policy-constrained web tasks
+      & Task episode
+      & Completion plus policy-violation and safety signals
+      & Explicit task policies \\
     TrickyArena / WebDecept~\cite{ersoy2025darkpatterns,shi2026webdecept}
-      & Neutral versus injected deceptive interfaces
-      & Susceptibility or task behavior under manipulation
-      & Estimates deception effects; multiple agents/prompt constraints \\
+      & Neutral and deceptive interface variants
+      & Task episode across variants
+      & Task behavior, success, and susceptibility to manipulation
+      & Interface variation; prompt constraints in WebDecept \\
     DUDE~\cite{zhang2026dontclick}
-      & Deceptive UI click scenarios
-      & Click-level trapped/correct judgments
-      & Learns transferable defensive guidance \\
-    \textbf{Ours}
-      & \textbf{Stakeholder-grounded unsafe commitments}
-      & \textbf{Independent $C/S$ from deterministic trajectory state}
-      & \textbf{Matched start-of-task safeguard delivery} \\
+      & Deceptive click targets
+      & Interface decision
+      & Correct and deceptive region labels; click-level judgment
+      & Learned defensive guidance \\
+    This work
+      & Deceptive consumer commitments
+      & Run trajectory
+      & Endpoint $C$ and monotonic commitment-boundary $S$
+      & Task-independent safeguard with two delivery strategies \\
     \bottomrule
   \end{tabular}
 \end{table}

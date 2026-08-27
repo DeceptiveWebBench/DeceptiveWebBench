@@ -67,7 +67,7 @@ def generate_tables(data: dict[str, object]) -> None:
             f"{pct(row['S_rate'])}\\% & {pct(row['TC_rate'])}\\% \\\\"
         )
     table("tab_results_v02.tex",
-          r"Run-level outcomes by safeguard delivery. Rates use all 36 valid scheduled runs per condition. $C$: nominal completion; $S$: safety; $TC=C\land S$.",
+          r"Run-level outcomes by safeguard delivery. Rates use all 36 valid scheduled runs per condition. $C_r$: nominal completion; $S_r$: safety; $TC_r=C_r\land S_r$.",
           "tab:v02-main-results", "lrrrrrrrr",
           r"Condition & TC & Unsafe comp. & Safe non-comp. & Unsafe failure & Valid & $C$ & $S$ & $TC$ \\",
           body, size=r"\scriptsize")
@@ -184,30 +184,36 @@ def generate_tables(data: dict[str, object]) -> None:
 
 
 def copy_figures() -> None:
-    copies = {
-        ROOT / "artifacts/v2/review/pre_api_visuals/journey__forced_account_gate_002__risk.png": FIGS / "protocol_v2_forced_action.png",
-        ROOT / "artifacts/v2/review/pre_api_visuals/digital__sneaking_trial_renewal_002__risk.png": FIGS / "protocol_v2_sneaking.png",
-        ROOT / "artifacts/v2/review/pre_api_visuals/shoplane__interface_perm_001__risk.png": FIGS / "protocol_v2_interface_interference.png",
-    }
-    for source, destination in copies.items():
-        shutil.copy2(source, destination)
+    # The publication crops are generated directly from the actual v2 sites by
+    # scripts/generate_figure2_interface_crops.py.  Keep the manuscript asset
+    # generator from replacing them with the older full-page review captures.
+    expected = (
+        FIGS / "task_family_forced_action_crop.png",
+        FIGS / "task_family_sneaking_crop.png",
+        FIGS / "task_family_interface_crop.png",
+    )
+    missing = [path for path in expected if not path.exists()]
+    if missing:
+        raise FileNotFoundError(
+            "Missing publication interface crops; run "
+            "PYTHONPATH=. .venv/bin/python scripts/generate_figure2_interface_crops.py: "
+            + ", ".join(str(path) for path in missing)
+        )
     write(FIGS / "task_family_examples_v02.tex", r"""
 \begin{figure}[t]
   \centering
   \begingroup
-  \setlength{\fboxsep}{0pt}
-  \setlength{\fboxrule}{0.4pt}
-  \setlength{\tabcolsep}{2pt}
-  \begin{tabular}{ccc}
-    \fbox{\includegraphics[width=.316\linewidth]{protocol_v2_forced_action.png}} &
-    \fbox{\includegraphics[width=.316\linewidth]{protocol_v2_sneaking.png}} &
-    \fbox{\includegraphics[width=.316\linewidth]{protocol_v2_interface_interference.png}} \\
-    \scriptsize Forced action: account gate &
-    \scriptsize Sneaking: trial renewal &
-    \scriptsize Interface interference: cookie consent
+  \setlength{\tabcolsep}{0pt}
+  \begin{tabular}{c}
+    \scriptsize\textbf{(a) Forced action: account creation versus guest checkout} \\[-1pt]
+    \includegraphics[width=.98\linewidth]{task_family_forced_action_crop.png} \\[2pt]
+    \scriptsize\textbf{(b) Sneaking: auto-renewing trial versus one-time rental} \\[-1pt]
+    \includegraphics[width=.98\linewidth]{task_family_sneaking_crop.png} \\[2pt]
+    \scriptsize\textbf{(c) Interface interference: broad versus necessary-only cookie consent} \\[-1pt]
+    \includegraphics[width=.98\linewidth]{task_family_interface_crop.png}
   \end{tabular}
   \endgroup
-  \caption{Representative benchmark risk pages at the frozen 1280$\times$720 viewport. Synthetic sites expose a consequential unsafe route and an outcome-equivalent safe alternative. Screenshots contain no experimental outcomes.}
+  \caption{Focused crops from three benchmark task families at the frozen 1280$\times$720 viewport. Orange identifies the task's unsafe commitment boundary and blue the outcome-equivalent safe route; the annotations expose neither agent choices nor experimental outcomes.}
   \label{fig:task-families}
 \end{figure}
 """)

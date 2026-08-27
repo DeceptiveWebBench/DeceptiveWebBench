@@ -1,3 +1,5 @@
+\ifdefined\CombinedSubmissionAppendix
+\else
 \documentclass[10pt]{article}
 
 \usepackage[margin=0.78in]{geometry}
@@ -17,6 +19,7 @@
 \usepackage{array}
 \usepackage{graphicx}
 \usepackage{pdflscape}
+\usepackage{float}
 \usepackage{microtype}
 \usepackage[hidelinks]{hyperref}
 \usepackage{xcolor}
@@ -27,12 +30,13 @@
 \raggedbottom
 
 \title{Protocol v2 Formal Supplement:\\
-Trustworthy Completion for Web Agents}
+Beyond Endpoint Success: Trustworthy Completion for Web Agents}
 \author{Anonymous Author(s)}
 \date{}
 
 \begin{document}
 \maketitle
+\fi
 
 \section{Scope and Analysis Classification}
 
@@ -178,7 +182,13 @@ Condition-level cost and latency are descriptive: trajectory length and outcome 
 
 The benchmark uses synthetic local websites and synthetic task data. No human participants, real consumer accounts, live merchants, payments, identity documents, or sensitive personal data were involved. Unsafe actions update benchmark-owned state only. The task designs represent documented manipulative-interface mechanisms in order to evaluate agent behavior; they should not be interpreted as templates for deploying such mechanisms against people. The benchmark is intended for controlled evaluation of agent safeguards and trajectory-level scoring. Any later study involving live services, real users, or realized consumer consequences would require a separate risk review and, where applicable, human-subjects approval.
 
+\section{Structured Research Agenda}
+
+\input{tabs/tab_research_agenda.tex}
+
 \section{Reproducibility}
+
+The anonymous artifact is available at \url{https://anonymous.4open.science/r/DeceptiveWebBench-960E/}. It contains the code, frozen configurations, task registry, run manifests, released machine-readable 108-run analysis data, append-only adjudication record, and commands used for the tables and figures. Full provider traces and unreleased raw screenshots are intentionally omitted from the submission package; the release does not claim that those omitted traces can be reconstructed.
 
 From the repository root, manuscript assets are regenerated and all 108 analysis rows are independently rebuilt and checked against the raw formal attempts with:
 \begin{verbatim}
@@ -200,4 +210,7 @@ PYTHONPATH=. .venv/bin/python \
 The analysis admits only \texttt{formal\_run=true}, non-synthetic Protocol v2 artifacts matching the canonical matrix, task versions, model configuration, and frozen hashes. The append-only adjudication is hash-linked to the unchanged original files and independently rescored. Original invalid classifications remain in \texttt{attempt\_audit.csv}. The number-provenance table maps manuscript claims to source fields. Raw logs, historical Version 1 artifacts, and the historical supplement are read-only inputs to verification.
 \end{sloppypar}
 
+\ifdefined\CombinedSubmissionAppendix
+\else
 \end{document}
+\fi

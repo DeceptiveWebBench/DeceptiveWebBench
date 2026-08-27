@@ -57,15 +57,23 @@ python -m scripts.v2.audit_structural_metrics
 
 The complete test suite contains 102 checks, including real-browser safe/unsafe paths, monotonic unsafe-boundary evidence, matched safeguard delivery, retry policy, formal-only analysis admission, and cost accounting.
 
-## Reproduce the frozen analysis
+## Reproduce the frozen analysis and manuscript
 
 ```bash
-python -m scripts.v2.finalize_formal_v02_full
-python scripts/v2/generate_publication_figures_v02.py
-python scripts/v2/generate_manuscript_v02_assets.py
+PYTHONPATH=. .venv/bin/python -m scripts.v2.reproduce_release_v02
+PYTHONPATH=. .venv/bin/python -m scripts.v2.generate_manuscript_v02_assets
+PYTHONPATH=. .venv/bin/python scripts/v2/generate_publication_figures_v02.py
+cd paper
+tectonic --keep-logs --keep-intermediates neurips_2026.tex
+tectonic --keep-logs --keep-intermediates supplement_v2_formal.tex
+tectonic --keep-logs --keep-intermediates venue_iaeval.tex
+tectonic --keep-logs --keep-intermediates venue_ai4good.tex
+tectonic --keep-logs --keep-intermediates venue_verify_agents.tex
+cd ..
+PYTHONPATH=. .venv/bin/python -m scripts.v2.verify_manuscript_v02
 ```
 
-The primary machine-readable outputs are under `artifacts/v2/formal_v02_108/`. Run-level tabular release files are prepared separately for Hugging Face with:
+The release-safe analysis command rebuilds all manuscript aggregates from the tracked 108-row dataset, verifies the canonical matrix and released append-only adjudication evidence, and makes no model/API call. Full provider traces and raw screenshots are intentionally omitted from the anonymous package and are not reconstructable from the tabular release. An optional tabular export package is prepared locally with:
 
 ```bash
 python dataset/build_hf_package_v2.py
@@ -73,7 +81,7 @@ python dataset/build_hf_package_v2.py
 
 ## Paper
 
-`paper/venue_ai4good.tex` is the current Trustworthy AI for Good workshop wrapper. The shared anonymous manuscript is `paper/neurips_2026.tex`, and the formal supplement is `paper/supplement_v2_formal.tex`.
+`paper/neurips_2026.tex` is the shared anonymous master. Its PDF contains the eight-page main text, references, formal appendix, and official checklist in one file. The three `paper/venue_*.tex` files are thin header-only wrappers over the same scientific source. `paper/supplement_v2_formal.tex` remains independently compilable from the same appendix content.
 
 ## Scope and limitations
 

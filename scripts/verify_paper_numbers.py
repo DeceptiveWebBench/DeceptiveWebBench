@@ -1,4 +1,4 @@
-"""Verify that paper-facing numerical claims match frozen analysis outputs."""
+"""Verify historical v1 tables, then run the authoritative v2 manuscript gate."""
 
 from __future__ import annotations
 
@@ -24,7 +24,6 @@ def three(value: str) -> str:
 
 
 def main() -> int:
-    main_tex = (ROOT / "paper/neurips_2026.tex").read_text(encoding="utf-8")
     supplement_tex = (ROOT / "paper/supplement_v1_2026-08-09.tex").read_text(encoding="utf-8")
     main_table = (ROOT / "paper/tabs/tab_main.tex").read_text(encoding="utf-8")
     task_table = (ROOT / "paper/tabs/tab_task_condition_supp.tex").read_text(encoding="utf-8")
@@ -64,8 +63,6 @@ def main() -> int:
 
     diff = read_one("analysis/outputs/summary_system_vs_ui.csv")[0]
     sens_diff = read_one("analysis/outputs/sensitivity_system_vs_ui_without_interface_perm_001.csv")[0]
-    require(main_tex, "$+1.7$ percentage points", "neurips_2026.tex")
-    require(main_tex, "$[-33.6,+36.6]$ points", "neurips_2026.tex")
     require(supplement_tex, "$-13.7$ points", "supplement_v1_2026-08-09.tex")
     require(supplement_tex, "$[-43.3,+12.3]$ points", "supplement_v1_2026-08-09.tex")
     assert round(float(diff["rate_diff_system_minus_ui"]) * 100, 1) == 1.7
@@ -74,8 +71,11 @@ def main() -> int:
     manifest = read_one("analysis/outputs/run_manifest_v1.csv")
     assert len(manifest) == 81
     assert len({(r["task_id"], r["condition"], r["repeat_id"]) for r in manifest}) == 81
-    print("PASS: paper tables and stated estimates match frozen analysis outputs")
-    return 0
+    print("PASS: historical v1 tables and supplement estimates match frozen outputs")
+
+    from scripts.v2.verify_manuscript_v02 import main as verify_v2
+
+    return verify_v2()
 
 
 if __name__ == "__main__":

@@ -107,8 +107,8 @@ Non-code data assets are released under CC BY-NC 4.0. See `LICENSE_DATA`.
   title        = {Trustworthy Completion for Web Agents: Execution-Time Safeguards under Deceptive Interfaces},
   author       = {[Anonymous]},
   year         = {2026},
-  howpublished = {Hugging Face Dataset},
-  url          = {https://huggingface.co/datasets/deceptive-web-benchmark/execution-time-warnings-web-agents}
+  howpublished = {Anonymous artifact},
+  url          = {https://anonymous.4open.science/r/DeceptiveWebBench-960E/}
 }
 ```
 """
@@ -188,7 +188,7 @@ def write_croissant(frame: pd.DataFrame) -> None:
         "name": "Trustworthy Completion for Web Agents",
         "description": "Audited run-level results for execution-time safeguards under deceptive consumer interfaces.",
         "license": "https://creativecommons.org/licenses/by-nc/4.0/",
-        "url": "https://huggingface.co/datasets/deceptive-web-benchmark/execution-time-warnings-web-agents",
+        "url": "https://anonymous.4open.science/r/DeceptiveWebBench-960E/",
         "distribution": [{
             "@type": "cr:FileObject",
             "@id": "run_level.csv",

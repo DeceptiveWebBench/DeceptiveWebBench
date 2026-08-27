@@ -4,66 +4,67 @@ language:
   - en
 tags:
   - safety
-  - agent
-  - benchmark
-  - human-computer-interaction
   - web-agents
+  - benchmark
   - dark-patterns
-pretty_name: Trustworthy Completion for Web Agents (ShopLane / WorkHub)
+  - trustworthy-ai
+pretty_name: Trustworthy Completion for Web Agents
 size_categories:
   - n<1K
 ---
 
-# Trustworthy Completion for Web Agents — frozen pilot results
+# Trustworthy Completion for Web Agents
 
-Controlled benchmark runs distinguishing safe completion, unsafe completion, safe abort, and other failure under deceptive web interfaces. The pilot evaluates agent response under oracle task annotations; it does not establish a generally superior warning channel.
+This release contains the audited 108-run Protocol v2 results used in *Beyond Endpoint Success: Trustworthy Completion for Web Agents*. The benchmark independently records nominal completion (`C_r`) and whether a trajectory avoided its machine-verifiable unsafe commitment boundary (`S_r`), with `TC_r = C_r AND S_r`.
 
-Companion code (anonymous review mirror): [anonymous.4open.science/r/DeceptiveWebBench-960E](https://anonymous.4open.science/r/DeceptiveWebBench-960E/)
+Anonymous code, documentation, and released data: [DeceptiveWebBench anonymous artifact](https://anonymous.4open.science/r/DeceptiveWebBench-960E/).
 
-## Contents
+## Study design
+
+- one frozen vision-capable web-agent configuration;
+- 12 synthetic consumer tasks across forced action, sneaking, and interface interference;
+- No safeguard, system-delivered safeguard, and interface-delivered safeguard;
+- three repeats per task-condition cell (108 scheduled and 108 valid outcomes);
+- one append-only protocol-consistency adjudication, with no rerun and preserved evidence.
+
+The study contains deceptive interfaces only. It does not estimate a deception-versus-neutral causal effect, detector performance, cross-agent generality, human behavior, or live-deployment effectiveness.
+
+## Released files
+
+The v2 package builder creates:
 
 | Path | Description |
-|------|-------------|
-| `run_level.csv` / `run_level.jsonl` / `run_level.parquet` | One row per formal run (81 rows): task, condition, repeat, outcome |
-| `export_meta.json` | Export provenance (schema version, columns, row count) |
-| `summaries/` | Frozen aggregate tables matching the paper analysis |
-| `run_manifest_v1.csv` | Machine-readable 81-cell provenance and artifact hashes |
-| `raw_runs/{shoplane,enterprise}/<run_id>/` | Per-run `terminal_state.json`, `final_result.json`, scrubbed `run_metadata.json` |
-| `croissant.json` | Croissant metadata card (optional consumers) |
+|---|---|
+| `run_level.csv` / `.jsonl` / `.parquet` | One row per scheduled cell (108 rows) |
+| `attempt_audit.csv` | All 112 attempts, including invalid/retry accounting |
+| `formal_run_manifest.csv` | Scheduled-cell provenance |
+| `summaries/` | Prespecified summaries and labeled exploratory/post-hoc analyses |
+| `audit/` | Integrity audit, append-only adjudication notice, and number provenance |
+| `metadata/` | Data dictionary, hashes, and Croissant metadata |
 
-**Not included:** smoke/debug/retry logs, screenshots (empty in this release), source code / task HTML (see code repo).
+Full provider traces, prompts, model responses, and screenshots are intentionally omitted. The release does not claim they can be reconstructed. The released adjudication evidence in the anonymous code artifact is sufficient to verify the corrected cell against its unchanged original JSON evidence.
 
-## Schema (`run_level`)
+## Reproduce
 
-| Column | Meaning |
-|--------|---------|
-| `run_id` | Unique run folder id |
-| `task_id` | Task identifier |
-| `pattern_family` | `forced_action` / `sneaking` / `interface_interference` |
-| `condition` | `no_warning` / `system_warning` / `ui_warning` |
-| `repeat_id` | Repeat index (1–3) |
-| `outcome_label` / `terminal_state` | Deterministic outcome label |
-| `risk_taken` / `safe_path` / `completed` | Boolean flags from scorer |
-| `task_goal_source` / `system_warning_source` | Provenance pointers into the code repo |
+From the anonymous repository root:
 
-## Completed evidence and planned extensions
-
-Completed: one fixed BrowserUse/Amazon Nova Lite v1 configuration, nine synthetic tasks, three warning conditions, three repeats, deterministic scoring, task-cluster uncertainty, and the documented `interface_perm_001` wording-deviation sensitivity view.
-
-Planned only: cross-agent validation, warning-wording experiments, detector-coupled evaluation, broader task coverage, long-horizon tasks, and human calibration. The dataset contains no D/E results.
+```bash
+PYTHONPATH=. .venv/bin/python -m scripts.v2.reproduce_release_v02
+PYTHONPATH=. .venv/bin/python -m scripts.v2.generate_manuscript_v02_assets
+PYTHONPATH=. .venv/bin/python scripts/v2/generate_publication_figures_v02.py
+```
 
 ## License
 
-Non-code data assets: **CC BY-NC 4.0**.
+Non-code data assets are released under CC BY-NC 4.0. See `LICENSE_DATA`.
 
 ## Citation
 
 ```bibtex
-@misc{execution_time_warnings_web_agents_2026,
-  title        = {Trustworthy Completion for Web Agents: A Benchmark and Research Agenda for Execution-Time Safeguards},
-  author       = {[Anonymous]},
-  year         = {2026},
-  howpublished = {Hugging Face Dataset},
-  url          = {https://huggingface.co/datasets/deceptive-web-benchmark/execution-time-warnings-web-agents}
+@misc{trustworthy_completion_web_agents_2026,
+  title  = {Beyond Endpoint Success: Trustworthy Completion for Web Agents},
+  author = {[Anonymous]},
+  year   = {2026},
+  url    = {https://anonymous.4open.science/r/DeceptiveWebBench-960E/}
 }
 ```

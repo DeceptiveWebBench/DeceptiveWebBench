@@ -1,18 +1,21 @@
-\begin{table}[t]
-  \caption{Research agenda. All rows are planned studies, not completed evidence.}
+\begin{table}[H]
+  \caption{Structured research agenda. Every row describes a future study and is not evidence from the current experiment.}
   \label{tab:agenda}
   \centering
   \scriptsize
-  \setlength{\tabcolsep}{3pt}
-  \begin{tabular}{L{.16\linewidth}L{.25\linewidth}L{.31\linewidth}L{.20\linewidth}}
+  \setlength{\tabcolsep}{2.5pt}
+  \renewcommand{\arraystretch}{1.02}
+  \begin{tabular}{L{.23\linewidth}L{.39\linewidth}L{.32\linewidth}}
     \toprule
-    Priority & Question / hypothesis & Design & Evidence requirement \\
+    Current limitation / open question & Proposed future design & Intended evidence \\
     \midrule
-    D: cross-agent & Are effects model- or scaffold-dependent? & Same 9 tasks, 3 conditions, scorer; one stronger compatible agent; 5 repeats/cell & Audited 135-run manifest and agent$\times$condition analysis \\
-    E1: wording & Does goal-plus-warning wording create conflict? & Three sneaking tasks; System/UI; current vs prohibitive wording; 5 repeats & Channel$\times$wording estimates; supplement only \\
-    E2: repeats & Are intervals dominated by sampling variation? & Increase cross-agent cells from 5 to 10 repeats & Pre-frozen analysis and uncertainty contraction \\
-    E3: trigger & How do missed, false, or delayed triggers change outcomes? & Oracle vs delayed/false-positive subset & Detector-coupled error audit \\
-    Scale / human & Do results extend to longer tasks or humans? & More domains and paths; separate approved human study & New task validation; no human comparison without approval \\
+    No neutral controls & Matched neutral twins; fixed endpoints and scorers & Causal contrast for deceptive design \\
+    One agent/scaffold & Repeat the frozen matrix across selected agents and scaffolds & Cross-agent variability \\
+    One wording and timing & Factor wording and start-of-task versus risk-point delivery & Content and timing effects \\
+    Oracle risk annotations & Couple delivery to detectors with fixed misses, false alerts, and delays & Detector--safeguard error propagation \\
+    Short synthetic tasks & Longer-horizon tasks and broader domains with equivalent endpoints & Scope and depth effects \\
+    No human calibration & Separately approved human study with matched tasks and disclosures & Salience and consent calibration \\
+    Descriptive cost reporting & Pre-register cost/latency comparisons across agents and safeguards & Efficiency kept separate from $S_r$ and $TC_r$ \\
     \bottomrule
   \end{tabular}
 \end{table}

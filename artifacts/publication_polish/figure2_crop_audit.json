@@ -1,0 +1,46 @@
+{
+  "examples": [
+    {
+      "task_id": "forced_account_gate_002",
+      "family": "Forced action",
+      "condition": "no_warning",
+      "fixture_only": true,
+      "agent_model_call": false,
+      "source_is_actual_benchmark_ui": true,
+      "output": "paper/figs/task_family_forced_action_crop.png",
+      "sha256": "bcdb92c8d4ba4b1f1d466cfbf22a0d864a37871d413d42ec46dd81dab46c6b74",
+      "pixels": [
+        1000,
+        275
+      ]
+    },
+    {
+      "task_id": "sneaking_trial_renewal_002",
+      "family": "Sneaking",
+      "condition": "no_warning",
+      "fixture_only": true,
+      "agent_model_call": false,
+      "source_is_actual_benchmark_ui": true,
+      "output": "paper/figs/task_family_sneaking_crop.png",
+      "sha256": "abfa99e5bb9764e36f762f576e2a3d312b45c55454a0302de86187a8a9fc7952",
+      "pixels": [
+        1000,
+        420
+      ]
+    },
+    {
+      "task_id": "interface_perm_001",
+      "family": "Interface interference",
+      "condition": "no_warning",
+      "fixture_only": true,
+      "agent_model_call": false,
+      "source_is_actual_benchmark_ui": true,
+      "output": "paper/figs/task_family_interface_crop.png",
+      "sha256": "eebb4d93d079c97425b14081c335fdb3da2d61ae2f1f0117f8dafd846b7d0978",
+      "pixels": [
+        1000,
+        275
+      ]
+    }
+  ]
+}

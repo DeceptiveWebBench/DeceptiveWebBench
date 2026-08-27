@@ -1,0 +1,32 @@
+{
+  "package": "@next-ai-drawio/mcp-server@0.2.3",
+  "node": "v24.19.0",
+  "tools": [
+    "start_session",
+    "create_new_diagram",
+    "load_diagram",
+    "edit_diagram",
+    "get_diagram",
+    "export_diagram",
+    "list_pages",
+    "add_page",
+    "rename_page",
+    "delete_page"
+  ],
+  "session": "Session started successfully!\n\nSession ID: mcp-mtavszhy-v7f06r\nBrowser URL: http://localhost:6002?mcp=mcp-mtavszhy-v7f06r\n\nThe browser will now show real-time diagram updates.",
+  "create": "Diagram content set successfully!\n\nThe diagram is now visible in your browser.\n\nXML length: 12815 characters\n1 page: Figure 1",
+  "edit": "Diagram edited successfully!\n\nApplied 1 operation(s) on first page.",
+  "save": "Diagram exported successfully!\n\nFile: paper/figs/trustworthy_completion_pipeline.drawio\nSize: 12898 characters",
+  "svg_export": "Diagram exported successfully!\n\nFile: paper/figs/trustworthy_completion_pipeline.svg\nFormat: svg\nSize: 36477 bytes",
+  "outputs": {
+    "drawio": {
+      "path": "paper/figs/trustworthy_completion_pipeline.drawio",
+      "bytes": 12904
+    },
+    "svg": {
+      "path": "paper/figs/trustworthy_completion_pipeline.svg",
+      "bytes": 36477
+    }
+  },
+  "pdf_export_note": "MCP 0.2.3 supports drawio/png/svg; PDF is converted locally from the exported SVG."
+}

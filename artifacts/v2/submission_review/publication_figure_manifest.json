@@ -1,8 +1,8 @@
 {
   "condition_palette": {
-    "no_warning": "#7A7A7A",
-    "system_warning": "#0072B2",
-    "ui_warning": "#E69F00"
+    "no_warning": "#7A7F87",
+    "system_warning": "#4C78A8",
+    "ui_warning": "#D97941"
   },
   "data_modified": false,
   "figure_set": "protocol-v2-publication-figures-1.1",
@@ -13,11 +13,11 @@
     "unsafe_failure": "#555B66"
   },
   "outputs": {
-    "paper/figs/protocol_v2_cost_latency_publication.pdf": "a4b7a5cf7c411037c0f3b94fa355f8e54f58c0da0c87ceb4391f3180a8f68617",
-    "paper/figs/protocol_v2_cs_quadrants_publication.pdf": "5c54d0059689139ce3adea3f4891de763b8c91b680c9097f3bcf4c47a2e3a60b",
-    "paper/figs/protocol_v2_paired_transitions_publication.pdf": "de2b6595124fadd0fee0dff90baa7e9d002611aaf043bd015e8a21ccf5843b7a",
-    "paper/figs/protocol_v2_task_profiles_publication.pdf": "18994663bf13fda7fad8a2ef9266f747d62a6b3b8754a889fa901bb861ec5769",
-    "paper/figs/protocol_v2_tradeoff_publication.pdf": "e52a887923d89e74ac98a13d5caffcf50ff86da2c09dc4b90f2011e1d711ac51"
+    "paper/figs/protocol_v2_cost_latency_publication.pdf": "fe1dca7c8f6b6052e0f1cf3056e4eb7dc2a354ea6d4baefc36f85f30484e9718",
+    "paper/figs/protocol_v2_cs_quadrants_publication.pdf": "6b36c2186e188db7a08416e48f94f1dbbfe8a81dde596355eb45ff296f302f81",
+    "paper/figs/protocol_v2_paired_transitions_publication.pdf": "cdeae2c0f9cc4dd9f474d04974fc0b18a3d5bb6e0aeb55717f2d8d9d0031f2bb",
+    "paper/figs/protocol_v2_task_profiles_publication.pdf": "5a457d1fff66ee0590cdffe2ea7d6e6ef04539e538c7b3dde992ce6e30c371c7",
+    "paper/figs/protocol_v2_tradeoff_publication.pdf": "67b0b5790ad53828d36ee9855d7840072fea1e0b65d8349d815c23fa62862150"
   },
   "source_files": {
     "condition_summary.csv": "3f4663a2539740ca76c700b8a399f967232f07633bf2de122e1304c10dcf1fdd",

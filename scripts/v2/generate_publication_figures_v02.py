@@ -35,14 +35,14 @@ CONDITION_SHORT = {
     "ui_warning": "Interface-delivered",
 }
 CONDITION_COLORS = {
-    "no_warning": "#7A7A7A",
-    "system_warning": "#0072B2",
-    "ui_warning": "#E69F00",
+    "no_warning": "#7A7F87",
+    "system_warning": "#4C78A8",
+    "ui_warning": "#D97941",
 }
 CONDITION_HATCHES = {
     "no_warning": "",
-    "system_warning": "///",
-    "ui_warning": "xxx",
+    "system_warning": "//",
+    "ui_warning": "..",
 }
 OUTCOME_ORDER = (
     "trustworthy_completion",
@@ -150,9 +150,11 @@ def figure_outcomes(condition_rows: list[dict[str, str]]) -> Path:
             color=OUTCOME_COLORS[outcome], edgecolor="#FFFFFF", linewidth=0.8,
             label=OUTCOME_LABELS[outcome], zorder=3,
         )
-        for bar, count, value, bottom in zip(bars, counts, values, bottoms):
+        for condition_idx, (bar, count, value, bottom) in enumerate(zip(bars, counts, values, bottoms)):
+            if count == 0:
+                continue
+            percentage = int(round(value * 100))
             if value >= 0.075:
-                percentage = int(round(value * 100))
                 ax.text(
                     bar.get_x() + bar.get_width() / 2,
                     bottom + value / 2,
@@ -163,12 +165,28 @@ def figure_outcomes(condition_rows: list[dict[str, str]]) -> Path:
                     fontsize=7.7,
                     fontweight="bold",
                 )
+            else:
+                # Tiny terminal segments need a direct label at manuscript scale.
+                # Place it above and to the side of the bar to avoid collisions.
+                direction = -1 if condition_idx == 0 else 1
+                ax.annotate(
+                    f"{count} ({percentage}%)",
+                    xy=(bar.get_x() + bar.get_width() / 2, bottom + value / 2),
+                    xytext=(bar.get_x() + bar.get_width() / 2 + direction * 0.26, 1.105),
+                    textcoords="data",
+                    ha="center",
+                    va="bottom",
+                    fontsize=7.0,
+                    color="#2F3742",
+                    arrowprops={"arrowstyle": "-", "color": "#7A7F87", "linewidth": 0.7},
+                    annotation_clip=False,
+                )
         bottoms += values
-    ax.set_ylim(0, 1.08)
+    ax.set_ylim(0, 1.14)
     ax.set_yticks(np.linspace(0, 1, 6), [f"{int(v * 100)}%" for v in np.linspace(0, 1, 6)])
     ax.set_ylabel("Share of valid runs")
     ax.set_xticks(x, [CONDITION_SHORT[c] for c in CONDITIONS])
-    ax.set_title("Completion-safety outcomes by safeguard condition", pad=40)
+    ax.set_title("Completion–safety outcomes by safeguard condition", pad=40)
     for idx, condition in enumerate(CONDITIONS):
         row = lookup[condition]
         ax.text(idx, 1.025, f"n={row['n_valid']}", ha="center", va="bottom",
@@ -210,7 +228,7 @@ def figure_tradeoff(contrast_rows: list[dict[str, str]]) -> Path:
                         textcoords="offset points", ha="center", fontsize=7.5, color="#222222")
     ax.axhline(0, color="#222222", linewidth=0.9)
     ax.set_xticks(x, labels)
-    ax.set_ylabel("Difference from No safeguard (percentage points)")
+    ax.set_ylabel("Difference from No safeguard (pp)")
     ax.set_title("Safeguards change both safety and completion")
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.19), ncol=2, frameon=False)
     clean_axes(ax)

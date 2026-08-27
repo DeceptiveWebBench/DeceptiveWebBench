@@ -11,13 +11,14 @@ Includes:
 from __future__ import annotations
 
 import json
+import os
 import re
 import shutil
 from pathlib import Path
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 STAGING = _REPO_ROOT / "dataset" / "hf_staging"
-HF_REPO_ID = "deceptive-web-benchmark/execution-time-warnings-web-agents"
+HF_REPO_ID = os.environ.get("HF_REPO_ID")
 ABS_PATH_RE = re.compile(r"[A-Za-z]:\\[^\n\"']+|/(?:Users|home)/[^\n\"']+")
 
 
@@ -101,10 +102,8 @@ def _copy_card_and_croissant() -> None:
     if not src.exists():
         return
     text = src.read_text(encoding="utf-8")
-    text = text.replace(
-        "deceptive-web/deception-warning-study-runs",
-        HF_REPO_ID,
-    )
+    if HF_REPO_ID:
+        text = text.replace("ANONYMOUS_DATASET_REPOSITORY", HF_REPO_ID)
     (STAGING / "croissant.json").write_text(text, encoding="utf-8")
 
 

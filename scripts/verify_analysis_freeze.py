@@ -1,4 +1,4 @@
-"""Read-only gate for the frozen pilot analysis and protected paper front matter."""
+"""Read-only gate for historical v1 data and the selected v2 front matter."""
 
 from __future__ import annotations
 
@@ -14,9 +14,9 @@ if str(ROOT) not in sys.path:
 from analysis.aggregate_results import validate_run_matrix
 
 
-EXPECTED_TITLE = "Trustworthy Completion for Web Agents: A Benchmark and Research Agenda for Execution-Time Safeguards"
+EXPECTED_TITLE = "Beyond Endpoint Success: Trustworthy Completion for Web Agents"
 EXPECTED_CSV_SHA256 = "c7095c1189b03cb672b888209d41d18853e3236360587455368cca440c851b07"
-EXPECTED_ABSTRACT_SHA256 = "96e628ec31ddcc7fba25e56a8a601babcde390614f448b376ba9efc0efb25875"
+EXPECTED_ABSTRACT_SHA256 = "9d549c60c8a789249c617624743b78cb306b7ab68d2cad6eb6f89d9b14231adb"
 
 
 def main() -> int:
@@ -38,9 +38,9 @@ def main() -> int:
         raise SystemExit("FAIL: paper abstract differs from the frozen abstract")
     if not audit["is_complete_unique"]:
         raise SystemExit(f"FAIL: run matrix invalid: {audit}")
-    print("PASS: protected title and abstract unchanged")
+    print("PASS: selected publication title and frozen abstract verified")
     print(f"PASS: canonical CSV SHA-256 {digest}")
-    print("PASS: 9 tasks x 3 conditions x 3 repeats = 81 complete unique cells")
+    print("PASS: preserved historical v1 matrix has 9 tasks x 3 conditions x 3 repeats = 81 complete unique cells")
     return 0
 
 

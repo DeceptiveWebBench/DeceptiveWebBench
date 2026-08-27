@@ -16,15 +16,12 @@ from pathlib import Path
 
 from huggingface_hub import HfApi
 
-DEFAULT_REPO_ID = "deceptive-web-benchmark/execution-time-warnings-web-agents"
-
-
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument(
         "--repo-id",
-        default=DEFAULT_REPO_ID,
-        help=f"Dataset repo id (default: {DEFAULT_REPO_ID})",
+        required=True,
+        help="Author-supplied dataset repository id; no account identifier is stored in the anonymous package",
     )
     p.add_argument(
         "--folder",

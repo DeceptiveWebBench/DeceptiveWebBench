@@ -1,0 +1,15 @@
+{
+  "source_svg": "paper/figs/trustworthy_completion_pipeline.svg",
+  "source_svg_sha256": "c74d2b18e2cb438ffe91b0c9638c639872163eb996df5674ce643dbc0d52dfa7",
+  "output_pdf": "paper/figs/trustworthy_completion_pipeline.pdf",
+  "output_pdf_sha256": "eaac4d6bfe3401550952a8fd68bb02fa25137ac0f3e897490b63f5c2ff995ff0",
+  "pages": 1,
+  "page_size_points": [
+    1021.9,
+    339.1
+  ],
+  "raster_image_xobjects": [],
+  "vector_only": true,
+  "converter": "local headless Google Chrome",
+  "model_or_api_call": false
+}
