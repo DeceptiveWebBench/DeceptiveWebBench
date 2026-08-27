@@ -16,6 +16,7 @@ OUT = ROOT / "artifacts/v2/formal_v02_108/manuscript_update"
 CONDS = ("no_warning", "system_warning", "ui_warning")
 LABEL = {"no_warning": "No safeguard", "system_warning": "System-delivered safeguard", "ui_warning": "Interface-delivered safeguard"}
 SHORT = {"no_warning": "No", "system_warning": "System", "ui_warning": "Interface"}
+RESULT_LABEL = {"no_warning": "No safeguard", "system_warning": "System-delivered", "ui_warning": "Interface-delivered"}
 
 
 def load(name: str) -> list[dict[str, str]]:
@@ -62,15 +63,17 @@ def generate_tables(data: dict[str, object]) -> None:
     for row in condition:
         n = int(row["n_valid"])
         body.append(
-            f"{LABEL[row['condition']]} & {row['trustworthy_completion']} & {row['unsafe_completion']} & "
-            f"{row['safe_non_completion']} & {row['unsafe_failure']} & {n} & {pct(row['C_rate'])}\\% & "
-            f"{pct(row['S_rate'])}\\% & {pct(row['TC_rate'])}\\% \\\\"
+            f"{RESULT_LABEL[row['condition']]} & {n} & "
+            f"{int(round(float(row['C_rate']) * n))} ({pct(row['C_rate'])}\\%) & "
+            f"{int(round(float(row['S_rate']) * n))} ({pct(row['S_rate'])}\\%) & "
+            f"{row['trustworthy_completion']} ({pct(row['TC_rate'])}\\%) & "
+            f"{row['unsafe_completion']} / {row['safe_non_completion']} / {row['unsafe_failure']} \\\\"
         )
     table("tab_results_v02.tex",
-          r"Run-level outcomes by safeguard delivery. Rates use all 36 valid scheduled runs per condition. $C_r$: nominal completion; $S_r$: safety; $TC_r=C_r\land S_r$.",
-          "tab:v02-main-results", "lrrrrrrrr",
-          r"Condition & TC & Unsafe comp. & Safe non-comp. & Unsafe failure & Valid & $C$ & $S$ & $TC$ \\",
-          body, size=r"\scriptsize")
+          r"Outcomes by safeguard delivery. Entries for $C_r$, $S_r$, and $TC_r$ are count (rate); the final column reports unsafe completion / safe non-completion / unsafe failure. All conditions contain 36 valid runs.",
+          "tab:v02-main-results", "lrrrrr",
+          r"Condition & $N$ & $C_r$ & $S_r$ & $TC_r$ & UC / SNC / UF \\",
+          body, size=r"\small")
 
     contrast = data["contrast"]
     order = ("system_warning_minus_no_warning", "ui_warning_minus_no_warning", "ui_warning_minus_system_warning")
@@ -84,8 +87,6 @@ def generate_tables(data: dict[str, object]) -> None:
         if name != order[-1]:
             body.append(r"\addlinespace[2pt]")
     caption = r"Prespecified percentage-point contrasts with 95\% task-cluster bootstrap intervals (10{,}000 replicates; seed 20260807). The direct Interface-minus-System contrast is secondary."
-    table("tab_contrasts_v02.tex", caption, "tab:v02-contrasts", "llrr",
-          r"Contrast & Metric & Estimate (pp) & 95\% interval (pp) \\", body, size=r"\scriptsize")
     table("tab_contrasts_v02_supp.tex", caption, "tab:v02-contrasts-supp", "llrr",
           r"Contrast & Metric & Estimate (pp) & 95\% interval (pp) \\", body)
 
@@ -205,15 +206,15 @@ def copy_figures() -> None:
   \begingroup
   \setlength{\tabcolsep}{0pt}
   \begin{tabular}{c}
-    \scriptsize\textbf{(a) Forced action: account creation versus guest checkout} \\[-1pt]
-    \includegraphics[width=.98\linewidth]{task_family_forced_action_crop.png} \\[2pt]
+    \scriptsize\textbf{(a) Forced action: identity document versus one-time tracking code} \\[-1pt]
+    \includegraphics[width=.92\linewidth]{task_family_forced_action_crop.png} \\[1pt]
     \scriptsize\textbf{(b) Sneaking: auto-renewing trial versus one-time rental} \\[-1pt]
-    \includegraphics[width=.98\linewidth]{task_family_sneaking_crop.png} \\[2pt]
+    \includegraphics[width=.92\linewidth]{task_family_sneaking_crop.png} \\[1pt]
     \scriptsize\textbf{(c) Interface interference: broad versus necessary-only cookie consent} \\[-1pt]
-    \includegraphics[width=.98\linewidth]{task_family_interface_crop.png}
+    \includegraphics[width=.92\linewidth]{task_family_interface_crop.png}
   \end{tabular}
   \endgroup
-  \caption{Focused crops from three benchmark task families at the frozen 1280$\times$720 viewport. Orange identifies the task's unsafe commitment boundary and blue the outcome-equivalent safe route; the annotations expose neither agent choices nor experimental outcomes.}
+  \caption{Three benchmark decisions at the frozen 1280$\times$720 viewport. Orange marks the unsafe commitment boundary; blue marks the endpoint-equivalent safe route. The crops show task design, not agent choices or outcomes.}
   \label{fig:task-families}
 \end{figure}
 """)
@@ -289,7 +290,7 @@ def main() -> int:
     generate_tables(data)
     copy_figures()
     count = provenance(data)
-    print(json.dumps({"tables": 12, "copied_figures": 3, "provenance_rows": count}, indent=2))
+    print(json.dumps({"tables": 11, "copied_figures": 3, "provenance_rows": count}, indent=2))
     return 0
 
 

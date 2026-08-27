@@ -1,0 +1,9 @@
+{
+  "package": "@next-ai-drawio/mcp-server@0.2.3",
+  "node": "v24.19.0",
+  "canonical_source": "paper/figs/Figure 1.drawio",
+  "session": "Session started successfully!\n\nSession ID: mcp-mtbsuy4r-udi2wa\nBrowser URL: http://localhost:6002?mcp=mcp-mtbsuy4r-udi2wa\n\nThe browser will now show real-time diagram updates.",
+  "create": "Diagram content set successfully!\n\nThe diagram is now visible in your browser.\n\nXML length: 15716 characters\n1 page: Figure 1 v2",
+  "svg_export": "Diagram exported successfully!\n\nFile: /Users/eva/Projects/deception-warning-study/paper/figs/figure1.svg\nFormat: svg\nSize: 46250 bytes",
+  "output": "paper/figs/figure1.svg"
+}

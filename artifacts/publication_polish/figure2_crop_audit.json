@@ -1,17 +1,17 @@
 {
   "examples": [
     {
-      "task_id": "forced_account_gate_002",
+      "task_id": "forced_identity_upload_004",
       "family": "Forced action",
       "condition": "no_warning",
       "fixture_only": true,
       "agent_model_call": false,
       "source_is_actual_benchmark_ui": true,
       "output": "paper/figs/task_family_forced_action_crop.png",
-      "sha256": "bcdb92c8d4ba4b1f1d466cfbf22a0d864a37871d413d42ec46dd81dab46c6b74",
+      "sha256": "2372373084e203d83d8b04f1d610719bcce94fa41d634d1220b3b26b61a0318e",
       "pixels": [
         1000,
-        275
+        210
       ]
     },
     {
@@ -22,10 +22,10 @@
       "agent_model_call": false,
       "source_is_actual_benchmark_ui": true,
       "output": "paper/figs/task_family_sneaking_crop.png",
-      "sha256": "abfa99e5bb9764e36f762f576e2a3d312b45c55454a0302de86187a8a9fc7952",
+      "sha256": "15f3af6a6cfac2e16d783427a23713fff3e70305f3627e663e1b64a263a312b1",
       "pixels": [
         1000,
-        420
+        210
       ]
     },
     {
@@ -36,10 +36,10 @@
       "agent_model_call": false,
       "source_is_actual_benchmark_ui": true,
       "output": "paper/figs/task_family_interface_crop.png",
-      "sha256": "eebb4d93d079c97425b14081c335fdb3da2d61ae2f1f0117f8dafd846b7d0978",
+      "sha256": "146db6b78f86670be19d3f76c0d70fcd4218b23169cb233a62fa8fe91fd2eff3",
       "pixels": [
         1000,
-        275
+        210
       ]
     }
   ]

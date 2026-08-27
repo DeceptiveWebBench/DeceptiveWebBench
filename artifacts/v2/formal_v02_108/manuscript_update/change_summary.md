@@ -37,7 +37,7 @@
 - Main manuscript: paper/neurips_2026.tex and paper/neurips_2026.pdf.
 - New supplement: paper/supplement_v2_formal.tex and paper/supplement_v2_formal.pdf.
 - Bibliography: paper/references.bib.
-- Generated main/supplement tables: paper/tabs/tab_results_v02.tex, tab_contrasts_v02.tex, tab_contrasts_v02_supp.tex, tab_task_outcomes_v02_supp.tex, tab_task_profiles_v02_supp.tex, tab_paired_v02_supp.tex, tab_termination_v02_supp.tex, tab_repeats_v02_supp.tex, tab_loto_v02_supp.tex, tab_family_v02_supp.tex, tab_adjudication_v02_supp.tex, tab_cost_v02_supp.tex, and tab_invalid_v02_supp.tex.
-- Figures: paper/figs/trustworthy_completion_cs_pipeline.pdf and the protocol_v2_* result/interface figures used by the main paper and supplement.
-- Build and verification: scripts/v2/generate_manuscript_v02_assets.py, scripts/v2/verify_manuscript_v02.py, and paper/figs/make_trustworthy_completion_figure.py.
+- Generated main/supplement tables: paper/tabs/tab_results_v02.tex, tab_contrasts_v02_supp.tex, tab_task_outcomes_v02_supp.tex, tab_paired_v02_supp.tex, tab_termination_v02_supp.tex, tab_repeats_v02_supp.tex, tab_loto_v02_supp.tex, tab_family_v02_supp.tex, tab_adjudication_v02_supp.tex, tab_cost_v02_supp.tex, and tab_invalid_v02_supp.tex. The stakeholder annotation table is maintained separately as paper/tabs/tab_stakeholder_summary.tex.
+- Figures: paper/figs/Figure 1.drawio with its figure1.svg/PDF exports, four protocol_v2 publication result figures, and the three task-family interface crops used by Figure 2.
+- Build and verification: scripts/export_figure1_drawio.mjs, scripts/export_figure1_pdf.py, scripts/generate_figure2_interface_crops.py, scripts/v2/generate_manuscript_v02_assets.py, scripts/v2/generate_publication_figures_v02.py, and scripts/v2/verify_manuscript_v02.py.
 - Audit outputs: manuscript_number_provenance.csv, manuscript_verification_report.md, change_summary.md, and remaining_author_decisions.md in this directory.

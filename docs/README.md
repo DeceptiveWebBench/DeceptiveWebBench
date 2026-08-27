@@ -4,7 +4,7 @@
 
 - Default sandbox entry: `env/index.html` → Protocol v2 ShopLane (`env/v2/sites/shoplane/`).
 - Serve from the repo root: `python3 -m http.server 8000 --bind 127.0.0.1`, then open `http://127.0.0.1:8000/env/index.html`.
-- `env/dashboard/index.html` is the **historical Version 1** BenchScope dashboard (9-task / 81-run suite). Do not treat it as the current main entry.
+- `env/dashboard/index.html` is the **historical Version 1** dashboard, preserved under `docs/archive/v1/`. Do not treat it as the current main entry.
 
 ## Active Protocol v2 files
 
@@ -28,4 +28,4 @@ The repository-root Revision Guide remains the highest-level authority. The Engl
 
 ## Historical Version 1 records
 
-The 81-run pilot, Goal 1A/1B delivery records, audits, and earlier protocol are preserved under `docs/archive/v1/` and remain at their original code paths (`env/site/`, `env/dashboard/`, `env/tasks/`, `src/env/static/`). See also `archive/v1_benchmark/README.md`. They support provenance and the existing manuscript but do not override Protocol v2.
+The historical Version 1 pilot, delivery records, audits, and earlier protocol are preserved under `docs/archive/v1/` and remain at their original code paths (`env/site/`, `env/dashboard/`, `env/tasks/`, `src/env/static/`). See also `archive/v1_benchmark/README.md`. They support provenance but do not override Protocol v2.

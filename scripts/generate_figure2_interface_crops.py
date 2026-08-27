@@ -24,7 +24,7 @@ ROOT = project_root()
 FIGS = ROOT / "paper" / "figs"
 TMP = ROOT / "tmp" / "figure2_crops"
 VIEWPORT = {"width": 1280, "height": 720}
-CANVAS = (1000, 275)
+CANVAS = (1000, 210)
 TOP_BAND = 54
 UNSAFE = "#D97941"
 SAFE = "#4C78A8"
@@ -32,9 +32,7 @@ INK = "#2F3742"
 
 
 def canvas_size(task_id: str) -> tuple[int, int]:
-    # The two wide plan cards need full-width rows for their disclosure text to
-    # remain readable at the manuscript's normal scale.
-    return (1000, 420) if task_id == "sneaking_trial_renewal_002" else CANVAS
+    return CANVAS
 
 
 @dataclass(frozen=True)
@@ -51,14 +49,14 @@ class Example:
 
 EXAMPLES = (
     Example(
-        "forced_account_gate_002",
+        "forced_identity_upload_004",
         "Forced action",
         "task_family_forced_action_crop.png",
-        ".jr-card:has(.jr-option.prominent)",
-        ".museum-account-review button[data-action='commit-unsafe']",
-        ".jr-guest-route button[data-action='commit-safe']",
-        "Unsafe boundary: create account",
-        "Safe route: guest checkout",
+        ".ls-panel:not(.ls-aside)",
+        ".upload-panel button[data-action='commit-unsafe']",
+        ".ls-disclosure button[data-action='commit-safe']",
+        "Unsafe boundary: submit identity document",
+        "Safe route: verify one-time tracking code",
     ),
     Example(
         "sneaking_trial_renewal_002",
@@ -67,8 +65,8 @@ EXAMPLES = (
         ".dg-panel:has(.plan-card)",
         ".plan-card.featured",
         ".plan-card:not(.featured)",
-        "Unsafe commitment: auto-renewing trial",
-        "Safe route: one-time rental",
+        "Unsafe: auto-renewing trial",
+        "Safe: one-time rental",
     ),
     Example(
         "interface_perm_001",
@@ -103,9 +101,9 @@ def prepare(page: Page, example: Example) -> None:
     else:
         page.wait_for_function("() => typeof window.V2Benchmark?.fixtureSetRoute === 'function'")
         page.evaluate("() => window.V2Benchmark.fixtureSetRoute('risk')")
-    if example.task_id == "forced_account_gate_002":
+    if example.task_id == "forced_identity_upload_004":
         page.locator("button[data-action='select-unsafe']").click()
-        page.locator("details.jr-guest-route").evaluate("element => { element.open = true; }")
+        page.locator("details.ls-disclosure").evaluate("element => { element.open = true; }")
     elif example.task_id == "interface_perm_001":
         page.locator("details.sl-cookie__prefs").evaluate("element => { element.open = true; }")
     page.wait_for_timeout(150)
@@ -121,8 +119,8 @@ def snippet_bounds(
     """Keep enough surrounding merchant copy to make each control interpretable."""
     x, y, width, height = box
     padding = {
-        "forced_account_gate_002": (36, 112 if not safe else 86, 36, 30),
-        "sneaking_trial_renewal_002": (12, 14, 12, 14),
+        "forced_identity_upload_004": (18, 76 if not safe else 92, 190 if not safe else 72, 18),
+        "sneaking_trial_renewal_002": (12, 12, 12, 12),
         "interface_perm_001": (120, 78 if not safe else 112, 30, 28),
     }[task_id]
     left, top, right, bottom = padding
@@ -153,16 +151,10 @@ def annotate(
     draw = ImageDraw.Draw(canvas)
     font_path = findfont(FontProperties(family="DejaVu Sans", weight="bold"))
     font = ImageFont.truetype(font_path, 18)
-    if task_id == "sneaking_trial_renewal_002":
-        positions = (
-            (8, 54, 984, 145, 8, UNSAFE, unsafe_label),
-            (8, 264, 984, 145, 218, SAFE, safe_label),
-        )
-    else:
-        positions = (
-            (8, TOP_BAND, 486, canvas_height - TOP_BAND - 10, 8, UNSAFE, unsafe_label),
-            (506, TOP_BAND, 486, canvas_height - TOP_BAND - 10, 8, SAFE, safe_label),
-        )
+    positions = (
+        (8, TOP_BAND, 486, canvas_height - TOP_BAND - 10, 8, UNSAFE, unsafe_label),
+        (506, TOP_BAND, 486, canvas_height - TOP_BAND - 10, 8, SAFE, safe_label),
+    )
     for snippet, (left, top, panel_width, panel_height, header_top, color, label) in zip(snippets, positions):
         scale = min(panel_width / snippet.width, panel_height / snippet.height)
         resized = snippet.resize(
@@ -186,8 +178,7 @@ def annotate(
             font_size -= 1
             font_small = ImageFont.truetype(font_path, font_size)
         draw.text((left + 18, header_top + 9), label, font=font_small, fill=INK)
-    if task_id != "sneaking_trial_renewal_002":
-        draw.line((500, 8, 500, canvas_height - 2), fill="#E6E8EB", width=2)
+    draw.line((500, 8, 500, canvas_height - 2), fill="#E6E8EB", width=2)
     canvas.save(destination, dpi=(300, 300), optimize=True)
 
 

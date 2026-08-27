@@ -13,16 +13,14 @@
     "unsafe_failure": "#555B66"
   },
   "outputs": {
-    "paper/figs/protocol_v2_cost_latency_publication.pdf": "fe1dca7c8f6b6052e0f1cf3056e4eb7dc2a354ea6d4baefc36f85f30484e9718",
     "paper/figs/protocol_v2_cs_quadrants_publication.pdf": "6b36c2186e188db7a08416e48f94f1dbbfe8a81dde596355eb45ff296f302f81",
     "paper/figs/protocol_v2_paired_transitions_publication.pdf": "cdeae2c0f9cc4dd9f474d04974fc0b18a3d5bb6e0aeb55717f2d8d9d0031f2bb",
     "paper/figs/protocol_v2_task_profiles_publication.pdf": "5a457d1fff66ee0590cdffe2ea7d6e6ef04539e538c7b3dde992ce6e30c371c7",
-    "paper/figs/protocol_v2_tradeoff_publication.pdf": "67b0b5790ad53828d36ee9855d7840072fea1e0b65d8349d815c23fa62862150"
+    "paper/figs/protocol_v2_tradeoff_publication.pdf": "08bf35dd6cf8a1bdc2e4dc53ac890d5526032d78c53c43faa189ba64d1d014e3"
   },
   "source_files": {
     "condition_summary.csv": "3f4663a2539740ca76c700b8a399f967232f07633bf2de122e1304c10dcf1fdd",
     "contrast_bootstrap.csv": "947a2701b4b703c433ce0139de4378b102c949d75c277425d714d26f1f1f3e95",
-    "cost_summary.csv": "9ce56365c1460816ab7dc0621ee5ca9858c019ef75f41174c8766d3d509aee58",
     "paired_transitions.csv": "4a4abefb0ea80a6876373f79b22bbce5cf3a4ebe585c87c831997348268e2eb2",
     "task_condition_summary.csv": "3a005ce752ecef8251119c5a77f0fd0623b867971bbb4acdbd654ccbb3c9456d"
   },

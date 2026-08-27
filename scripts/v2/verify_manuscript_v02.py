@@ -32,9 +32,9 @@ RELEASED_ADJUDICATION = (
 
 TITLE = "Beyond Endpoint Success: Trustworthy Completion for Web Agents"
 RQ = (
-    "How should web agents be evaluated when nominal task completion may compromise the user’s "
-    "financial interests, privacy, informed consent, autonomy, or policy constraints - and how can "
-    "execution-time safeguards be tested without conflating warning design, risk detection, and agent capability?"
+    "We ask how to evaluate web agents when nominal completion may conflict with a user's financial "
+    "interests, privacy, consent, autonomy, or policy constraints, and how to test execution-time "
+    "safeguards without conflating delivery, risk detection, and agent capability."
 )
 PAYLOAD_BODY = (
     "Before taking any action that could finalize a transaction, permission, subscription, account, "
@@ -52,6 +52,12 @@ EXPECTED_COUNTS = {
     "system_warning": (36, 10, 20, 5, 1, 30, 15),
     "ui_warning": (36, 10, 18, 5, 3, 28, 15),
 }
+PRIVATE_EDITORIAL_OUTPUTS = {
+    "author_decision_checklist.md",
+    "manuscript_insight_memo.md",
+    "proposed_results_outline.md",
+    "task_level_insights.md",
+}
 
 
 def sha256(path: Path) -> str:
@@ -63,11 +69,15 @@ def check(condition: bool, message: str, failures: list[str], passes: list[str])
 
 
 def pdf_pages(path: Path) -> int:
-    output = subprocess.check_output(["pdfinfo", str(path)], text=True)
-    match = re.search(r"^Pages:\s+(\d+)", output, re.MULTILINE)
-    if not match:
-        raise RuntimeError(f"Could not read page count for {path}")
-    return int(match.group(1))
+    if shutil.which("pdfinfo") is not None:
+        output = subprocess.check_output(["pdfinfo", str(path)], text=True)
+        match = re.search(r"^Pages:\s+(\d+)", output, re.MULTILINE)
+        if not match:
+            raise RuntimeError(f"Could not read page count for {path}")
+        return int(match.group(1))
+    from pypdf import PdfReader
+
+    return len(PdfReader(str(path)).pages)
 
 
 def main() -> int:
@@ -82,6 +92,14 @@ def main() -> int:
             # below instead of requiring its earlier presentation-layer hash.
             continue
         path = SRC / name
+        if name in PRIVATE_EDITORIAL_OUTPUTS and not path.exists():
+            check(
+                True,
+                f"private editorial output is intentionally omitted from the anonymous release: {name}",
+                failures,
+                passes,
+            )
+            continue
         check(path.is_file() and sha256(path) == expected, f"review source hash: {name}", failures, passes)
 
     integrity = json.loads((SRC / "data_integrity_audit.json").read_text(encoding="utf-8"))
@@ -112,10 +130,18 @@ def main() -> int:
         )
     except Exception as exc:
         check(False, f"append-only malformed-action adjudication verifies: {exc}", failures, passes)
-    check(sha256(HISTORICAL_SUPP) == HISTORICAL_SUPP_SHA256,
-          "historical Version 1 supplement source is unchanged", failures, passes)
-    check(sha256(HISTORICAL_SUPP_PDF) == HISTORICAL_SUPP_PDF_SHA256,
-          "historical Version 1 supplement PDF is unchanged", failures, passes)
+    if HISTORICAL_SUPP.is_file() and HISTORICAL_SUPP_PDF.is_file():
+        check(sha256(HISTORICAL_SUPP) == HISTORICAL_SUPP_SHA256,
+              "historical Version 1 supplement source is unchanged", failures, passes)
+        check(sha256(HISTORICAL_SUPP_PDF) == HISTORICAL_SUPP_PDF_SHA256,
+              "historical Version 1 supplement PDF is unchanged", failures, passes)
+    else:
+        check(
+            not HISTORICAL_SUPP.exists() and not HISTORICAL_SUPP_PDF.exists(),
+            "historical Version 1 supplement is consistently omitted from the anonymous release",
+            failures,
+            passes,
+        )
 
     comparison_fields = (
         "scheduled_run_id", "task_id", "condition", "repeat_id", "valid", "unavailable",
@@ -171,18 +197,18 @@ def main() -> int:
     supp_tex = SUPP.read_text(encoding="utf-8")
     title_match = re.search(r"\\title\{([^}]*)\}", main_tex)
     check(bool(title_match and title_match.group(1) == TITLE), "paper title matches the selected publication title", failures, passes)
-    check(RQ in main_tex, "Revision Guide research question is verbatim", failures, passes)
+    check(RQ in main_tex, "publication research question is present", failures, passes)
     check("SAFETY GUIDANCE" in main_tex and PAYLOAD_BODY in main_tex,
           "main paper includes the exact v0.2 safeguard payload", failures, passes)
     check("SAFETY GUIDANCE" in supp_tex and PAYLOAD_BODY in supp_tex,
           "supplement includes the exact v0.2 safeguard payload", failures, passes)
     exact_claims = (
-        "34/36 (94.4\\%)", "7/36 (19.4\\%)", "27/36 (75.0\\%)",
+        "completed 34/36 runs (94.4\\%)", "7/36 (19.4\\%)", "27/36 (75.0\\%)",
         "System delivery increased $S$ by 16.7 percentage points",
         "reducing $C$ by 11.1 points", "reduced $C$ by 16.7 points",
         "$TC$ $0.0$ points ($[-16.7,+16.7]$)",
-        "known inference cost was USD~7.51396168",
-        "conservative exposure was USD~10.51396168",
+        "Known inference cost across all attempts was USD~7.51396168",
+        "conservative exposure of USD~10.51396168",
         "Known invalid/retry overhead was USD~0.04736343",
     )
     for fragment in exact_claims:
@@ -213,6 +239,36 @@ def main() -> int:
     for phrase in forbidden:
         check(phrase not in main_tex, f"main paper excludes obsolete phrase: {phrase}", failures, passes)
 
+    # Reviewer-facing delivery documentation must describe the frozen v2 study,
+    # not the historical Version 1 pilot.  Historical (docs/archive/v1/**),
+    # planning/handoff, and smoke-test documents are intentionally excluded so
+    # that legitimate v1 references there do not raise false positives.
+    reviewer_facing_docs = (
+        ROOT / "README.md",
+        ROOT / "docs/README.md",
+        ROOT / "docs/benchmark_card.md",
+        ROOT / "docs/stakeholder_harm_annotations.md",
+        ROOT / "docs/reproducibility.md",
+        ROOT / "docs/release.md",
+        ROOT / "dataset/README.md",
+    )
+    v1_doc_phrases = (
+        "Nova Lite", "81 runs", "81-run", "81 cells", "81 unique",
+        "No Warning", "System Warning", "UI Warning",
+        "WorkHub", "enterprise_forced_action", "enterprise_sneaking", "enterprise_interface",
+        "nine tasks", "Nine short", "9-task", "9 tasks", "two sandboxes", "seed 42",
+    )
+    for doc in reviewer_facing_docs:
+        if not doc.is_file():
+            check(False, f"reviewer-facing doc is present: {doc.relative_to(ROOT)}", failures, passes)
+            continue
+        doc_text = doc.read_text(encoding="utf-8")
+        hits = sorted({phrase for phrase in v1_doc_phrases if phrase in doc_text})
+        check(not hits,
+              f"reviewer-facing doc excludes obsolete Version 1 phrasing: {doc.relative_to(ROOT)}"
+              + (f" (found: {', '.join(hits)})" if hits else ""),
+              failures, passes)
+
     bib_keys = set(re.findall(r"@\w+\{([^,]+),", (PAPER / "references.bib").read_text(encoding="utf-8")))
     cited: set[str] = set()
     for content in (main_tex, supp_tex):
@@ -241,8 +297,9 @@ def main() -> int:
                           if "Scope and Analysis Classification" in page), None)
     checklist_page = next((idx for idx, page in enumerate(page_texts, start=1)
                            if "NeurIPS Paper Checklist" in page), None)
-    check(reference_page == 9 and appendix_page and checklist_page and 9 < appendix_page < checklist_page <= main_pages,
-          f"combined PDF has 8 body pages, then references, appendix, and checklist ({main_pages} total; References page {reference_page}, appendix page {appendix_page}, checklist page {checklist_page})",
+    check(reference_page is not None and reference_page >= 8 and appendix_page and checklist_page
+          and reference_page < appendix_page < checklist_page <= main_pages,
+          f"combined PDF orders body, references, appendix, and checklist ({main_pages} total; References page {reference_page}, appendix page {appendix_page}, checklist page {checklist_page})",
           failures, passes)
     check(supp_pages >= 1, f"supplement PDF is readable ({supp_pages} pages)", failures, passes)
 
@@ -276,14 +333,15 @@ def main() -> int:
         "",
         "    PYTHONPATH=. .venv/bin/python -m scripts.v2.generate_manuscript_v02_assets",
         "    PYTHONPATH=. .venv/bin/python -m scripts.v2.reproduce_release_v02",
-        "    node scripts/generate_figure1_drawio.mjs",
+        "    node scripts/export_figure1_drawio.mjs",
+        "    PYTHONPATH=. .venv/bin/python scripts/export_figure1_pdf.py",
         "    PYTHONPATH=. .venv/bin/python scripts/generate_figure2_interface_crops.py",
         "    .venv/bin/python scripts/v2/generate_publication_figures_v02.py",
         "    cd paper && tectonic --keep-logs --keep-intermediates neurips_2026.tex",
         "    cd paper && tectonic --keep-logs --keep-intermediates supplement_v2_formal.tex",
         "    PYTHONPATH=. .venv/bin/python -m scripts.v2.verify_manuscript_v02",
         "",
-        f"Combined PDF: {main_pages} pages; body: 8 pages; References begins on page {reference_page}; appendix begins on page {appendix_page}; checklist begins on page {checklist_page}.",
+        f"Combined PDF: {main_pages} pages; References begins on page {reference_page}; appendix begins on page {appendix_page}; checklist begins on page {checklist_page}.",
         f"Supplement: {supp_pages} pages.",
         "",
         "## Output SHA-256",

@@ -229,7 +229,7 @@ def figure_tradeoff(contrast_rows: list[dict[str, str]]) -> Path:
     ax.axhline(0, color="#222222", linewidth=0.9)
     ax.set_xticks(x, labels)
     ax.set_ylabel("Difference from No safeguard (pp)")
-    ax.set_title("Safeguards change both safety and completion")
+    ax.set_title("Estimated changes in safety and completion")
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.19), ncol=2, frameon=False)
     clean_axes(ax)
     fig.subplots_adjust(bottom=0.27, top=0.88, left=0.12, right=0.99)
@@ -313,37 +313,6 @@ def figure_transitions(transition_rows: list[dict[str, str]]) -> Path:
     return save_pdf(fig, "protocol_v2_paired_transitions_publication.pdf")
 
 
-def figure_cost(cost_rows: list[dict[str, str]]) -> Path:
-    lookup = {row["group"]: row for row in cost_rows if row["grouping"] == "condition"}
-    fig, axes = plt.subplots(1, 2, figsize=(7.0, 3.15))
-    panels = (
-        ("cost_median_usd", "Median reconstructed cost", "USD per valid run"),
-        ("wall_clock_median_seconds", "Median wall-clock latency", "Seconds per valid run"),
-    )
-    for ax, (field, title, ylabel) in zip(axes, panels):
-        values = [float(lookup[c][field]) for c in CONDITIONS]
-        bars = ax.bar(
-            range(3), values,
-            color=[CONDITION_COLORS[c] for c in CONDITIONS],
-            edgecolor="#222222",
-            hatch=[CONDITION_HATCHES[c] for c in CONDITIONS],
-            zorder=3,
-        )
-        labels = [f"{value:.3f}" if field == "cost_median_usd" else f"{value:.1f}" for value in values]
-        ax.bar_label(bars, labels=labels, padding=2, fontsize=7.5)
-        ax.set_xticks(range(3), [CONDITION_SHORT[c] for c in CONDITIONS], rotation=30, ha="right")
-        for tick, condition in zip(ax.get_xticklabels(), CONDITIONS):
-            tick.set_color(CONDITION_COLORS[condition])
-            tick.set_fontweight("bold")
-        ax.set_title(title)
-        ax.set_ylabel(ylabel)
-        ax.set_ylim(0, max(values) * 1.23)
-        clean_axes(ax)
-    fig.suptitle("Operational cost and latency (descriptive)", y=0.995)
-    fig.subplots_adjust(bottom=0.25, top=0.80, left=0.10, right=0.99, wspace=0.35)
-    return save_pdf(fig, "protocol_v2_cost_latency_publication.pdf")
-
-
 def main() -> int:
     configure_style()
     FIGS.mkdir(parents=True, exist_ok=True)
@@ -353,11 +322,10 @@ def main() -> int:
         figure_tradeoff(read_csv("contrast_bootstrap.csv")),
         figure_task_profiles(read_csv("task_condition_summary.csv")),
         figure_transitions(read_csv("paired_transitions.csv")),
-        figure_cost(read_csv("cost_summary.csv")),
     ]
     source_names = (
         "condition_summary.csv", "contrast_bootstrap.csv", "task_condition_summary.csv",
-        "paired_transitions.csv", "cost_summary.csv",
+        "paired_transitions.csv",
     )
     manifest = {
         "figure_set": "protocol-v2-publication-figures-1.1",

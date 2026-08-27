@@ -16,7 +16,7 @@ from analysis.aggregate_results import validate_run_matrix
 
 EXPECTED_TITLE = "Beyond Endpoint Success: Trustworthy Completion for Web Agents"
 EXPECTED_CSV_SHA256 = "c7095c1189b03cb672b888209d41d18853e3236360587455368cca440c851b07"
-EXPECTED_ABSTRACT_SHA256 = "9d549c60c8a789249c617624743b78cb306b7ab68d2cad6eb6f89d9b14231adb"
+EXPECTED_ABSTRACT_SHA256 = "4c1f28651e85ec7d39bc18bded506732e3bec965c5a86ecdc5c6d86a5734de74"
 
 
 def main() -> int:

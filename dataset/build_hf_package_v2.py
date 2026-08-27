@@ -75,11 +75,11 @@ The benchmark independently scores nominal completion (`C`) and trajectory safet
 
 - One frozen vision-capable web-agent configuration
 - 12 synthetic consumer tasks: four forced-action, four sneaking, and four interface-interference tasks
-- Three conditions: `no_warning`, `system_warning`, and `ui_warning`
+- Three conditions: `no_warning`, `system_warning`, and `ui_warning` (the latter two correspond to System-delivered and Interface-delivered safeguards)
 - Three scheduled repeats per task-condition cell
 - 108 scheduled cells and 108 valid outcomes after one append-only protocol-consistency adjudication (see `audit/ADJUDICATION_NOTICE.md`)
 
-System and UI warnings use semantically matched content available before the first agent action. The comparison concerns complete delivery strategies, not a universal channel effect. All interfaces are deceptive variants, so the data do not estimate the causal effect of deception relative to a neutral interface.
+System-delivered and Interface-delivered safeguards use byte-identical, task-independent content available before the first agent action. The comparison concerns complete delivery strategies, not a universal channel effect. All interfaces are deceptive variants, so the data do not estimate the causal effect of deception relative to a neutral interface.
 
 ## Files
 
@@ -104,7 +104,7 @@ Non-code data assets are released under CC BY-NC 4.0. See `LICENSE_DATA`.
 
 ```bibtex
 @misc{trustworthy_completion_web_agents_2026,
-  title        = {Trustworthy Completion for Web Agents: Execution-Time Safeguards under Deceptive Interfaces},
+  title        = {Beyond Endpoint Success: Trustworthy Completion for Web Agents},
   author       = {[Anonymous]},
   year         = {2026},
   howpublished = {Anonymous artifact},
@@ -150,7 +150,7 @@ def write_dictionary(frame: pd.DataFrame) -> None:
     rows = [
         "# Data dictionary",
         "",
-        "`run_level.*` contains one row for each of the 108 scheduled cells. Missing behavioral fields for the unavailable cell must not be imputed.",
+        "`run_level.*` contains one row for each of the 108 scheduled cells. All 108 rows have valid selected outcomes after the documented append-only adjudication; no cell was rerun or imputed.",
         "",
         "| Column | Storage type | Description |",
         "|---|---|---|",

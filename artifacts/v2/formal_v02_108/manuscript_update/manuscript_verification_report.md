@@ -44,18 +44,18 @@ Status: **PASS**
 - recomputed condition counts: system_warning = (36, 10, 20, 5, 1, 30, 15)
 - recomputed condition counts: ui_warning = (36, 10, 18, 5, 3, 28, 15)
 - paper title matches the selected publication title
-- Revision Guide research question is verbatim
+- publication research question is present
 - main paper includes the exact v0.2 safeguard payload
 - supplement includes the exact v0.2 safeguard payload
-- audited main-text claim is present: 34/36 (94.4\%)
+- audited main-text claim is present: completed 34/36 runs (94.4\%)
 - audited main-text claim is present: 7/36 (19.4\%)
 - audited main-text claim is present: 27/36 (75.0\%)
 - audited main-text claim is present: System delivery increased $S$ by 16.7 percentage points
 - audited main-text claim is present: reducing $C$ by 11.1 points
 - audited main-text claim is present: reduced $C$ by 16.7 points
 - audited main-text claim is present: $TC$ $0.0$ points ($[-16.7,+16.7]$)
-- audited main-text claim is present: known inference cost was USD~7.51396168
-- audited main-text claim is present: conservative exposure was USD~10.51396168
+- audited main-text claim is present: Known inference cost across all attempts was USD~7.51396168
+- audited main-text claim is present: conservative exposure of USD~10.51396168
 - audited main-text claim is present: Known invalid/retry overhead was USD~0.04736343
 - Results contains exactly three numbered findings
 - main paper and appendix use the approved anonymous artifact URL
@@ -71,10 +71,17 @@ Status: **PASS**
 - main paper excludes obsolete phrase: Nova Lite
 - main paper excludes obsolete phrase: nine tasks
 - main paper excludes obsolete phrase: two sandboxes
+- reviewer-facing doc excludes obsolete Version 1 phrasing: README.md
+- reviewer-facing doc excludes obsolete Version 1 phrasing: docs/README.md
+- reviewer-facing doc excludes obsolete Version 1 phrasing: docs/benchmark_card.md
+- reviewer-facing doc excludes obsolete Version 1 phrasing: docs/stakeholder_harm_annotations.md
+- reviewer-facing doc excludes obsolete Version 1 phrasing: docs/reproducibility.md
+- reviewer-facing doc excludes obsolete Version 1 phrasing: docs/release.md
+- reviewer-facing doc excludes obsolete Version 1 phrasing: dataset/README.md
 - all 20 citation keys exist
 - both required PDFs exist
-- combined PDF has 8 body pages, then references, appendix, and checklist (28 total; References page 9, appendix page 11, checklist page 22)
-- supplement PDF is readable (12 pages)
+- combined PDF orders body, references, appendix, and checklist (28 total; References page 8, appendix page 11, checklist page 22)
+- supplement PDF is readable (11 pages)
 - neurips_2026.log has no undefined references/citations or overfull boxes
 - supplement_v2_formal.log has no undefined references/citations or overfull boxes
 - number provenance contains 39 explicit claim mappings
@@ -88,20 +95,21 @@ Status: **PASS**
 
     PYTHONPATH=. .venv/bin/python -m scripts.v2.generate_manuscript_v02_assets
     PYTHONPATH=. .venv/bin/python -m scripts.v2.reproduce_release_v02
-    node scripts/generate_figure1_drawio.mjs
+    node scripts/export_figure1_drawio.mjs
+    PYTHONPATH=. .venv/bin/python scripts/export_figure1_pdf.py
     PYTHONPATH=. .venv/bin/python scripts/generate_figure2_interface_crops.py
     .venv/bin/python scripts/v2/generate_publication_figures_v02.py
     cd paper && tectonic --keep-logs --keep-intermediates neurips_2026.tex
     cd paper && tectonic --keep-logs --keep-intermediates supplement_v2_formal.tex
     PYTHONPATH=. .venv/bin/python -m scripts.v2.verify_manuscript_v02
 
-Combined PDF: 28 pages; body: 8 pages; References begins on page 9; appendix begins on page 11; checklist begins on page 22.
-Supplement: 12 pages.
+Combined PDF: 28 pages; References begins on page 8; appendix begins on page 11; checklist begins on page 22.
+Supplement: 11 pages.
 
 ## Output SHA-256
 
-- Main PDF: 8dd145e226a57878219b31d68e5f504371ea999d78cdddfe35a95c1ae790958f
-- Main LaTeX: 531bacdd59a6c9ebb46b6238b9e8d7176e08489b803f6283377cea88a5ad88a8
-- Supplement PDF: ff12aa3ea10e165406786caed780d75544cc64c9014ed96880141fc38557cff4
-- Supplement LaTeX: bcf271d5d40687fabc354d1e24a74b2670b3d554aff2350c60773ce3d3752eaf
+- Main PDF: 530b51d738eac71c0439059c95963e0bb56449d431de9c5cda020375d37d75c9
+- Main LaTeX: ed5507f52970eebd96a5a66ca33b175691145b62cf1ed74516007fadfbb4a5a3
+- Supplement PDF: 23654d1543689ce2d736f4a7d26f4c43fd364d313b668b90e73e0142865648d7
+- Supplement LaTeX: 90f24dbb73d89041600f82744d3c5d1d0c84e296c1e84e6a28ef1a5b2dbac6f3
 No model or paid API call is made by this verification.
