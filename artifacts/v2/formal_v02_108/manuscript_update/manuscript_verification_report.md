@@ -108,8 +108,8 @@ Supplement: 11 pages.
 
 ## Output SHA-256
 
-- Main PDF: 530b51d738eac71c0439059c95963e0bb56449d431de9c5cda020375d37d75c9
+- Main PDF: 1bb3f16973ff51615f639ca093ba507c5d309411e276672ba06414aad0a39c67
 - Main LaTeX: ed5507f52970eebd96a5a66ca33b175691145b62cf1ed74516007fadfbb4a5a3
-- Supplement PDF: 23654d1543689ce2d736f4a7d26f4c43fd364d313b668b90e73e0142865648d7
+- Supplement PDF: a1e35b2d0dd5952fb4ff4fd467c35257e9d127357dabeeb587c433484285fcd6
 - Supplement LaTeX: 90f24dbb73d89041600f82744d3c5d1d0c84e296c1e84e6a28ef1a5b2dbac6f3
 No model or paid API call is made by this verification.
