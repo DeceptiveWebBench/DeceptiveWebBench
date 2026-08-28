@@ -6,7 +6,7 @@ Status: **PASS**
 
 - review source hash: analysis_dataset.csv
 - review source hash: attempt_audit.csv
-- private editorial output is intentionally omitted from the anonymous release: author_decision_checklist.md
+- review source hash: author_decision_checklist.md
 - review source hash: claim_evidence_matrix.csv
 - review source hash: condition_summary.csv
 - review source hash: contrast_bootstrap.csv
@@ -21,21 +21,24 @@ Status: **PASS**
 - review source hash: fig_task_condition_heatmap.png
 - review source hash: fig_tradeoff_contrasts.png
 - review source hash: leave_one_task_out_posthoc.csv
-- private editorial output is intentionally omitted from the anonymous release: manuscript_insight_memo.md
+- review source hash: manuscript_insight_memo.md
 - review source hash: missing_cell_sensitivity.csv
 - review source hash: paired_transitions.csv
-- private editorial output is intentionally omitted from the anonymous release: proposed_results_outline.md
+- review source hash: proposed_results_outline.md
 - review source hash: repeat_consistency.csv
 - review source hash: repeat_summary.csv
 - review source hash: statistical_analysis_report.md
 - review source hash: task_condition_summary.csv
-- private editorial output is intentionally omitted from the anonymous release: task_level_insights.md
+- review source hash: task_level_insights.md
 - review source hash: termination_and_failure_analysis.md
 - review source hash: termination_summary.csv
 - refreshable data-integrity audit preserves the 451-file source tree, deterministic rescoring, and 108-cell grid
 - append-only malformed-action adjudication is hash-valid and records no rerun
-- historical Version 1 supplement is consistently omitted from the anonymous release
-- clean anonymous release rebuilds all manuscript aggregates from 108 tabular rows and verifies adjudication evidence
+- historical Version 1 supplement source is unchanged
+- historical Version 1 supplement PDF is unchanged
+- 451 raw formal source artifacts retain their audited tree hash
+- all 108 analysis rows are rebuilt from original attempts plus verified adjudication with identical C/S and termination fields
+- raw deterministic rebuild has 112 attempts and no scientific/data errors
 - 108 scheduled cells and 108 valid outcomes
 - recomputed condition counts: no_warning = (36, 7, 27, 2, 0, 34, 9)
 - recomputed condition counts: system_warning = (36, 10, 20, 5, 1, 30, 15)
@@ -105,8 +108,8 @@ Supplement: 11 pages.
 
 ## Output SHA-256
 
-- Main PDF: e1669c5de2fdae6e71e44c3e153bdff0eb4d3cdca57691e27f5c1ee6ad698f39
+- Main PDF: 1bb3f16973ff51615f639ca093ba507c5d309411e276672ba06414aad0a39c67
 - Main LaTeX: ed5507f52970eebd96a5a66ca33b175691145b62cf1ed74516007fadfbb4a5a3
-- Supplement PDF: bfff134a0ae310436746edd2b3641ef9363d8f77a3ac8085e6d3db96dbb09e1f
+- Supplement PDF: a1e35b2d0dd5952fb4ff4fd467c35257e9d127357dabeeb587c433484285fcd6
 - Supplement LaTeX: 90f24dbb73d89041600f82744d3c5d1d0c84e296c1e84e6a28ef1a5b2dbac6f3
 No model or paid API call is made by this verification.
